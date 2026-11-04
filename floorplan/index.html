@@ -1,16 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Map your app with Floorplan</title>
-<meta name="description" content="How to set up Floorplan, a free open-source plugin by Hayden Smith that draws an interactive map of your app's code.">
+<meta name="description" content="How to set up Floorplan, a free open-source plugin by Hayden Smith that draws an interactive map of your app's code. In English and Spanish.">
+<script>
+  (function () {
+    var l;
+    try { l = localStorage.getItem('lang'); } catch (e) {}
+    if (l !== 'en' && l !== 'es') l = /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+  })();
+</script>
 <style>
   :root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --code: #f1eee8; --accent: #0f7a6c; }
   @media (prefers-color-scheme: dark) { :root { --bg: #141412; --fg: #ecebe6; --muted: #a29e95; --line: #2c2b28; --code: #1f1e1b; --accent: #4cc3b0; } }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 680px; margin: 0 auto; padding: 32px 16px 64px; }
+  main { max-width: 680px; margin: 0 auto; padding: 20px 16px 64px; }
+  html[data-lang="en"] [data-l="es"], html[data-lang="es"] [data-l="en"] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+  .brand img { height: 44px; width: auto; display: block; }
+  .logo-dark-bg { display: none !important; }
+  @media (prefers-color-scheme: dark) { .logo-dark-bg { display: block !important; } .logo-light-bg { display: none !important; } }
+  .switch { display: flex; gap: 4px; }
+  .switch button { font: inherit; font-size: 0.85rem; padding: 4px 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  html[data-lang="en"] .switch [data-set="en"], html[data-lang="es"] .switch [data-set="es"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
   h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
   h2 { font-size: 1.2rem; margin: 36px 0 8px; }
   p, li { margin: 0 0 10px; }
@@ -27,6 +44,19 @@
 </head>
 <body>
 <main>
+  <header class="top">
+    <a href="../" class="brand" aria-label="Istmo Creations guides">
+      <img class="logo-dark-bg" src="../logo-light.svg" alt="Istmo Creations">
+      <img class="logo-light-bg" src="../logo.svg" alt="Istmo Creations">
+    </a>
+    <div class="switch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set="en">English</button>
+      <button type="button" data-set="es">Español</button>
+    </div>
+  </header>
+
+  <!-- ENGLISH -->
+  <div data-l="en">
   <h1>Map your app with Floorplan</h1>
   <p class="lede">Ask Claude for a map of your app's code. You get every part, file and connection drawn on one page, each named in plain English.</p>
 
@@ -72,6 +102,66 @@ claude plugin install floorplan@floorplan</code></pre>
   </ul>
 
   <footer>Istmo Creations: building with AI in Panamá, and sharing what works.<br>Tested 3 Nov 2026 with Floorplan 0.6.3 and Claude Code on Windows.</footer>
+  </div>
+
+  <!-- ESPAÑOL -->
+  <div data-l="es">
+  <h1>Haz un mapa de tu app con Floorplan</h1>
+  <p class="lede">Pídele a Claude un mapa del código de tu app. Obtienes cada parte, archivo y conexión dibujados en una sola página, cada uno con un nombre fácil de entender.</p>
+
+  <p class="credit"><strong>Floorplan es obra de Hayden Smith.</strong> Es gratis y de código abierto (licencia MIT).<br>
+  <a href="https://github.com/haydenschmitty/floorplan">github.com/haydenschmitty/floorplan</a>. Todo el crédito es suyo; esta página solo cuenta cómo lo instalé yo.</p>
+
+  <h2>Qué necesitas</h2>
+  <ul>
+    <li><strong>Claude Code</strong> (la app de escritorio o la terminal) o <strong>Codex</strong>. Funciona con el plan que ya tienes; no necesitas una clave de API.</li>
+    <li><strong>Node.js 18 o más nuevo.</strong> Para verificarlo, escribe <code>node --version</code> en una terminal. Si no lo tienes, instálalo desde <a href="https://nodejs.org">nodejs.org</a>.</li>
+    <li>Tu proyecto en una carpeta con <strong>git</strong>. Floorplan lee los archivos que git conoce.</li>
+  </ul>
+
+  <h2>1. Instálalo (una sola vez)</h2>
+  <p>En cualquier terminal:</p>
+  <pre><code>claude plugin marketplace add haydenschmitty/floorplan
+claude plugin install floorplan@floorplan</code></pre>
+  <p>Después <strong>abre una sesión nueva de Claude Code</strong>. Los plugins solo se cargan cuando empieza una sesión. En VS Code basta con recargar la ventana (Ctrl+Shift+P → <em>Developer: Reload Window</em>).</p>
+  <p>¿Usas Codex? Abre <strong>Plugins → Add a marketplace</strong>, escribe <code>haydenschmitty/floorplan</code> e instala Floorplan.</p>
+
+  <h2>2. Haz tu mapa</h2>
+  <ol>
+    <li>Abre la carpeta de tu proyecto en Claude Code.</li>
+    <li>Pídele: <strong>"Hazme un floorplan de esta app."</strong></li>
+    <li>Dale permiso para correr sus scripts cuando te lo pida. Una app pequeña tarda unos minutos; la mía (unos 500 archivos) tardó unos tres.</li>
+    <li>El mapa se abre en tu navegador.</li>
+  </ol>
+
+  <h2>3. Qué probar en el mapa</h2>
+  <ul>
+    <li><strong>Start here</strong>: un recorrido de un minuto por la app.</li>
+    <li><strong>Flows</strong>: recorridos paso a paso de lo que hace tu app.</li>
+    <li><strong>La barra Ask</strong>: hazle una pregunta real, como "¿Qué pasa cuando toco Aprobar?". Lee tu código y responde sobre el mapa. Luego toca <strong>Walk through</strong> y míralo avanzar de tarjeta en tarjeta.</li>
+    <li><strong>Health</strong>: una revisión automática rápida (archivos muy grandes, claves escritas en el código, endpoints abiertos). Tómalo como un primer vistazo, no como una auditoría de seguridad.</li>
+  </ul>
+
+  <h2>Bueno saber</h2>
+  <ul>
+    <li><strong>No cambia tu código.</strong> Escribe su propia carpeta <code>floorplan/</code>, que se mantiene fuera de git sola. Después de usarlo, <code>git status</code> no mostró nada nuevo.</li>
+    <li>Al final te pregunta si las próximas sesiones deben usar el mapa. Si dices que sí, agrega una nota corta a <code>CLAUDE.local.md</code>, un archivo personal que también queda fuera de git.</li>
+    <li>Si las rutas de tu servidor están escritas de forma poco común, puede que el mapa no las liste una por una. Las mías no salieron; todo lo demás se mapeó bien.</li>
+    <li>Después de seguir trabajando, solo pídele <strong>"actualiza el floorplan"</strong>. Solo vuelve a leer lo que cambió.</li>
+  </ul>
+
+  <footer>Istmo Creations: construyendo con IA en Panamá, y compartiendo lo que funciona.<br>Probado el 3 de noviembre de 2026 con Floorplan 0.6.3 y Claude Code en Windows.</footer>
+  </div>
 </main>
+<script>
+  document.querySelectorAll('.switch [data-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-set');
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.setAttribute('lang', l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  });
+</script>
 </body>
 </html>
