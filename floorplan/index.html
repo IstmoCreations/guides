@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map your app with Floorplan</title>
+<meta name="description" content="How to set up Floorplan, a free open-source plugin by Hayden Smith that draws an interactive map of your app's code.">
+<style>
+  :root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --code: #f1eee8; --accent: #0f7a6c; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141412; --fg: #ecebe6; --muted: #a29e95; --line: #2c2b28; --code: #1f1e1b; --accent: #4cc3b0; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 36px 0 8px; }
+  p, li { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 20px; }
+  .credit { border-left: 3px solid var(--accent); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  a { color: var(--accent); }
+  code, pre { font: 0.88rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--code); border-radius: 6px; }
+  code { padding: 1px 5px; }
+  pre { padding: 12px 14px; overflow-x: auto; border: 1px solid var(--line); }
+  pre code { padding: 0; background: none; }
+  ol, ul { padding-left: 22px; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Map your app with Floorplan</h1>
+  <p class="lede">Ask Claude for a map of your app's code. You get every part, file and connection drawn on one page, each named in plain English.</p>
+
+  <p class="credit"><strong>Floorplan is made by Hayden Smith.</strong> It is free and open source (MIT licence).<br>
+  <a href="https://github.com/haydenschmitty/floorplan">github.com/haydenschmitty/floorplan</a>. All credit to him; this page is just how I set it up.</p>
+
+  <h2>What you need</h2>
+  <ul>
+    <li><strong>Claude Code</strong> (desktop app or terminal) or <strong>Codex</strong>. It runs on the plan you already have; no API key.</li>
+    <li><strong>Node.js 18 or newer.</strong> Check by typing <code>node --version</code> in a terminal. If it's missing, install it from <a href="https://nodejs.org">nodejs.org</a>.</li>
+    <li>Your project in a <strong>git</strong> folder. Floorplan reads the files git knows about.</li>
+  </ul>
+
+  <h2>1. Install it (once)</h2>
+  <p>In any terminal:</p>
+  <pre><code>claude plugin marketplace add haydenschmitty/floorplan
+claude plugin install floorplan@floorplan</code></pre>
+  <p>Then <strong>start a new Claude Code session</strong>. Plugins only load when a session starts. In VS Code, reloading the window does it (Ctrl+Shift+P → <em>Developer: Reload Window</em>).</p>
+  <p>Using Codex instead? Open <strong>Plugins → Add a marketplace</strong>, enter <code>haydenschmitty/floorplan</code>, and install Floorplan.</p>
+
+  <h2>2. Make your map</h2>
+  <ol>
+    <li>Open your project's folder in Claude Code.</li>
+    <li>Ask: <strong>"Make me a floorplan of this app."</strong></li>
+    <li>Allow it to run its scripts when asked. A small app takes a few minutes; my app (about 500 files) took about three.</li>
+    <li>The map opens in your browser.</li>
+  </ol>
+
+  <h2>3. Things to try on the map</h2>
+  <ul>
+    <li><strong>Start here</strong>: a one-minute tour of the app.</li>
+    <li><strong>Flows</strong>: step-by-step walkthroughs of what your app does.</li>
+    <li><strong>The Ask bar</strong>: ask a real question, like "What happens when I tap Approve?" It reads your code and answers on the map. Then press <strong>Walk through</strong> and watch it step from card to card.</li>
+    <li><strong>Health</strong>: a quick automatic check (very large files, keys written into code, open endpoints). Treat it as a first look, not a security audit.</li>
+  </ul>
+
+  <h2>Good to know</h2>
+  <ul>
+    <li><strong>It doesn't change your code.</strong> It writes its own <code>floorplan/</code> folder, which keeps itself out of git. After my run, <code>git status</code> showed nothing new.</li>
+    <li>At the end it asks whether future sessions should use the map. If you say yes, it adds a short note to <code>CLAUDE.local.md</code>, a personal file that also stays out of git.</li>
+    <li>If your server's routes are written in an unusual way, the map may not list them one by one. Mine didn't; everything else mapped fine.</li>
+    <li>After more work, just ask <strong>"update the floorplan"</strong>. It only re-reads what changed.</li>
+  </ul>
+
+  <footer>Istmo Creations: building with AI in Panamá, and sharing what works.<br>Tested 3 Nov 2026 with Floorplan 0.6.3 and Claude Code on Windows.</footer>
+</main>
+</body>
+</html>
