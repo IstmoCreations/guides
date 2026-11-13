@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security-check your AI-built app</title>
+<meta name="description" content="Seven copy-paste prompts that have your AI agent review your own app's security: secrets, row-level security, admin routes, login abuse, AI inputs and backups. In English and Spanish.">
+<script>
+  (function () {
+    var l;
+    try { l = localStorage.getItem('lang'); } catch (e) {}
+    if (l !== 'en' && l !== 'es') l = /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+  })();
+</script>
+<style>
+  :root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --code: #f1eee8; --accent: #0f7a6c; --warn: #9a5b00; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141412; --fg: #ecebe6; --muted: #a29e95; --line: #2c2b28; --code: #1f1e1b; --accent: #4cc3b0; --warn: #f0b45c; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 20px 16px 64px; }
+  html[data-lang="en"] [data-l="es"], html[data-lang="es"] [data-l="en"] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+  .brand img { height: 44px; width: auto; display: block; }
+  .logo-dark-bg { display: none !important; }
+  @media (prefers-color-scheme: dark) { .logo-dark-bg { display: block !important; } .logo-light-bg { display: none !important; } }
+  .switch { display: flex; gap: 4px; }
+  .switch button { font: inherit; font-size: 0.85rem; padding: 4px 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  html[data-lang="en"] .switch [data-set="en"], html[data-lang="es"] .switch [data-set="es"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 36px 0 8px; }
+  p, li { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 20px; }
+  .credit { border-left: 3px solid var(--accent); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  .warn { border-left: 3px solid var(--warn); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  a { color: var(--accent); }
+  code, pre { font: 0.88rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--code); border-radius: 6px; }
+  code { padding: 1px 5px; }
+  .prompt { position: relative; margin: 0 0 18px; }
+  pre { padding: 12px 14px; padding-top: 34px; overflow-x: auto; border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; margin: 0; }
+  pre code { padding: 0; background: none; }
+  .copy { position: absolute; top: 6px; right: 6px; font: inherit; font-size: 0.8rem; padding: 2px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--accent); border-radius: 999px; cursor: pointer; }
+  ol, ul { padding-left: 22px; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <a href="../" class="brand" aria-label="Istmo Creations guides">
+      <img class="logo-dark-bg" src="../logo-light.svg" alt="Istmo Creations">
+      <img class="logo-light-bg" src="../logo.svg" alt="Istmo Creations">
+    </a>
+    <div class="switch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set="en">English</button>
+      <button type="button" data-set="es">Español</button>
+    </div>
+  </header>
+
+  <!-- ENGLISH -->
+  <div data-l="en">
+  <h1>Security-check your AI-built app</h1>
+  <p class="lede">The exact prompts I gave my AI agent to try to break into my own app. Paste them one at a time. They review and report; nothing gets changed.</p>
+
+  <p class="credit"><strong>The idea for these checks comes from Kem (<a href="https://www.instagram.com/kem_glitch/">@kem_glitch</a>, Glitch Cat Club)</strong> and his reel on security when vibe coding. Credit to him; this page is how I turned it into prompts. Not sponsored.</p>
+
+  <p class="warn"><strong>This is not a professional audit.</strong> It catches common mistakes. If your app holds health records, legal records, payments at scale or someone's whole business, get a professional review as well.</p>
+
+  <h2>What you need</h2>
+  <ul>
+    <li>An AI coding agent that can read your project: <strong>Claude Code</strong>, <strong>Codex</strong> or similar.</li>
+    <li>Your app on your own computer, ideally with a <strong>local or test copy</strong> of the database. The prompts tell the agent never to touch the live app.</li>
+    <li>Written for apps built on <strong>Supabase</strong> (React, Vite, Next.js…). Most checks apply to any backend; the agent will adapt them.</li>
+  </ul>
+
+  <p class="credit"><strong>Tip: Claude Code also has <code>/security-review</code>.</strong> Type it in a session and Claude reads your code for common holes (injection, broken login or permission checks, unsafe data handling). Run it too: it reads the code, while the prompts below test your running app, including database settings that never appear in the code.</p>
+
+  <h2>Supabase changed one default (Oct 30, 2026)</h2>
+  <p>New tables are no longer opened to the app's API automatically; each one needs an explicit grant (<a href="https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically">changelog</a>). Good, but <strong>existing tables keep the access they had</strong>, so an app built before then still needs the checks below. Supabase's <strong>Security Advisor</strong> (in the dashboard) is a useful first scan too.</p>
+
+  <h2>0. Ground rules (paste first)</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>We're running a defensive security review of our own app. It's our product and we're hardening it. Rules for every check that follows:
+- Read and test the LOCAL copy only. Never send a request to the live site or the production database, and never write to production data.
+- Never print a secret's value. Name the variable and the file it lives in, nothing more.
+- For each finding, mark it VERIFIED (you ran or read something that proves it) or ASSUMED (inferred), give file:line, and rate it BLOCKING / SHOULD-FIX / NOTE.
+- Report findings; do not fix anything yet.
+- Write the results to docs/security/review.md as you go.
+
+Start by listing every database table, every database function, every server/edge function, and every place the frontend talks to the backend. That inventory is the map for the checks that follow.</code></pre></div>
+
+  <h2>1. Secrets and keys</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Check 1, secrets. Find every key and credential the app uses. Answer:
+1. Does any secret key (for Supabase: the service_role or secret key) appear anywhere that reaches the browser: a VITE_ or NEXT_PUBLIC_ variable, a built bundle, a committed file, or a client-side import? Only the public (anon / publishable) key may reach the frontend.
+2. Is any secret committed to git, now or in history? Check with git log -p -S on each key's variable name, never by printing the value.
+3. Do server functions read secrets from environment settings, not hard-coded values?
+4. Is .env gitignored, and is there a .env.example holding names only?</code></pre></div>
+
+  <h2>2. Row-level security</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Check 2, row-level security. For EVERY table the app's API can reach:
+1. Is RLS enabled? List any table without it.
+2. List each policy for select / insert / update / delete, and say in plain words who it lets do what.
+3. Flag any policy that is "using (true)", that lets anonymous users write, or that lets one user read or change another user's rows.
+4. Search the migrations and git history for any place RLS was disabled or a policy loosened "to make something work", and say whether it was ever reverted.
+5. Prove the important ones on a LOCAL database with two test users: show that user A cannot read or change user B's records. Use the public key and a signed-in user's token, never the secret key.</code></pre></div>
+
+  <h2>3. Admin actions and server routes</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Check 3, routes. Is the rule the code states the rule it enforces, and is the list of ways to reach privileged data complete?
+1. List every server function and database function. For each, does it check the caller's identity AND role (admin / staff / user) on the server side? A check that exists only in the UI doesn't count.
+2. Can a user reach another user's records by changing an id in a request? Test that case for the app's most important records.
+3. Are "security definer" functions limited to what they need, with search_path set?
+4. Does anything return more fields than the screen shows (emails, phone numbers, payment data)?</code></pre></div>
+
+  <h2>4. Login abuse and hosting</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Check 4, login and hosting.
+1. Login, sign-up, password reset and any code entry: what limits the number of attempts? Check the auth rate-limit settings and any custom endpoint. Say what stops a bot guessing forever.
+2. Are the storage buckets private where they should be? List each bucket, whether it is public, and its policies.
+3. Is the database reachable only through its API, with no open direct connection string anywhere public?
+4. Do preview or staging deployments use separate keys and data, or do they point at production?</code></pre></div>
+
+  <h2>5. AI inputs (only if your app uses AI)</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Check 5. Does any feature send user-written text, uploaded files or web content to an AI model? If so: is that content treated strictly as data, never as instructions? Can it make the AI call a tool, reveal a system prompt, or write to the database? If no AI is used anywhere, say so and skip this check.</code></pre></div>
+
+  <h2>6. Backups, then the summary</h2>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Check 6, production readiness. Are database backups on, and has a restore ever been tested? Where would we restore from, and how long would it take? Then summarise all six checks: BLOCKING findings first, each with VERIFIED or ASSUMED, file:line and a one-line fix idea. Do not fix anything.</code></pre></div>
+
+  <h2>After the review</h2>
+  <p>Fix the BLOCKING findings first, one at a time, and re-run the check that found each one. Then add standing rules so the agent doesn't undo the work next week. Put them in your agent's instructions file (<code>CLAUDE.md</code> for Claude Code, <code>AGENTS.md</code> for Codex):</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>## Security rules
+- Never disable row-level security or loosen a policy to fix an error. Stop and ask.
+- Secret keys never reach the browser or a public (VITE_ / NEXT_PUBLIC_) variable.
+- No server function without a server-side identity and role check.
+- Login and code-entry endpoints are rate limited.
+- Stop and ask before changing anything public: buckets, policies, auth settings.</code></pre></div>
+
+  <footer>Istmo Creations: building with AI in Panamá, and sharing what works.<br>Used 10–13 Nov 2026 on my own club app (React + Supabase) with Claude Code.</footer>
+  </div>
+
+  <!-- ESPAÑOL -->
+  <div data-l="es">
+  <h1>Revisa la seguridad de tu app hecha con IA</h1>
+  <p class="lede">Los prompts exactos que le di a mi agente de IA para intentar entrar a mi propia app. Pégalos uno por uno. Revisan e informan; no cambian nada.</p>
+
+  <p class="credit"><strong>La idea de estas revisiones viene de Kem (<a href="https://www.instagram.com/kem_glitch/">@kem_glitch</a>, Glitch Cat Club)</strong> y su reel sobre seguridad al programar con IA. El crédito es suyo; esta página es cómo lo convertí en prompts. No patrocinado.</p>
+
+  <p class="warn"><strong>Esto no es una auditoría profesional.</strong> Detecta errores comunes. Si tu app guarda historias clínicas, datos legales, pagos a gran escala o el negocio entero de alguien, pide también una revisión profesional.</p>
+
+  <h2>Qué necesitas</h2>
+  <ul>
+    <li>Un agente de IA que pueda leer tu proyecto: <strong>Claude Code</strong>, <strong>Codex</strong> o similar.</li>
+    <li>Tu app en tu propia computadora, idealmente con una <strong>copia local o de prueba</strong> de la base de datos. Los prompts le dicen al agente que nunca toque la app en vivo.</li>
+    <li>Pensado para apps hechas con <strong>Supabase</strong> (React, Vite, Next.js…). Casi todas las revisiones sirven para cualquier backend; el agente las adapta.</li>
+  </ul>
+
+  <p class="credit"><strong>Consejo: Claude Code también tiene <code>/security-review</code>.</strong> Escríbelo en una sesión y Claude lee tu código buscando fallas comunes (inyección, controles de login o permisos rotos, manejo inseguro de datos). Úsalo también: lee el código, mientras que los prompts de abajo prueban tu app funcionando, incluida la configuración de la base de datos que nunca aparece en el código.</p>
+
+  <h2>Supabase cambió un valor por defecto (30 oct 2026)</h2>
+  <p>Las tablas nuevas ya no quedan abiertas a la API de la app automáticamente; cada una necesita un permiso explícito (<a href="https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically">changelog</a>). Bien, pero <strong>las tablas existentes conservan el acceso que tenían</strong>, así que una app hecha antes igual necesita estas revisiones. El <strong>Security Advisor</strong> de Supabase (en el panel) también es un buen primer escaneo.</p>
+
+  <h2>0. Reglas básicas (pégalo primero)</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Vamos a hacer una revisión de seguridad defensiva de nuestra propia app. Es nuestro producto y lo estamos reforzando. Reglas para cada revisión que sigue:
+- Lee y prueba SOLO la copia LOCAL. Nunca envíes una solicitud al sitio en vivo ni a la base de datos de producción, y nunca escribas en datos de producción.
+- Nunca imprimas el valor de un secreto. Nombra la variable y el archivo donde está, nada más.
+- Para cada hallazgo, márcalo VERIFICADO (ejecutaste o leíste algo que lo prueba) o SUPUESTO (deducido), da archivo:línea y califícalo BLOQUEANTE / CORREGIR / NOTA.
+- Informa los hallazgos; no corrijas nada todavía.
+- Escribe los resultados en docs/security/review.md a medida que avanzas.
+
+Empieza listando cada tabla de la base de datos, cada función de la base de datos, cada función de servidor/edge y cada lugar donde el frontend habla con el backend. Ese inventario es el mapa para las revisiones que siguen.</code></pre></div>
+
+  <h2>1. Secretos y claves</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Revisión 1, secretos. Encuentra cada clave y credencial que usa la app. Responde:
+1. ¿Aparece alguna clave secreta (en Supabase: la service_role o la secret key) en algún lugar que llegue al navegador: una variable VITE_ o NEXT_PUBLIC_, un bundle compilado, un archivo en git o un import del lado del cliente? Solo la clave pública (anon / publishable) puede llegar al frontend.
+2. ¿Hay algún secreto en git, ahora o en el historial? Revísalo con git log -p -S sobre el nombre de la variable de cada clave, nunca imprimiendo el valor.
+3. ¿Las funciones de servidor leen los secretos de la configuración del entorno, no de valores escritos en el código?
+4. ¿El .env está en .gitignore, y hay un .env.example que solo tiene los nombres?</code></pre></div>
+
+  <h2>2. Seguridad a nivel de fila (RLS)</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Revisión 2, seguridad a nivel de fila. Para CADA tabla que la API de la app puede alcanzar:
+1. ¿Tiene RLS activado? Lista las que no.
+2. Lista cada política de select / insert / update / delete y explica en palabras simples a quién deja hacer qué.
+3. Señala cualquier política que sea "using (true)", que deje escribir a usuarios anónimos, o que deje a un usuario leer o cambiar las filas de otro.
+4. Busca en las migraciones y en el historial de git cualquier lugar donde se desactivó RLS o se aflojó una política "para que algo funcione", y di si se revirtió.
+5. Prueba las importantes en una base de datos LOCAL con dos usuarios de prueba: demuestra que el usuario A no puede leer ni cambiar los registros del usuario B. Usa la clave pública y el token de un usuario con sesión iniciada, nunca la clave secreta.</code></pre></div>
+
+  <h2>3. Acciones de admin y rutas del servidor</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Revisión 3, rutas. ¿La regla que dice el código es la regla que aplica, y está completa la lista de caminos para llegar a datos privilegiados?
+1. Lista cada función de servidor y de base de datos. Para cada una, ¿verifica la identidad Y el rol de quien llama (admin / staff / usuario) del lado del servidor? Una verificación que solo existe en la interfaz no cuenta.
+2. ¿Puede un usuario llegar a los registros de otro cambiando un id en una solicitud? Prueba ese caso con los registros más importantes de la app.
+3. ¿Las funciones "security definer" están limitadas a lo que necesitan, con search_path definido?
+4. ¿Algo devuelve más campos de los que muestra la pantalla (correos, teléfonos, datos de pago)?</code></pre></div>
+
+  <h2>4. Abuso del login y hosting</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Revisión 4, login y hosting.
+1. Login, registro, recuperar contraseña y cualquier ingreso de códigos: ¿qué limita el número de intentos? Revisa la configuración de límites de autenticación y cualquier endpoint propio. Di qué impide que un bot adivine para siempre.
+2. ¿Los buckets de almacenamiento son privados donde deben serlo? Lista cada bucket, si es público y sus políticas.
+3. ¿La base de datos solo se alcanza a través de su API, sin una cadena de conexión directa abierta en algún lugar público?
+4. ¿Los despliegues de prueba o staging usan claves y datos separados, o apuntan a producción?</code></pre></div>
+
+  <h2>5. Entradas a la IA (solo si tu app usa IA)</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Revisión 5. ¿Alguna función envía texto escrito por usuarios, archivos subidos o contenido web a un modelo de IA? Si es así: ¿ese contenido se trata estrictamente como datos, nunca como instrucciones? ¿Puede hacer que la IA use una herramienta, revele un prompt de sistema o escriba en la base de datos? Si no se usa IA en ningún lado, dilo y salta esta revisión.</code></pre></div>
+
+  <h2>6. Respaldos, y luego el resumen</h2>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Revisión 6, preparación para producción. ¿Están activados los respaldos de la base de datos, y alguna vez se probó una restauración? ¿Desde dónde restauraríamos y cuánto tardaría? Luego resume las seis revisiones: primero los hallazgos BLOQUEANTES, cada uno con VERIFICADO o SUPUESTO, archivo:línea y una idea de corrección en una línea. No corrijas nada.</code></pre></div>
+
+  <h2>Después de la revisión</h2>
+  <p>Corrige primero los hallazgos BLOQUEANTES, uno por uno, y vuelve a correr la revisión que encontró cada uno. Luego agrega reglas permanentes para que el agente no deshaga el trabajo la semana siguiente. Ponlas en el archivo de instrucciones de tu agente (<code>CLAUDE.md</code> en Claude Code, <code>AGENTS.md</code> en Codex):</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>## Reglas de seguridad
+- Nunca desactives la seguridad a nivel de fila ni aflojes una política para arreglar un error. Detente y pregunta.
+- Las claves secretas nunca llegan al navegador ni a una variable pública (VITE_ / NEXT_PUBLIC_).
+- Ninguna función de servidor sin verificar identidad y rol del lado del servidor.
+- Los endpoints de login e ingreso de códigos tienen límite de intentos.
+- Detente y pregunta antes de cambiar algo público: buckets, políticas, configuración de autenticación.</code></pre></div>
+
+  <footer>Istmo Creations: construyendo con IA en Panamá, y compartiendo lo que funciona.<br>Usado del 10 al 13 de noviembre de 2026 en mi propia app de club (React + Supabase) con Claude Code.</footer>
+  </div>
+</main>
+<script>
+  document.querySelectorAll('.switch [data-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-set');
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.setAttribute('lang', l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  });
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.parentNode.querySelector('code').innerText, label = b.textContent;
+      function done() { b.textContent = document.documentElement.getAttribute('data-lang') === 'es' ? '¡Copiado!' : 'Copied!'; setTimeout(function () { b.textContent = label; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () {});
+    });
+  });
+</script>
+</body>
+</html>
