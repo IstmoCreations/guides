@@ -10,7 +10,7 @@ a responsive-layout reel, 2026-11-06) and **each verified in a real browser** - 
 Firefox 159. A runnable bench with all of them is `examples.html` next to this file; open it in a
 browser to see every trick on one page.
 
-Shared by Istmo Creations (https://istmocreations.github.io/guides/design/). Free to use.
+Shared by Istmo Creations (https://istmocreations.github.io/guides/ui/ - every trick live, with its code). Free to use.
 
 **Rule for adding a trick:** run it in Chrome AND Firefox and measure that it did something (a
 computed value, a position, a screenshot) before it goes in this file. Reel code is often blurry on
@@ -78,6 +78,20 @@ Measured: pressed card +40px, both neighbours +10px, the rest unmoved, in both b
 Measured: menu top = button bottom + 4px, lefts equal, chevron rotates, in both browsers. `popover`
 gives top-layer, light-dismiss and Escape for free. `inset: auto` is required - the popover UA style
 centres it otherwise.
+
+**Lit from above** (Ania Kubow's reel): a light top edge, a darker bottom edge, a contact shadow and a glow in the
+button's own colour; pressed, the light goes.
+```css
+.split { --c: #ff6a00;
+  background: linear-gradient(color-mix(in oklab, var(--c), white 16%), var(--c));
+  box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #00000033, 0 1px 2px #00000073,
+              0 8px 24px -6px color-mix(in srgb, var(--c) 60%, transparent);
+  transition: translate 90ms ease-out, box-shadow 90ms ease-out; }
+.split:has(button:active) { translate: 0 1px; box-shadow: inset 0 2px 4px #00000073; }
+```
+To unfold the menu instead of popping it: `transition: scale .3s, display .3s allow-discrete, overlay .3s
+allow-discrete; scale: 1 0;` on `.menu`, `scale: 1` on `.menu:popover-open`, and the same `scale: 1 0` inside
+`@starting-style`. Live demo: https://istmocreations.github.io/guides/ui/#t4
 
 ## 5. Cut a photo to any shape (Material's 35 shapes) - SVG mask
 

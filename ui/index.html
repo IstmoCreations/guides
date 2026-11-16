@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17 CSS tricks that make an AI-built site look expensive</title>
+<meta name="description" content="17 tested CSS tricks, each with a live demo and the code to copy: frosted glass, cover glow, card shine, real neon, an anchored split button, snap feeds, container queries and more. No JavaScript. In English and Spanish.">
+<script>
+  (function () {
+    var l;
+    try { l = localStorage.getItem('lang'); } catch (e) {}
+    if (l !== 'en' && l !== 'es') l = /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+  })();
+</script>
+<style>
+  :root { --bg: #111111; --card: #1a1a1a; --panel: #2e2e2e; --line: #2e2e2e; --fg: #ffffff; --muted: #9a9a9a;
+          --fuchsia: #e6007e; --orange: #ff6a00; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { width: min(100% - 32px, 760px); margin: 0 auto; padding: 20px 0 72px; }
+  html[data-lang="en"] [data-l="es"], html[data-lang="es"] [data-l="en"] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 32px; }
+  .brand img { height: 44px; width: auto; display: block; }
+  .switch { display: flex; gap: 4px; }
+  .switch button { font: inherit; font-size: 0.85rem; padding: 4px 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  html[data-lang="en"] .switch [data-set="en"], html[data-lang="es"] .switch [data-set="es"] { background: var(--fuchsia); border-color: var(--fuchsia); color: #fff; }
+  h1 { font-size: clamp(1.9rem, 6vw, 2.8rem); line-height: 1.08; margin: 0 0 12px; letter-spacing: -0.02em; text-wrap: balance; }
+  h1 b { color: var(--fuchsia); }
+  .lede { color: var(--muted); margin: 0 0 18px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 28px; }
+  .badges span { padding: 4px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; background: var(--panel); }
+  .badges span.o { background: var(--orange); color: #111; } .badges span.f { background: var(--fuchsia); }
+  .box { border: 1px solid var(--line); background: var(--card); border-radius: 18px; padding: 16px 18px; margin: 0 0 18px; }
+  .box h2 { margin-top: 0; }
+  nav.toc ol { columns: 2 220px; padding-left: 22px; margin: 0; font-size: 0.95rem; }
+  nav.toc a { color: var(--fg); text-decoration: none; } nav.toc a:hover { color: var(--fuchsia); }
+  a { color: var(--fuchsia); }
+  h2 { font-size: 1.25rem; margin: 0 0 6px; line-height: 1.25; }
+  .group { font-size: 0.85rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 44px 0 14px; }
+  .trick { border: 1px solid var(--line); background: var(--card); border-radius: 22px; padding: 18px; margin: 0 0 22px; scroll-margin-top: 16px; }
+  .trick header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+  .num { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--fuchsia); font-weight: 800; }
+  .inreel { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 8px; background: var(--orange); color: #111; font-size: 0.72rem; font-weight: 800; vertical-align: 3px; letter-spacing: .04em; }
+  .what { color: var(--muted); margin: 0 0 14px; }
+  .stage { border-radius: 16px; background: var(--bg); border: 1px solid var(--line); min-height: 220px; display: grid; place-items: center; padding: 22px; margin: 0 0 14px; overflow: hidden; position: relative; }
+  .stage.top { place-items: start center; }
+  .hint { font-size: 0.85rem; color: var(--muted); margin: -6px 0 14px; }
+  .code { position: relative; margin: 0 0 12px; }
+  pre { margin: 0; padding: 36px 16px 14px; border-radius: 14px; background: #161616; border: 1px solid var(--line); overflow-x: auto;
+        font: 0.84rem/1.55 ui-monospace, "Cascadia Code", Consolas, monospace; white-space: pre; }
+  pre .sel { color: var(--fuchsia); } pre .prop { color: var(--orange); } pre .pun { color: var(--muted); }
+  .copy { position: absolute; top: 8px; right: 8px; font: inherit; font-size: 0.8rem; padding: 2px 12px; border: 1px solid var(--line); background: var(--panel); color: #fff; border-radius: 999px; cursor: pointer; }
+  .tip { margin: 0; font-size: 0.95rem; } .tip b { color: var(--orange); }
+  .slider { display: flex; align-items: center; gap: 10px; margin: -4px 0 14px; font-size: 0.85rem; color: var(--muted); }
+  .slider input { flex: 1; accent-color: var(--fuchsia); }
+  .prompt pre { white-space: pre-wrap; word-break: break-word; }
+  @media (max-width: 480px) {   /* phones: give the demos room, so the container-query box can pass 300px */
+    main { width: calc(100% - 24px); }
+    .trick { padding: 12px; } .stage { padding: 10px; } .stage .resizable { padding: 6px; }
+  }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+
+  /* ===== demo furniture (sizes, colours, shapes) - NOT part of the tricks; each trick's own CSS follows its comment ===== */
+  .d-scene { position: relative; width: min(320px, 100%); height: 240px; border-radius: 20px; overflow: hidden; background: #1c1c1c; }
+  .d-scene i { position: absolute; display: block; animation: d-drift 6s ease-in-out infinite alternate; }
+  .d-scene .c1 { width: 120px; height: 120px; border-radius: 50%; background: var(--orange); left: -20px; top: 10px; }
+  .d-scene .c2 { width: 100px; height: 100px; border-radius: 18px; background: var(--fuchsia); right: -10px; top: 110px; animation-delay: -3s; animation-direction: alternate-reverse; }
+  .d-scene .c3 { width: 200px; height: 24px; border-radius: 12px; background: #fff; left: 40px; top: 190px; animation-delay: -1.5s; }
+  @keyframes d-drift { to { translate: 80px -30px; rotate: 25deg; } }
+  .d-scene .glass { position: absolute; inset: 50px 26px; padding: 16px; display: grid; align-content: center; }
+  .d-scene .glass b { font-size: 1.3rem; } .d-scene .glass span { font-size: 0.85rem; opacity: .85; }
+  .n { padding: 10px 16px; margin: 5px 0; border-radius: 14px; background: var(--panel); user-select: none; cursor: grab; width: min(280px, 70vw); }
+  .cookie { width: 180px; height: 180px; object-fit: cover; }
+  .cover { width: 160px; height: 160px; border-radius: 18px; }
+  .d-feed { width: 200px; height: 240px; border-radius: 20px; scrollbar-width: none; }
+  .d-feed > div { height: 240px; display: grid; place-items: center; font-size: 56px; font-weight: 800; }
+  .d-feed > div:nth-child(3n+1) { background: var(--fuchsia); } .d-feed > div:nth-child(3n+2) { background: var(--orange); } .d-feed > div:nth-child(3n) { background: var(--panel); }
+  .cc { width: min(300px, 100%); aspect-ratio: 85.6 / 54; border-radius: 18px; background: #262626; border: 1px solid #3a3a3a; padding: 18px 20px;
+        display: grid; grid-template-rows: auto 1fr auto; box-shadow: 0 18px 40px -14px rgb(0 0 0 / .7); }
+  .cc-top { display: flex; justify-content: space-between; align-items: center; }
+  .cc-top em { font-weight: 800; font-style: italic; color: var(--orange); }
+  .chip { display: block; width: 40px; height: 30px; border-radius: 7px; background: #d9d9d9;
+          background-image: linear-gradient(90deg, transparent 47%, #9a9a9a 47% 53%, transparent 53%), linear-gradient(transparent 30%, #9a9a9a 30% 36%, transparent 36% 64%, #9a9a9a 64% 70%, transparent 70%); }
+  .cc-num { align-self: center; font: 700 1.2rem/1 ui-monospace, monospace; letter-spacing: .06em; }
+  .cc-bot { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; letter-spacing: .12em; }
+  .shine.demo-auto::after { animation: d-sweep 3.2s ease-in-out infinite; }   /* demo only: replays the sweep so phones see it */
+  @keyframes d-sweep { 0%, 35% { translate: -100% 0; } 75%, 100% { translate: 100% 0; } }
+  .neon { font: 800 clamp(48px, 14vw, 72px)/1 system-ui, sans-serif; margin: 0; }
+  .menu { width: 210px; padding: 6px; border: 1px solid #3a3a3a; border-radius: 16px; background: #1c1c1c; color: #fff; }
+  .menu button { display: block; width: 100%; text-align: left; border: 0; background: none; color: inherit; font: 700 1rem/1 system-ui, sans-serif; padding: 12px 14px; border-radius: 10px; cursor: pointer; }
+  .menu button:hover { background: var(--panel); } .menu button.del { color: var(--fuchsia); }
+  .split { display: flex; border-radius: 22px; overflow: hidden; }
+  .split button { font: 800 1.1rem/1 system-ui, sans-serif; color: #111; background: none; border: 0; padding: 14px 22px; cursor: pointer; }
+  .split .chev { border-left: 2px solid rgb(0 0 0 / .25); padding: 14px 16px; }
+  .split .chev i { display: inline-block; font-style: normal; }
+  .sparkle { width: 100%; height: 200px; border-radius: 18px; }
+  .resizable { width: 100%; padding: 10px; border: 2px dashed #555; border-radius: 14px; resize: horizontal; overflow: auto; min-width: 140px; max-width: 100%; }
+  .afgrid > div, .tags span { border-radius: 10px; }
+  .afgrid > div { padding: 12px; background: var(--panel); font-weight: 700; }
+  .tags span { padding: 4px 12px; border-radius: 999px; border: 1px solid var(--orange); }
+  .ratio { border-radius: 12px; background: var(--fuchsia); display: grid; place-items: center; font-weight: 800; }
+  .item { display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 12px; background: var(--panel); line-height: 1.3; }
+  .item .pic { flex: 0 0 110px; min-height: 80px; border-radius: 8px; background: var(--orange); }
+  .measure { padding: 10px; background: var(--panel); border-radius: 10px; }
+  .wlabel { font: 700 0.8rem/1 ui-monospace, monospace; color: var(--muted); margin-top: 8px; }
+  .fmt { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; justify-content: center; }
+  .fmt figure { margin: 0; text-align: center; font-size: 0.8rem; color: var(--muted); }
+  .fmt .bar { width: 46px; border-radius: 6px 6px 0 0; background: var(--panel); margin: 0 auto 6px; }
+  .fmt .bar.w { background: var(--orange); } .fmt .bar.a { background: var(--fuchsia); }
+  @media (prefers-reduced-motion: reduce) { .d-scene i, .shine.demo-auto::after { animation: none; } }
+</style>
+<!-- The tricks themselves, exactly as shown in the code boxes (one <style> each, filled from the box at load). -->
+</head>
+<body>
+<main>
+  <header class="top">
+    <a href="../" class="brand" aria-label="Istmo Creations guides"><img src="../logo-light.svg" alt="Istmo Creations"></a>
+    <div class="switch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set="en">English</button>
+      <button type="button" data-set="es">Español</button>
+    </div>
+  </header>
+
+  <h1 data-l="en"><b>17</b> CSS tricks that make an AI-built site look expensive</h1>
+  <h1 data-l="es"><b>17</b> trucos de CSS que hacen que un sitio hecho con IA se vea caro</h1>
+  <p class="lede" data-l="en">Each one runs live on this page, with the code under it to copy. None of them need JavaScript. The 7 from the reel are marked <span class="inreel">IN THE REEL</span>.</p>
+  <p class="lede" data-l="es">Cada uno funciona en vivo en esta página, con el código debajo para copiar. Ninguno necesita JavaScript. Los 7 del reel están marcados <span class="inreel">EN EL REEL</span>.</p>
+  <div class="badges"><span class="o">No JavaScript</span><span>Chrome 152 ✓</span><span>Firefox 159 ✓</span><span class="f" data-l="en">Free</span><span class="f" data-l="es">Gratis</span></div>
+
+  <div class="box prompt">
+    <h2 data-l="en">Using Claude Code? Install all 17 as a skill</h2>
+    <h2 data-l="es">¿Usas Claude Code? Instala los 17 como una skill</h2>
+    <p data-l="en">Paste this into Claude Code. From then on, ask for "glass", "glow" or "the container query fix" and it knows the tested version.</p>
+    <p data-l="es">Pega esto en Claude Code. Desde ahí, pídele "vidrio", "brillo" o "el arreglo con container query" y ya conoce la versión probada.</p>
+    <div class="code" data-l="en"><button class="copy" type="button">Copy</button><pre><code>Download https://istmocreations.github.io/guides/design/ui-tricks/SKILL.md and save it as ui-tricks/SKILL.md in my personal Claude Code skills folder (~/.claude/skills/). Show me the path when done.</code></pre></div>
+    <div class="code" data-l="es"><button class="copy" type="button">Copiar</button><pre><code>Descarga https://istmocreations.github.io/guides/design/ui-tricks/SKILL.md y guárdalo como ui-tricks/SKILL.md en mi carpeta personal de skills de Claude Code (~/.claude/skills/). Muéstrame la ruta al terminar.</code></pre></div>
+  </div>
+
+  <nav class="box toc" aria-label="Contents">
+    <ol>
+      <li><a href="#t1"><span data-l="en">Frosted glass</span><span data-l="es">Vidrio esmerilado</span></a></li>
+      <li><a href="#t2"><span data-l="en">Ambient sparkles</span><span data-l="es">Destellos de fondo</span></a></li>
+      <li><a href="#t3"><span data-l="en">Nudging list</span><span data-l="es">Lista que se empuja</span></a></li>
+      <li><a href="#t4"><span data-l="en">Split button + menu</span><span data-l="es">Botón dividido + menú</span></a></li>
+      <li><a href="#t5"><span data-l="en">Photo cut to any shape</span><span data-l="es">Foto con cualquier forma</span></a></li>
+      <li><a href="#t6"><span data-l="en">Cover glow</span><span data-l="es">Brillo de portada</span></a></li>
+      <li><a href="#t7"><span data-l="en">Snap feed</span><span data-l="es">Feed que encaja</span></a></li>
+      <li><a href="#t8"><span data-l="en">Card shine</span><span data-l="es">Destello en tarjeta</span></a></li>
+      <li><a href="#t9"><span data-l="en">Real neon</span><span data-l="es">Neón de verdad</span></a></li>
+      <li><a href="#t10"><span data-l="en">Never a PNG cut-out</span><span data-l="es">Nunca un PNG recortado</span></a></li>
+      <li><a href="#t11"><span data-l="en">AVIF + WebP</span><span data-l="es">AVIF + WebP</span></a></li>
+      <li><a href="#t12"><span data-l="en">Auto-fit grid</span><span data-l="es">Grid auto-fit</span></a></li>
+      <li><a href="#t13"><span data-l="en">Fluid type</span><span data-l="es">Texto fluido</span></a></li>
+      <li><a href="#t14"><span data-l="en">Aspect ratio</span><span data-l="es">Proporción fija</span></a></li>
+      <li><a href="#t15"><span data-l="en">Chips that reflow</span><span data-l="es">Etiquetas que se acomodan</span></a></li>
+      <li><a href="#t16"><span data-l="en">Container query (the fix)</span><span data-l="es">Container query (el arreglo)</span></a></li>
+      <li><a href="#t17"><span data-l="en">Smart width</span><span data-l="es">Ancho inteligente</span></a></li>
+    </ol>
+  </nav>
+
+  <p class="group" data-l="en">Effects</p><p class="group" data-l="es">Efectos</p>
+
+  <section class="trick" id="t1">
+    <header><span class="num">1</span><div><h2><span data-l="en">Frosted glass</span><span data-l="es">Vidrio esmerilado</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">The panel blurs whatever is behind it, and your text on it stays sharp (Apple / Android style).</p>
+    <p class="what" data-l="es">El panel desenfoca lo que hay detrás y tu texto encima queda nítido (estilo Apple / Android).</p>
+    <div class="stage"><div class="d-scene"><i class="c1"></i><i class="c2"></i><i class="c3"></i><div class="glass"><b>Frosted glass</b><span>The background blurs. This text stays sharp.</span></div></div></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.glass {
+  background: rgb(255 255 255 / .16);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgb(255 255 255 / .35);
+  border-radius: 28px;
+}</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> <code>filter: blur()</code> would blur your text too; <code>backdrop-filter</code> blurs only what is behind. <code>saturate</code> keeps the colours from going grey.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> <code>filter: blur()</code> también desenfocaría tu texto; <code>backdrop-filter</code> solo desenfoca lo de atrás. <code>saturate</code> evita que los colores se vuelvan grises.</p>
+  </section>
+
+  <section class="trick" id="t2">
+    <header><span class="num">2</span><div><h2><span data-l="en">Ambient sparkles, one element</span><span data-l="es">Destellos de fondo, un solo elemento</span></h2></div></header>
+    <p class="what" data-l="en">Three dot grids drifting at three speeds read as depth. No extra HTML, no images.</p>
+    <p class="what" data-l="es">Tres rejillas de puntos moviéndose a tres velocidades se leen como profundidad. Sin HTML extra, sin imágenes.</p>
+    <div class="stage"><div class="sparkle"></div></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.sparkle {
+  background-color: #0b0b14;
+  background-image:
+    radial-gradient(circle, #fff 1px, transparent 1.5px),
+    radial-gradient(circle, #ffd6a5 1px, transparent 1.5px),
+    radial-gradient(circle, #ff9fd0 1.5px, transparent 2px);
+  background-size: 60px 60px, 90px 90px, 140px 140px;
+  background-position: 0 0, 30px 40px, 70px 20px;
+  animation: drift 12s linear infinite;
+}
+@keyframes drift {
+  to { background-position: 60px 60px, -60px 130px, 210px -120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sparkle { animation: none; }
+}</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> move each layer by a whole number of its own tiles (60, 90, 140) or the loop jumps.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> mueve cada capa un número entero de sus propias baldosas (60, 90, 140) o el ciclo salta.</p>
+  </section>
+
+  <section class="trick" id="t3">
+    <header><span class="num">3</span><div><h2><span data-l="en">Nudging list (Android notifications)</span><span data-l="es">Lista que se empuja (notificaciones de Android)</span></h2></div></header>
+    <p class="what" data-l="en">Press and hold a card: it slides, and the ones above and below get nudged too.</p>
+    <p class="what" data-l="es">Mantén presionada una tarjeta: se desliza y empuja un poco a la de arriba y la de abajo.</p>
+    <div class="stage" ontouchstart=""><div><div class="n">Standup</div><div class="n">Low tide</div><div class="n">Maya</div><div class="n">Rain soon</div><div class="n">Memories</div></div></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.n { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }
+.n:active { translate: 40px 0; }
+.n:has(+ .n:active),
+.n:active + .n { translate: 10px 0; }</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> <code>:has(+ x)</code> is the "card above" selector CSS never used to have.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> <code>:has(+ x)</code> es el selector de "la tarjeta de arriba" que CSS nunca tuvo.</p>
+  </section>
+
+  <section class="trick" id="t4">
+    <header><span class="num">4</span><div><h2><span data-l="en">Split button with its own menu</span><span data-l="es">Botón dividido con su propio menú</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">The menu attaches itself to the button and unfolds, like Google's apps. No positioning JavaScript; Escape and tapping outside close it for free. The button is lit from above, and pressing it turns the light off.</p>
+    <p class="what" data-l="es">El menú se pega solo al botón y se despliega, como en las apps de Google. Sin JavaScript para posicionarlo; Escape y tocar afuera lo cierran gratis. El botón está iluminado desde arriba y al presionarlo la luz se apaga.</p>
+    <div class="stage top" style="min-height:300px"><div class="split"><button type="button">Publish</button><button type="button" class="chev" popovertarget="m4" aria-label="More publish options"><i>▾</i></button></div>
+      <div id="m4" popover class="menu"><button type="button">Schedule for later</button><button type="button">Save as draft</button><button type="button">Duplicate</button><button type="button" class="del">Delete</button></div></div>
+    <p class="hint" data-l="en">Tap ▾.</p><p class="hint" data-l="es">Toca ▾.</p>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">/* the menu: anchored, unfolds and folds */
+.split { anchor-name: --split; }
+.menu {
+  inset: auto;
+  position-anchor: --split;
+  top: anchor(bottom);
+  left: anchor(left);
+  margin: 6px 0 0;
+  transform-origin: top;
+  transition: scale .3s, display .3s allow-discrete, overlay .3s allow-discrete;
+  scale: 1 0;
+}
+.menu:popover-open { scale: 1; }
+@starting-style { .menu:popover-open { scale: 1 0; } }
+.split:has(+ :popover-open) i { rotate: 180deg; }
+.split i { transition: rotate .25s; }
+
+/* the button: lit from above */
+.split {
+  --c: #ff6a00;
+  background: linear-gradient(color-mix(in oklab, var(--c), white 16%), var(--c));
+  box-shadow: inset 0 1px 0 #ffffff59,   /* light top edge */
+              inset 0 -2px 0 #00000033,  /* darker bottom edge */
+              0 1px 2px #00000073,       /* contact shadow */
+              0 8px 24px -6px color-mix(in srgb, var(--c) 60%, transparent);
+  transition: translate 90ms ease-out, box-shadow 90ms ease-out;
+}
+.split:has(button:active) { translate: 0 1px; box-shadow: inset 0 2px 4px #00000073; }</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> <code>inset: auto</code> is required, or the browser centres the popover on the screen.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> <code>inset: auto</code> es obligatorio, o el navegador centra el popover en la pantalla.</p>
+  </section>
+
+  <section class="trick" id="t5">
+    <header><span class="num">5</span><div><h2><span data-l="en">Cut a photo to any shape</span><span data-l="es">Recorta una foto con cualquier forma</span></h2></div></header>
+    <p class="what" data-l="en">An SVG mask crops a plain image to any outline, curves included (Material's "cookie" here). <code>clip-path</code> only does straight edges.</p>
+    <p class="what" data-l="es">Una máscara SVG recorta una imagen normal con cualquier contorno, curvas incluidas (aquí la "galleta" de Material). <code>clip-path</code> solo hace bordes rectos.</p>
+    <div class="stage"><img class="cookie" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ff6a00'/%3E%3Ccircle cx='70' cy='30' r='22' fill='%23e6007e'/%3E%3Crect x='0' y='68' width='100' height='32' fill='%23ffffff'/%3E%3C/svg%3E"></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.cookie {
+  -webkit-mask: var(--cookie) center / contain no-repeat;
+  mask: var(--cookie) center / contain no-repeat;
+}
+:root {
+  /* one circle r38 + eight circles r12 around it (viewBox 0 0 100) */
+  --cookie: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='38'/%3E%3Ccircle cx='50' cy='12' r='12'/%3E%3Ccircle cx='76.9' cy='23.1' r='12'/%3E%3Ccircle cx='88' cy='50' r='12'/%3E%3Ccircle cx='76.9' cy='76.9' r='12'/%3E%3Ccircle cx='50' cy='88' r='12'/%3E%3Ccircle cx='23.1' cy='76.9' r='12'/%3E%3Ccircle cx='12' cy='50' r='12'/%3E%3Ccircle cx='23.1' cy='23.1' r='12'/%3E%3C/svg%3E");
+}</code></pre></div>
+  </section>
+
+  <section class="trick" id="t6">
+    <header><span class="num">6</span><div><h2><span data-l="en">Cover glow, made from the picture itself</span><span data-l="es">Brillo de portada, hecho con la misma foto</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">The glow is a blurred copy of the picture, so it always matches. Change the photo and the glow follows.</p>
+    <p class="what" data-l="es">El brillo es una copia desenfocada de la foto, así que siempre combina. Cambia la foto y el brillo la sigue.</p>
+    <div class="stage" style="min-height:280px"><div class="cover" id="cover6"></div></div>
+    <p class="hint" data-l="en">Tap the picture to change it.</p><p class="hint" data-l="es">Toca la imagen para cambiarla.</p>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.cover {
+  position: relative; isolation: isolate;
+  background: var(--img) center / cover;
+}
+.cover::before {
+  content: ""; position: absolute; inset: 0;
+  z-index: -1; border-radius: inherit;
+  background: inherit;              /* literally the same image */
+  filter: blur(34px) saturate(1.8);
+  scale: 1.18;
+}</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> don't give the cover a z-index, opacity or transform, or the glow paints on top of it.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> no le pongas z-index, opacity ni transform a la portada, o el brillo se pinta encima.</p>
+  </section>
+
+  <section class="trick" id="t7">
+    <header><span class="num">7</span><div><h2><span data-l="en">Snap feed, one post at a time</span><span data-l="es">Feed que avanza de a una publicación</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">Scroll it: it always stops exactly on the next post, like Reels and Shorts, even on a hard flick.</p>
+    <p class="what" data-l="es">Desplázalo: siempre se detiene justo en la siguiente publicación, como Reels y Shorts, aunque lo lances fuerte.</p>
+    <div class="stage"><div class="d-feed snapfeed"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div></div></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.snapfeed {
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+.snapfeed > div {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> use <code>x</code> for a sideways row; drop <code>scroll-snap-stop</code> for a gallery you can flick past.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> usa <code>x</code> para una fila horizontal; quita <code>scroll-snap-stop</code> en una galería que se pueda pasar rápido.</p>
+  </section>
+
+  <section class="trick" id="t8">
+    <header><span class="num">8</span><div><h2><span data-l="en">Card shine</span><span data-l="es">Destello en la tarjeta</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">A light stripe slides across the card on hover, like light off a window.</p>
+    <p class="what" data-l="es">Una franja de luz cruza la tarjeta al pasar el mouse, como el reflejo de una ventana.</p>
+    <div class="stage"><div class="cc shine demo-auto"><div class="cc-top"><i class="chip"></i><em>debit</em></div><div class="cc-num">•••• •••• •••• 4242</div><div class="cc-bot"><span>MY BUSINESS</span><span>12/29</span></div></div></div>
+    <p class="hint" data-l="en">Phones have no hover, so this demo replays the sweep by itself.</p><p class="hint" data-l="es">Los teléfonos no tienen hover, así que este demo repite el destello solo.</p>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 40%,
+    rgb(255 255 255 / .45) 50%, transparent 60%);
+  translate: -100% 0;
+  transition: translate 1.6s ease;
+}
+.shine:hover::after { translate: 100% 0; }</code></pre></div>
+    <p class="tip" data-l="en"><b>Tip:</b> narrow stripe + fast = gloss; wide stripe + slow = satin.</p>
+    <p class="tip" data-l="es"><b>Tip:</b> franja angosta + rápida = brillo; franja ancha + lenta = satinado.</p>
+  </section>
+
+  <section class="trick" id="t9">
+    <header><span class="num">9</span><div><h2><span data-l="en">Real neon</span><span data-l="es">Neón de verdad</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">The letters stay white and the colour lives in the glow, the way a real tube looks. Pink letters look like a sticker.</p>
+    <p class="what" data-l="es">Las letras quedan blancas y el color vive en el brillo, como se ve un tubo real. Letras rosadas parecen una calcomanía.</p>
+    <div class="stage"><p class="neon glowtext">OPEN</p></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.glowtext {
+  color: #fff;
+  text-shadow: 0 0 2px #fff,
+    0 0 12px #e6007e, 0 0 28px #e6007e,
+    0 0 60px #e6007e;
+  animation: flicker 2.4s infinite;
+}
+@keyframes flicker {
+  0%, 88%, 92%, 100% { opacity: 1; }
+  90% { opacity: .5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glowtext { animation: none; }
+}</code></pre></div>
+  </section>
+
+  <p class="group" data-l="en">Images</p><p class="group" data-l="es">Imágenes</p>
+
+  <section class="trick" id="t10">
+    <header><span class="num">10</span><div><h2><span data-l="en">Never a PNG for a cut-out photo</span><span data-l="es">Nunca un PNG para una foto recortada</span></h2></div></header>
+    <p class="what" data-l="en">JPEG can't do transparency, PNG can but is huge. WebP and AVIF do both. Measured on the same cut-out photo:</p>
+    <p class="what" data-l="es">JPEG no tiene transparencia; PNG sí, pero pesa muchísimo. WebP y AVIF hacen ambas cosas. Medido con la misma foto recortada:</p>
+    <div class="stage"><div class="fmt">
+      <figure><div class="bar" style="height:160px"></div>PNG<br>40.6 KB</figure>
+      <figure><div class="bar w" style="height:20px"></div>WebP<br>5.0 KB</figure>
+      <figure><div class="bar a" style="height:19px"></div>AVIF<br>4.8 KB</figure>
+    </div></div>
+    <p class="tip" data-l="en"><b>The PNG was 8× larger.</b> WebP also replaces animated GIFs.</p>
+    <p class="tip" data-l="es"><b>El PNG pesaba 8 veces más.</b> WebP también reemplaza a los GIF animados.</p>
+  </section>
+
+  <section class="trick" id="t11">
+    <header><span class="num">11</span><div><h2><span data-l="en">Ship AVIF and WebP, let the browser pick</span><span data-l="es">Sirve AVIF y WebP, que el navegador elija</span></h2></div></header>
+    <p class="what" data-l="en">The browser downloads only the first format it understands. Chrome and Firefox both took the AVIF.</p>
+    <p class="what" data-l="es">El navegador descarga solo el primer formato que entiende. Chrome y Firefox eligieron el AVIF.</p>
+    <div class="stage"><picture><source srcset="../design/ui-tricks/check.avif" type="image/avif"><source srcset="../design/ui-tricks/check.webp" type="image/webp"><img src="../design/ui-tricks/check.png" alt="" width="140" style="height:auto;background:var(--orange);border-radius:16px"></picture></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code>&lt;picture&gt;
+  &lt;source srcset="photo.avif" type="image/avif"&gt;
+  &lt;source srcset="photo.webp" type="image/webp"&gt;
+  &lt;img src="photo.png" alt="…"&gt;
+&lt;/picture&gt;</code></pre></div>
+  </section>
+
+  <p class="group" data-l="en">Layout that never breaks (no media queries)</p><p class="group" data-l="es">Diseño que nunca se rompe (sin media queries)</p>
+
+  <section class="trick" id="t12">
+    <header><span class="num">12</span><div><h2><span data-l="en">Auto-fit grid</span><span data-l="es">Grid auto-fit</span></h2></div></header>
+    <p class="what" data-l="en">As many columns as fit, each at least 180px. Drag the slider (or the box's corner).</p>
+    <p class="what" data-l="es">Tantas columnas como quepan, cada una de al menos 180px. Mueve el control (o la esquina de la caja).</p>
+    <div class="stage"><div class="resizable" data-w><div class="afgrid"><div>Tide</div><div>Countdown</div><div>Promo</div><div>Talk</div><div>Interview</div><div>Recurring</div></div></div></div>
+    <label class="slider"><span data-l="en">Width</span><span data-l="es">Ancho</span><input type="range" min="30" max="100" value="100" data-for="t12"></label>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.afgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 12px;
+}</code></pre></div>
+  </section>
+
+  <section class="trick" id="t13">
+    <header><span class="num">13</span><div><h2><span data-l="en">Fluid type with clamp()</span><span data-l="es">Texto fluido con clamp()</span></h2></div></header>
+    <p class="what" data-l="en">The heading grows with the screen but never below 2rem or above 5rem. Turn your phone sideways to see it change.</p>
+    <p class="what" data-l="es">El título crece con la pantalla pero nunca baja de 2rem ni pasa de 5rem. Gira tu teléfono para verlo cambiar.</p>
+    <div class="stage"><p class="fluid" style="margin:0;line-height:1.1;text-align:center">Type that scales smoothly</p></div>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.fluid {
+  font-size: clamp(2rem, 6vw, 5rem);
+  text-wrap: balance;
+}</code></pre></div>
+    <p class="tip" data-l="en"><b>Watch out:</b> <code>vw</code> follows the window, not the box. Inside a narrow panel, use a container query (16).</p>
+    <p class="tip" data-l="es"><b>Ojo:</b> <code>vw</code> sigue a la ventana, no a la caja. Dentro de un panel angosto, usa una container query (16).</p>
+  </section>
+
+  <section class="trick" id="t14">
+    <header><span class="num">14</span><div><h2><span data-l="en">Aspect ratio: height follows width</span><span data-l="es">Proporción: el alto sigue al ancho</span></h2></div></header>
+    <p class="what" data-l="en">A 16:9 box at any width. Replaces the old <code>padding-top: 56.25%</code> hack.</p>
+    <p class="what" data-l="es">Una caja 16:9 a cualquier ancho. Reemplaza el viejo truco de <code>padding-top: 56.25%</code>.</p>
+    <div class="stage"><div class="resizable" data-w><div class="ratio">16 : 9</div></div></div>
+    <label class="slider"><span data-l="en">Width</span><span data-l="es">Ancho</span><input type="range" min="30" max="100" value="100" data-for="t14"></label>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.ratio {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  object-fit: cover; /* for an img or video */
+}</code></pre></div>
+  </section>
+
+  <section class="trick" id="t15">
+    <header><span class="num">15</span><div><h2><span data-l="en">Chips that reflow (flex-wrap + gap)</span><span data-l="es">Etiquetas que se acomodan (flex-wrap + gap)</span></h2></div></header>
+    <p class="what" data-l="en">Tags drop to the next line by themselves, evenly spaced, no margin hacks.</p>
+    <p class="what" data-l="es">Las etiquetas bajan solas a la siguiente línea, con el mismo espacio, sin trucos de márgenes.</p>
+    <div class="stage"><div class="resizable" data-w><div class="tags"><span>HTML</span><span>CSS</span><span>Grid</span><span>Flex</span><span>Clamp</span><span>Container</span><span>Subgrid</span><span>dvh</span><span>:has()</span></div></div></div>
+    <label class="slider"><span data-l="en">Width</span><span data-l="es">Ancho</span><input type="range" min="30" max="100" value="100" data-for="t15"></label>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}</code></pre></div>
+  </section>
+
+  <section class="trick" id="t16">
+    <header><span class="num">16</span><div><h2><span data-l="en">The fix: a panel that checks its own width</span><span data-l="es">El arreglo: un panel que mide su propio ancho</span><span class="inreel" data-l="en">IN THE REEL</span><span class="inreel" data-l="es">EN EL REEL</span></h2></div></header>
+    <p class="what" data-l="en">A container query reads the box's width, not the screen's, so a panel stops breaking when it gets narrow inside a wide window. Media queries can't see that.</p>
+    <p class="what" data-l="es">Una container query lee el ancho de la caja, no el de la pantalla, así que un panel deja de romperse cuando queda angosto dentro de una ventana ancha. Las media queries no pueden ver eso.</p>
+    <div class="stage"><div style="width:100%"><div class="resizable" data-w><div class="wrap"><div class="item"><div class="pic"></div><div><span data-l="en">Stacked when its box is narrow, side by side when it is wide.</span><span data-l="es">Apilado cuando su caja es angosta, lado a lado cuando es ancha.</span></div></div></div></div><div class="wlabel" id="w16"></div></div></div>
+    <label class="slider"><span data-l="en">Width</span><span data-l="es">Ancho</span><input type="range" min="30" max="100" value="45" data-for="t16"></label>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.wrap { container-type: inline-size; }
+
+@container (min-width: 300px) {
+  .item { flex-direction: row; }
+}</code></pre></div>
+    <p class="tip" data-l="en"><b>Measured trap:</b> the container must get its width from outside. Inside a shrink-to-fit parent it collapses to 0px. Give it <code>width: 100%</code>, a <code>1fr</code> track or <code>flex: 1</code>.</p>
+    <p class="tip" data-l="es"><b>Trampa medida:</b> el contenedor debe recibir su ancho de afuera. Dentro de un padre que se encoge al contenido colapsa a 0px. Dale <code>width: 100%</code>, una pista <code>1fr</code> o <code>flex: 1</code>.</p>
+  </section>
+
+  <section class="trick" id="t17">
+    <header><span class="num">17</span><div><h2><span data-l="en">Smart width: readable, margined, centred</span><span data-l="es">Ancho inteligente: legible, con margen, centrado</span></h2></div></header>
+    <p class="what" data-l="en">One line: never wider than a comfortable 65 characters, always 1rem clear of the edges, centred. This whole page uses it.</p>
+    <p class="what" data-l="es">Una línea: nunca más ancho que unos cómodos 65 caracteres, siempre a 1rem de los bordes, centrado. Toda esta página lo usa.</p>
+    <div class="stage"><div class="resizable" data-w style="padding:10px 0"><div class="measure"><span data-l="en">A readable column: never wider than 65 characters, always clear of each edge, centred. Long lines tire the eye.</span><span data-l="es">Una columna legible: nunca más de 65 caracteres, siempre separada de los bordes, centrada. Las líneas largas cansan la vista.</span></div></div></div>
+    <label class="slider"><span data-l="en">Width</span><span data-l="es">Ancho</span><input type="range" min="30" max="100" value="100" data-for="t17"></label>
+    <div class="code"><button class="copy" type="button">Copy</button><pre><code class="live">.measure {
+  width: min(100% - 2rem, 65ch);
+  margin-inline: auto;
+}</code></pre></div>
+  </section>
+
+  <p class="box" data-l="en"><strong>Credits.</strong> Tricks 1 to 11 and the lit button come from <a href="https://www.instagram.com/aniakubow/">Ania Kubow</a>'s reels (@aniakubow); 12 to 17 from a responsive-layout reel whose creator wasn't shown. I rebuilt each one and measured it in Chrome 152 and Firefox 159 before it went in. Not sponsored.</p>
+  <p class="box" data-l="es"><strong>Créditos.</strong> Los trucos 1 a 11 y el botón iluminado vienen de los reels de <a href="https://www.instagram.com/aniakubow/">Ania Kubow</a> (@aniakubow); del 12 al 17, de un reel de diseño adaptable que no mostraba a su creador. Rehice cada uno y lo medí en Chrome 152 y Firefox 159 antes de incluirlo. No es patrocinado.</p>
+
+  <footer data-l="en">Istmo Creations: building with AI in Panamá, and sharing what works. <a href="../">More guides</a></footer>
+  <footer data-l="es">Istmo Creations: construyendo con IA en Panamá, y compartiendo lo que funciona. <a href="../">Más guías</a></footer>
+</main>
+<script>
+  // 1. Every code box marked .live is ALSO this page's stylesheet for its demo: what you copy is what runs.
+  document.querySelectorAll('code.live').forEach(function (c) {
+    var s = document.createElement('style'); s.textContent = c.textContent; document.head.appendChild(s);
+  });
+  // 2. Colour the code: selectors fuchsia, properties orange, punctuation grey.
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  document.querySelectorAll('code.live').forEach(function (c) {
+    c.innerHTML = c.textContent.split('\n').map(function (line) {
+      var m = line.match(/^(\s*)([a-z-]+)(:)(.*)$/);
+      if (m && line.indexOf('{') < 0) return m[1] + '<span class="prop">' + m[2] + '</span><span class="pun">:</span>' + esc(m[4]);
+      return esc(line).replace(/^([^{]*)(\{)/, '<span class="sel">$1</span><span class="pun">$2</span>').replace(/\}/g, '<span class="pun">}</span>');
+    }).join('\n');
+  });
+  // 3. Language switch (remembered on this device). Copy buttons shared by both languages follow it.
+  function relabel() {
+    var es = document.documentElement.getAttribute('data-lang') === 'es';
+    document.querySelectorAll('.copy').forEach(function (b) { if (!b.closest('[data-l]')) b.textContent = es ? 'Copiar' : 'Copy'; });
+  }
+  document.querySelectorAll('.switch [data-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-set');
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.setAttribute('lang', l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+      relabel();
+    });
+  });
+  relabel();
+  // 4. Copy buttons.
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.parentNode.querySelector('code').innerText, label = b.textContent;
+      function done() { b.textContent = document.documentElement.getAttribute('data-lang') === 'es' ? '¡Copiado!' : 'Copied!'; setTimeout(function () { b.textContent = label; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () {});
+    });
+  });
+  // Demo helpers only (not part of any trick): width sliders for phones, the cover picture swap.
+  document.querySelectorAll('.slider input').forEach(function (r) {
+    var box = document.querySelector('#' + r.getAttribute('data-for') + ' .resizable');
+    function set() { box.style.width = r.value + '%'; if (r.getAttribute('data-for') === 't16') document.getElementById('w16').textContent = Math.round(box.getBoundingClientRect().width) + 'px'; }
+    r.addEventListener('input', set); set();
+  });
+  var pics = [
+    ['#ff6a00', "<circle cx='50' cy='50' r='26' fill='#fff'/>"],
+    ['#e6007e', "<rect x='26' y='26' width='48' height='48' rx='6' fill='#fff'/>"],
+    ['#2e2e2e', "<path d='M50 20 L80 76 H20 Z' fill='#ff6a00'/>"]
+  ].map(function (p) { return 'url("data:image/svg+xml,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='" + p[0] + "'/>" + p[1] + '</svg>') + '")'; });
+  var cover = document.getElementById('cover6'), pi = 0;
+  cover.style.setProperty('--img', pics[0]);
+  cover.addEventListener('click', function () { pi = (pi + 1) % pics.length; cover.style.setProperty('--img', pics[pi]); });
+</script>
+</body>
+</html>
