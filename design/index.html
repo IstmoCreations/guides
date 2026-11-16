@@ -80,7 +80,7 @@
   <ol>
     <li><strong>frontend-design</strong>, Anthropic's official design skill. It pushes the AI to pick a real visual direction instead of the default template look. Free.</li>
     <li><strong>Impeccable's automatic check</strong>, by Paul Bakaus. After every file the AI writes, it scans for common "AI-made" design mistakes and tells the AI what to fix. Free, Apache-2.0.</li>
-    <li><strong>A short list of CSS techniques I collected and tested</strong> (glass panels, glows, responsive layouts). It's my own private list, not shared here, and was used in one round only.</li>
+    <li><strong>A short list of CSS techniques I collected and tested</strong> (glass panels, glows, responsive layouts). I call it <a href="ui-tricks/SKILL.md">ui-tricks</a>, and it was used in one round only. Each trick was checked in Chrome and Firefox; <a href="ui-tricks/examples.html">see them all on one page</a>.</li>
   </ol>
   <p>That's it for design. The prompt only said: "use the design skills installed in this setup as you see fit."</p>
 
@@ -89,6 +89,8 @@
   <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin install frontend-design@claude-plugins-official</code></pre></div>
   <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin marketplace add pbakaus/impeccable</code></pre></div>
   <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin install impeccable@impeccable</code></pre></div>
+  <p>For ui-tricks, paste this into Claude Code and it installs itself:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Download https://istmocreations.github.io/guides/design/ui-tricks/SKILL.md and save it as ui-tricks/SKILL.md in my personal Claude Code skills folder (~/.claude/skills/). Show me the path when done.</code></pre></div>
   <p>Restart Claude Code. Then ask for any page and add: "use the frontend-design skill".</p>
 
   <h2>Optional: Impeccable's full process</h2>
@@ -123,7 +125,7 @@
   <ol>
     <li><strong>frontend-design</strong>, la skill oficial de diseño de Anthropic. Empuja a la IA a elegir una dirección visual real en vez del look de plantilla. Gratis.</li>
     <li><strong>La revisión automática de Impeccable</strong>, de Paul Bakaus. Después de cada archivo que escribe la IA, busca errores típicos de diseño "hecho por IA" y le dice qué corregir. Gratis, Apache-2.0.</li>
-    <li><strong>Una lista corta de técnicas CSS que junté y probé</strong> (paneles de vidrio, brillos, diseños adaptables). Es mi lista privada, no la comparto aquí, y se usó en una sola ronda.</li>
+    <li><strong>Una lista corta de técnicas CSS que junté y probé</strong> (paneles de vidrio, brillos, diseños adaptables). La llamo <a href="ui-tricks/SKILL.md">ui-tricks</a> y se usó en una sola ronda. Cada técnica se probó en Chrome y Firefox; <a href="ui-tricks/examples.html">míralas todas en una página</a>.</li>
   </ol>
   <p>Eso es todo en diseño. El prompt solo decía: "usa las skills de diseño instaladas como mejor te parezca".</p>
 
@@ -132,6 +134,8 @@
   <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin install frontend-design@claude-plugins-official</code></pre></div>
   <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin marketplace add pbakaus/impeccable</code></pre></div>
   <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin install impeccable@impeccable</code></pre></div>
+  <p>Para ui-tricks, pega esto en Claude Code y se instala sola:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Descarga https://istmocreations.github.io/guides/design/ui-tricks/SKILL.md y guárdalo como ui-tricks/SKILL.md en mi carpeta personal de skills de Claude Code (~/.claude/skills/). Muéstrame la ruta al terminar.</code></pre></div>
   <p>Reinicia Claude Code. Luego pide cualquier página y agrega: "usa la skill frontend-design".</p>
 
   <h2>Opcional: el proceso completo de Impeccable</h2>

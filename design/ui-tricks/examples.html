@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI tricks test bench</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+  body { margin: 0; background: #2a1450 fixed; background-image: radial-gradient(circle at 20% 20%, #e6007e 0 18%, transparent 40%), radial-gradient(circle at 80% 30%, #ff6a00 0 14%, transparent 38%), radial-gradient(circle at 50% 85%, #3ddc97 0 16%, transparent 42%), linear-gradient(160deg, #2a1450, #111); color: #fff; }
+  main { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; padding: 24px; }
+  section { min-height: 300px; position: relative; }
+  h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 12px; text-shadow: 0 1px 3px #000; }
+
+  /* 1. Glass pane */
+  .glass {
+    background: rgb(255 255 255 / .16);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid rgb(255 255 255 / .35);
+    border-radius: 28px;
+    padding: 20px;
+  }
+
+  /* 2. Sparkles: one element, three dot grids drifting at three speeds */
+  .sparkle {
+    height: 240px; border-radius: 20px; background-color: #0b0b14;
+    background-image:
+      radial-gradient(circle, #fff 1px, transparent 1.5px),
+      radial-gradient(circle, #ffd6a5 1px, transparent 1.5px),
+      radial-gradient(circle, #a0c4ff 1.5px, transparent 2px);
+    background-size: 60px 60px, 90px 90px, 140px 140px;
+    background-position: 0 0, 30px 40px, 70px 20px;
+    animation: drift 12s linear infinite;
+  }
+  @keyframes drift { to { background-position: 60px 60px, -60px 130px, 210px -120px; } }
+
+  /* 3. Nudge: pressed card moves 40px, its neighbours 10px */
+  .n { padding: 12px 16px; margin: 6px 0; border-radius: 14px; background: rgb(20 10 40 / .8);
+       transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); user-select: none; cursor: grab; }
+  .n:active { translate: 40px 0; }
+  .n:has(+ .n:active), .n:active + .n { translate: 10px 0; }
+
+  /* 4. Split button with an anchored popover menu */
+  .split { display: inline-flex; gap: 2px; anchor-name: --split; }
+  .split button { border: 0; background: #7c3aed; color: #fff; font: inherit; padding: 10px 16px; cursor: pointer; }
+  .split button:first-child { border-radius: 999px 6px 6px 999px; }
+  .split .chev { border-radius: 6px 999px 999px 6px; transition: rotate .2s; }
+  .split:has(+ :popover-open) .chev { rotate: 180deg; }
+  .menu { inset: auto; position-anchor: --split; top: anchor(bottom); left: anchor(left);
+          margin: 4px 0 0; border: 0; border-radius: 4px 4px 20px 20px; padding: 6px; background: #1d1033; color: #fff; }
+  .menu button { display: block; width: 100%; text-align: left; border: 0; background: none; color: inherit; font: inherit; padding: 8px 12px; }
+
+  /* 5. Shape mask: any SVG crops a plain image */
+  .cookie {
+    width: 200px; height: 200px; object-fit: cover;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='38'/%3E%3Cg%3E%3Ccircle cx='50' cy='12' r='12'/%3E%3Ccircle cx='76.9' cy='23.1' r='12'/%3E%3Ccircle cx='88' cy='50' r='12'/%3E%3Ccircle cx='76.9' cy='76.9' r='12'/%3E%3Ccircle cx='50' cy='88' r='12'/%3E%3Ccircle cx='23.1' cy='76.9' r='12'/%3E%3Ccircle cx='12' cy='50' r='12'/%3E%3Ccircle cx='23.1' cy='23.1' r='12'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='38'/%3E%3Cg%3E%3Ccircle cx='50' cy='12' r='12'/%3E%3Ccircle cx='76.9' cy='23.1' r='12'/%3E%3Ccircle cx='88' cy='50' r='12'/%3E%3Ccircle cx='76.9' cy='76.9' r='12'/%3E%3Ccircle cx='50' cy='88' r='12'/%3E%3Ccircle cx='23.1' cy='76.9' r='12'/%3E%3Ccircle cx='12' cy='50' r='12'/%3E%3Ccircle cx='23.1' cy='23.1' r='12'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* 6. Cover glow: the glow is a blurred copy of the picture itself */
+  .glowwrap { isolation: isolate; padding: 40px; background: #0b0b14; border-radius: 20px; }
+  .cover { position: relative; width: 180px; height: 180px; border-radius: 16px; background: #f59e0b url(check.webp) center / 70% no-repeat; }
+  .cover::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+                   background: inherit; filter: blur(28px) saturate(1.8); scale: 1.15; }
+
+  /* 7. Snap feed */
+  .feed { height: 240px; overflow-y: auto; scroll-snap-type: y mandatory; border-radius: 16px; }
+  .feed > div { height: 240px; scroll-snap-align: start; scroll-snap-stop: always;
+                display: grid; place-items: center; font-size: 40px; font-weight: 700; }
+  .feed > div:nth-child(odd) { background: #4c1d95; } .feed > div:nth-child(even) { background: #be185d; }
+
+  /* 8. Shine: a reflected stripe sliding across on hover */
+  .shine { position: relative; overflow: hidden; height: 160px; border-radius: 20px; background: linear-gradient(135deg, #312e81, #7c3aed); }
+  .shine::after { content: ""; position: absolute; inset: 0;
+                  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / .45) 50%, transparent 60%);
+                  translate: -100% 0; transition: translate .7s ease; }
+  .shine:hover::after { translate: 100% 0; }
+
+  /* 9. Neon: white letters, colour only in the glow */
+  .neon { font: 700 56px/1.1 system-ui; color: #fff; margin: 20px 0;
+          text-shadow: 0 0 2px #fff, 0 0 12px #ff2d95, 0 0 28px #ff2d95, 0 0 60px #ff2d95;
+          animation: flicker 5s infinite; }
+  @keyframes flicker { 0%, 92%, 94%, 100% { opacity: 1; } 93% { opacity: .55; } }
+  @media (prefers-reduced-motion: reduce) { .sparkle, .neon { animation: none; } }
+
+  /* 10-11. Formats */
+  .formats img { width: 160px; height: auto; }
+
+  /* 12-17 sit in a box you can drag wider/narrower (bottom-right corner), like the reel */
+  .drag { resize: horizontal; overflow: auto; width: 100%; max-width: 1200px; min-width: 120px; box-sizing: border-box;
+          padding: 10px; border: 1px dashed rgb(255 255 255 / .4); border-radius: 12px; background: rgb(11 11 20 / .85); }
+  .wide { grid-column: 1 / -1; }
+
+  /* 12. Auto-fit grid: as many 180px+ columns as fit, no media queries */
+  .afgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .afgrid > div { padding: 10px; border-radius: 10px; background: #155e75; }
+
+  /* 13. Fluid type: 2rem floor, 5rem ceiling, 6vw in between (VIEWPORT width, not the box) */
+  .fluid { font-size: clamp(2rem, 6vw, 5rem); text-wrap: balance; line-height: 1.1; margin: 0; }
+
+  /* 14. Aspect ratio: height follows width */
+  .ratio { aspect-ratio: 16 / 9; width: 100%; object-fit: cover; display: block; border-radius: 10px; background: linear-gradient(135deg, #7c3aed, #be185d); }
+
+  /* 15. Flex wrap: chips drop to the next line by themselves */
+  .tags { display: flex; flex-wrap: wrap; gap: 14px; }
+  .tags span { padding: 4px 12px; border-radius: 999px; border: 1px solid #f59e0b; }
+
+  /* 16. Container query: the card reads ITS BOX's width, not the window's */
+  .cq { container-type: inline-size; }
+  .card { display: flex; flex-direction: column; gap: 12px; padding: 12px; border-radius: 12px; background: #134e4a; }
+  .card .pic { flex: 0 0 120px; min-height: 90px; border-radius: 8px; background: #06b6d4; }
+  @container (min-width: 560px) { .card { flex-direction: row; } }
+
+  /* 17. Smart width: readable column, margin on small screens, centred */
+  .measure { width: min(100% - 2rem, 65ch); margin-inline: auto; padding: 10px; box-sizing: border-box; background: #1e3a8a; border-radius: 10px; }
+</style>
+</head>
+<body>
+<main>
+  <section id="t-glass"><h2>1 Glass pane</h2><div class="glass"><b>Sat 31 Oct</b><p>Nothing planned.</p><p>Sharp text over a blurred backdrop.</p></div></section>
+  <section id="t-sparkle"><h2>2 Sparkles</h2><div class="sparkle"></div></section>
+  <section id="t-nudge"><h2>3 Nudge</h2><div class="n">Standup</div><div class="n">Low tide</div><div class="n" id="press">Maya</div><div class="n">Rain soon</div><div class="n">Memories</div></section>
+  <section id="t-split"><h2>4 Split button</h2>
+    <div class="split"><button>Publish</button><button class="chev" popovertarget="m" aria-label="More publish options">&#9662;</button></div>
+    <div id="m" popover class="menu"><button>Schedule</button><button>As a reel</button><button>Story only</button></div>
+  </section>
+  <section id="t-shape"><h2>5 Shape mask</h2><img class="cookie" src="check.png" alt=""></section>
+  <section id="t-glow"><h2>6 Cover glow</h2><div class="glowwrap"><div class="cover"></div></div></section>
+  <section id="t-snap"><h2>7 Snap feed</h2><div class="feed" id="feed"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div></div></section>
+  <section id="t-shine"><h2>8 Shine</h2><div class="shine" id="shine"></div></section>
+  <section id="t-neon"><h2>9 Neon</h2><p class="neon">Istmo</p></section>
+  <section id="t-formats" class="formats"><h2>10-11 AVIF then WebP</h2>
+    <picture><source srcset="check.avif" type="image/avif"><source srcset="check.webp" type="image/webp"><img id="pic" src="check.png" alt=""></picture>
+  </section>
+  <section id="t-afgrid" class="wide"><h2>12 Auto-fit grid - drag the corner</h2>
+    <div class="drag" id="h-afgrid"><div class="afgrid" id="afgrid"><div>Tide</div><div>Countdown</div><div>Promo</div><div>Talk</div><div>Interview</div><div>Recurring</div></div></div></section>
+  <section id="t-fluid" class="wide"><h2>13 Fluid type - resize the WINDOW</h2>
+    <div class="drag"><p class="fluid" id="fluid">Fluid type that scales smoothly</p></div></section>
+  <section id="t-ratio"><h2>14 Aspect ratio - drag the corner</h2>
+    <div class="drag" id="h-ratio"><div class="ratio" id="ratio"></div></div></section>
+  <section id="t-tags"><h2>15 Flex wrap - drag the corner</h2>
+    <div class="drag" id="h-tags"><div class="tags" id="tags"><span>HTML</span><span>CSS</span><span>Grid</span><span>Flex</span><span>Clamp</span><span>Container</span><span>Subgrid</span><span>dvh</span><span>:has()</span></div></div></section>
+  <section id="t-cq" class="wide"><h2>16 Container query - drag past 560px</h2>
+    <div class="drag" id="h-cq"><div class="cq"><div class="card" id="card"><div class="pic"></div><div>Card text. Stacked when its box is narrow, side by side from 560px - whatever the window.</div></div></div></div></section>
+  <section id="t-measure" class="wide"><h2>17 Smart width - drag the corner</h2>
+    <div class="drag" id="h-measure"><div class="measure" id="measure">A readable column: never wider than 65 characters, always 1rem clear of each edge, centred. Long lines tire the eye; this caps them without a media query.</div></div></section>
+</main>
+</body>
+</html>
