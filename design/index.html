@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The design setup that beat Astryx</title>
+<meta name="description" content="The Claude Code design setup that ranked first in a blind three-way test against Meta's Astryx, how to install it, and how to test any design tool on your own work. In English and Spanish.">
+<script>
+  (function () {
+    var l;
+    try { l = localStorage.getItem('lang'); } catch (e) {}
+    if (l !== 'en' && l !== 'es') l = /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+  })();
+</script>
+<style>
+  :root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --code: #f1eee8; --accent: #0f7a6c; --warn: #9a5b00; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141412; --fg: #ecebe6; --muted: #a29e95; --line: #2c2b28; --code: #1f1e1b; --accent: #4cc3b0; --warn: #f0b45c; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 20px 16px 64px; }
+  html[data-lang="en"] [data-l="es"], html[data-lang="es"] [data-l="en"] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+  .brand img { height: 44px; width: auto; display: block; }
+  .logo-dark-bg { display: none !important; }
+  @media (prefers-color-scheme: dark) { .logo-dark-bg { display: block !important; } .logo-light-bg { display: none !important; } }
+  .switch { display: flex; gap: 4px; }
+  .switch button { font: inherit; font-size: 0.85rem; padding: 4px 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  html[data-lang="en"] .switch [data-set="en"], html[data-lang="es"] .switch [data-set="es"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 36px 0 8px; }
+  p, li { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 20px; }
+  .credit { border-left: 3px solid var(--accent); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  .warn { border-left: 3px solid var(--warn); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  a { color: var(--accent); }
+  code, pre { font: 0.88rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--code); border-radius: 6px; }
+  code { padding: 1px 5px; }
+  .prompt { position: relative; margin: 0 0 18px; }
+  pre { padding: 12px 14px; padding-top: 34px; overflow-x: auto; border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; margin: 0; }
+  pre code { padding: 0; background: none; }
+  .copy { position: absolute; top: 6px; right: 6px; font: inherit; font-size: 0.8rem; padding: 2px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--accent); border-radius: 999px; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 14px; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  ol, ul { padding-left: 22px; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <a href="../" class="brand" aria-label="Istmo Creations guides">
+      <img class="logo-dark-bg" src="../logo-light.svg" alt="Istmo Creations">
+      <img class="logo-light-bg" src="../logo.svg" alt="Istmo Creations">
+    </a>
+    <div class="switch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set="en">English</button>
+      <button type="button" data-set="es">Español</button>
+    </div>
+  </header>
+
+  <!-- ENGLISH -->
+  <div data-l="en">
+  <h1>The design setup that beat Astryx</h1>
+  <p class="lede">What my Claude Code used in the blind test, how to install it in two minutes, and how to test any design tool on your own work before you trust it (including this one).</p>
+
+  <h2>The test, in short</h2>
+  <p>Three AI builders, same model, same three jobs (a dashboard, a landing page, a phone app): plain Claude Code with nothing added, Claude Code with my setup, and Claude Code with Meta's <a href="https://github.com/meta/astryx">Astryx</a>. OpenAI's Codex ranked the screenshots blind, under shuffled letters.</p>
+  <table>
+    <tr><th>Total score (of 120)</th><th>Rounds won</th></tr>
+    <tr><td>My setup: <strong>104</strong></td><td>dashboard, landing page</td></tr>
+    <tr><td>Plain Claude Code: <strong>102</strong></td><td>phone app</td></tr>
+    <tr><td>Claude Code + Astryx: <strong>73</strong></td><td>none</td></tr>
+  </table>
+  <p class="warn"><strong>Read it for what it is.</strong> One run per builder, one judge, first screens only. My setup beat plain Claude by 2 points, which is close. It also took 2 to 5 times longer. Astryx is in beta and built for big teams keeping hundreds of screens consistent, which one page can't test. To be fair to it, its pages respected the phone's "reduce animations" setting, and plain Claude's phone app didn't.</p>
+
+  <h2>What my setup used for design</h2>
+  <ol>
+    <li><strong>frontend-design</strong>, Anthropic's official design skill. It pushes the AI to pick a real visual direction instead of the default template look. Free.</li>
+    <li><strong>Impeccable's automatic check</strong>, by Paul Bakaus. After every file the AI writes, it scans for common "AI-made" design mistakes and tells the AI what to fix. Free, Apache-2.0.</li>
+    <li><strong>A short list of CSS techniques I collected and tested</strong> (glass panels, glows, responsive layouts). It's my own private list, not shared here, and was used in one round only.</li>
+  </ol>
+  <p>That's it for design. The prompt only said: "use the design skills installed in this setup as you see fit."</p>
+
+  <h2>Install it (Claude Code)</h2>
+  <p>Type these in a Claude Code session, one at a time:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin install frontend-design@claude-plugins-official</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin marketplace add pbakaus/impeccable</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin install impeccable@impeccable</code></pre></div>
+  <p>Restart Claude Code. Then ask for any page and add: "use the frontend-design skill".</p>
+
+  <h2>Optional: Impeccable's full process</h2>
+  <p>I also ran a fourth builder: my setup told to use Impeccable's whole build, critique and polish process. <strong>It won the phone app</strong>, but it took up to 25 minutes a job and several times the AI usage. I use it for a page that really matters, not for everything. Ask for it by name: "build this with the impeccable skill, then critique and polish it".</p>
+
+  <h2>Test any tool yourself (10 minutes)</h2>
+  <p>Before you add a tool because a reel told you to, give your AI the same job twice and compare. Run this in two fresh sessions, one with the tool and one without, then show both screenshots to a different AI that doesn't know which is which.</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Build a single-page [what you actually need: a booking page for my gym / a menu for my café / ...] in one HTML file. Real content, no lorem ipsum, works on a phone. Make it look as good as you can.</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Two screenshots of the same page, built by two different setups, labelled A and B. Score each 1-10 on: looks professional, easy to read, fits the business, works on a phone. Say which you would ship and why, in three lines. Don't guess who built which.</code></pre></div>
+
+  <p class="credit"><strong>Credits.</strong> <a href="https://github.com/anthropics/claude-plugins-official">frontend-design</a> by Anthropic. <a href="https://github.com/pbakaus/impeccable">Impeccable</a> by Paul Bakaus. <a href="https://github.com/meta/astryx">Astryx</a> by Meta (MIT). Not sponsored by any of them.</p>
+
+  <footer>Istmo Creations: building with AI in Panamá, and sharing what works.<br>Test run 13–15 Nov 2026 with Claude Code; judged by Codex.</footer>
+  </div>
+
+  <!-- ESPAÑOL -->
+  <div data-l="es">
+  <h1>La configuración de diseño que le ganó a Astryx</h1>
+  <p class="lede">Lo que usó mi Claude Code en la prueba a ciegas, cómo instalarlo en dos minutos y cómo probar cualquier herramienta de diseño con tu propio trabajo antes de confiar en ella (incluida esta).</p>
+
+  <h2>La prueba, en corto</h2>
+  <p>Tres constructores de IA, mismo modelo, los mismos tres trabajos (un panel, una landing page y una app de teléfono): Claude Code sin nada, Claude Code con mi configuración, y Claude Code con <a href="https://github.com/meta/astryx">Astryx</a> de Meta. Codex, de OpenAI, ordenó las capturas a ciegas, con letras mezcladas.</p>
+  <table>
+    <tr><th>Puntaje total (de 120)</th><th>Rondas ganadas</th></tr>
+    <tr><td>Mi configuración: <strong>104</strong></td><td>panel, landing page</td></tr>
+    <tr><td>Claude Code sin nada: <strong>102</strong></td><td>app de teléfono</td></tr>
+    <tr><td>Claude Code + Astryx: <strong>73</strong></td><td>ninguna</td></tr>
+  </table>
+  <p class="warn"><strong>Léelo como lo que es.</strong> Una corrida por constructor, un juez, solo la primera pantalla. Mi configuración le ganó a Claude sin nada por 2 puntos, que es poco. Además tardó de 2 a 5 veces más. Astryx está en beta y está hecho para equipos grandes que mantienen cientos de pantallas iguales, algo que una sola página no prueba. Para ser justos: sus páginas respetaron el ajuste del teléfono de "reducir animaciones", y la app de Claude sin nada no.</p>
+
+  <h2>Lo que usó mi configuración para diseño</h2>
+  <ol>
+    <li><strong>frontend-design</strong>, la skill oficial de diseño de Anthropic. Empuja a la IA a elegir una dirección visual real en vez del look de plantilla. Gratis.</li>
+    <li><strong>La revisión automática de Impeccable</strong>, de Paul Bakaus. Después de cada archivo que escribe la IA, busca errores típicos de diseño "hecho por IA" y le dice qué corregir. Gratis, Apache-2.0.</li>
+    <li><strong>Una lista corta de técnicas CSS que junté y probé</strong> (paneles de vidrio, brillos, diseños adaptables). Es mi lista privada, no la comparto aquí, y se usó en una sola ronda.</li>
+  </ol>
+  <p>Eso es todo en diseño. El prompt solo decía: "usa las skills de diseño instaladas como mejor te parezca".</p>
+
+  <h2>Instálalo (Claude Code)</h2>
+  <p>Escribe esto en una sesión de Claude Code, uno por uno:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin install frontend-design@claude-plugins-official</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin marketplace add pbakaus/impeccable</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin install impeccable@impeccable</code></pre></div>
+  <p>Reinicia Claude Code. Luego pide cualquier página y agrega: "usa la skill frontend-design".</p>
+
+  <h2>Opcional: el proceso completo de Impeccable</h2>
+  <p>También corrí un cuarto constructor: mi configuración usando todo el proceso de Impeccable (construir, criticar y pulir). <strong>Ganó la app de teléfono</strong>, pero tardó hasta 25 minutos por trabajo y varias veces el uso de IA. Lo uso para una página que de verdad importa, no para todo. Pídelo por nombre: "construye esto con la skill impeccable, luego critícalo y púlelo".</p>
+
+  <h2>Prueba cualquier herramienta tú mismo (10 minutos)</h2>
+  <p>Antes de agregar una herramienta porque un reel te lo dijo, dale a tu IA el mismo trabajo dos veces y compara. Córrelo en dos sesiones nuevas, una con la herramienta y otra sin ella, y muéstrale las dos capturas a otra IA que no sepa cuál es cuál.</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Construye una página [lo que de verdad necesitas: una página de reservas para mi gimnasio / un menú para mi café / ...] en un solo archivo HTML. Contenido real, nada de lorem ipsum, que funcione en un teléfono. Hazla lo más bonita que puedas.</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Dos capturas de la misma página, hechas por dos configuraciones distintas, marcadas A y B. Califica cada una del 1 al 10 en: se ve profesional, fácil de leer, va con el negocio, funciona en un teléfono. Di cuál publicarías y por qué, en tres líneas. No adivines quién hizo cuál.</code></pre></div>
+
+  <p class="credit"><strong>Créditos.</strong> <a href="https://github.com/anthropics/claude-plugins-official">frontend-design</a> de Anthropic. <a href="https://github.com/pbakaus/impeccable">Impeccable</a> de Paul Bakaus. <a href="https://github.com/meta/astryx">Astryx</a> de Meta (MIT). Ninguno patrocina esto.</p>
+
+  <footer>Istmo Creations: construyendo con IA en Panamá, y compartiendo lo que funciona.<br>Prueba hecha del 13 al 15 de noviembre de 2026 con Claude Code; juzgada por Codex.</footer>
+  </div>
+</main>
+<script>
+  document.querySelectorAll('.switch [data-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-set');
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.setAttribute('lang', l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  });
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.parentNode.querySelector('code').innerText, label = b.textContent;
+      function done() { b.textContent = document.documentElement.getAttribute('data-lang') === 'es' ? '¡Copiado!' : 'Copied!'; setTimeout(function () { b.textContent = label; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () {});
+    });
+  });
+</script>
+</body>
+</html>
