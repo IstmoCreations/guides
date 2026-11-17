@@ -94,8 +94,11 @@ No images: use emoji, colour, type and CSS only. Single screen. Sending a typed 
   <p>Same AI, same model, a fresh copy of the same starter project each time. Add one line per builder. With the tool:</p>
   <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>This app has Meta's Astryx design system installed, with its CLI. Run the CLI's build command with no arguments first, read its playbook, and follow it. You may install any Astryx package and anything an Astryx template says it needs. Install nothing else. Finish when the build passes, and report anything confusing or broken.</code></pre></div>
   <p>Without it: <code>Build it with plain React and your own CSS. Do not install any packages.</code></p>
-  <p><strong>Make "plain" really plain.</strong> Claude Code normally loads your skills, plugins and instruction files. To switch them off (Claude Code CLI), save this as <code>bare-settings.json</code>, adding the full path of your own user <code>CLAUDE.md</code>:</p>
-  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>{"claudeMdExcludes": ["**/CLAUDE.md"]}</code></pre></div>
+  <p><strong>Make "plain" really plain.</strong> Claude Code normally loads your skills, plugins and instruction files. To switch them off (Claude Code CLI), save this as <code>bare-settings.json</code>, with the first line changed to the full path of your own user <code>CLAUDE.md</code> (Windows: <code>C:/Users/you/.claude/CLAUDE.md</code>, Mac: <code>/Users/you/.claude/CLAUDE.md</code>). The second line covers every project's <code>CLAUDE.md</code>.</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>{"claudeMdExcludes": [
+  "C:/Users/you/.claude/CLAUDE.md",
+  "**/CLAUDE.md"
+]}</code></pre></div>
   <p>Then run each plain job from its own project folder:</p>
   <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>claude -p "&lt;the job prompt&gt;" --setting-sources project --settings bare-settings.json --disable-slash-commands --strict-mcp-config --no-session-persistence --output-format json</code></pre></div>
   <p>Check it worked before you trust it: ask the same command <em>"List every skill and any CLAUDE.md instructions in your context, or say NONE"</em>. It should say NONE. Then remove the settings file and ask again: now it should list them. If both answers match, the switch did nothing.</p>
@@ -145,8 +148,11 @@ End with one line per job: JOB 1: best=&lt;letter&gt; middle=&lt;letter&gt; wors
   <p>La misma IA, el mismo modelo, una copia nueva del mismo proyecto inicial cada vez. Agrega una línea por constructor. Con la herramienta:</p>
   <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Esta app tiene instalado Astryx, el sistema de diseño de Meta, con su CLI. Primero corre el comando build del CLI sin argumentos, lee su guía y síguela. Puedes instalar cualquier paquete de Astryx y lo que una plantilla de Astryx diga que necesita. No instales nada más. Termina cuando el build pase, e informa lo que haya sido confuso o no haya funcionado.</code></pre></div>
   <p>Sin ella: <code>Hazlo con React y tu propio CSS. No instales ningún paquete.</code></p>
-  <p><strong>Que la IA "sola" esté realmente sola.</strong> Claude Code normalmente carga tus skills, plugins y archivos de instrucciones. Para apagarlos (Claude Code en la terminal), guarda esto como <code>bare-settings.json</code>, agregando la ruta completa de tu propio <code>CLAUDE.md</code> de usuario:</p>
-  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>{"claudeMdExcludes": ["**/CLAUDE.md"]}</code></pre></div>
+  <p><strong>Que la IA "sola" esté realmente sola.</strong> Claude Code normalmente carga tus skills, plugins y archivos de instrucciones. Para apagarlos (Claude Code en la terminal), guarda esto como <code>bare-settings.json</code>, cambiando la primera línea por la ruta completa de tu propio <code>CLAUDE.md</code> de usuario (Windows: <code>C:/Users/tu-usuario/.claude/CLAUDE.md</code>, Mac: <code>/Users/tu-usuario/.claude/CLAUDE.md</code>). La segunda línea cubre el <code>CLAUDE.md</code> de cada proyecto.</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>{"claudeMdExcludes": [
+  "C:/Users/you/.claude/CLAUDE.md",
+  "**/CLAUDE.md"
+]}</code></pre></div>
   <p>Luego corre cada trabajo sin herramienta desde su propia carpeta:</p>
   <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>claude -p "&lt;el prompt del trabajo&gt;" --setting-sources project --settings bare-settings.json --disable-slash-commands --strict-mcp-config --no-session-persistence --output-format json</code></pre></div>
   <p>Comprueba que funcionó antes de confiar: pregúntale con el mismo comando <em>"Lista cada skill y cualquier instrucción de CLAUDE.md en tu contexto, o di NONE"</em>. Debe decir NONE. Luego quita el archivo de configuración y pregunta otra vez: ahora debe listarlos. Si las dos respuestas son iguales, el interruptor no hizo nada.</p>
