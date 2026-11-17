@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>5 motion effects that make a site feel designed</title>
-<meta name="description" content="5 motion effects, each one HTML file you can get from an AI with one prompt. Watch each one live, copy its prompt, make it yours. In English and Spanish.">
+<title>10 motion effects that make a site feel designed</title>
+<meta name="description" content="10 motion effects, each one HTML file you can get from an AI with one prompt. Watch each one live, copy its prompt, make it yours. In English and Spanish.">
 <script>
   (function () {
     var l;
@@ -63,7 +63,7 @@
 
   <!-- ENGLISH -->
   <div data-l="en">
-  <h1>5 motion effects that make a site feel designed</h1>
+  <h1>10 motion effects that make a site feel designed</h1>
   <p class="lede">Each one is a single HTML file you can get from an AI with one prompt. Watch it play, copy its prompt, swap in your own words and colours.</p>
   <p class="credit">The format is inspired by <strong>@zeeuiux</strong>'s “50 Claude animations”. These effects are our own designs, built and tested by us. Not sponsored.</p>
   <h2>How to use them</h2>
@@ -131,7 +131,72 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
     <h2><em>05</em> Flow Line</h2>
     <div class="demo"><iframe src="effects/flow-line.html?preview" title="Flow Line" loading="lazy"></iframe></div>
     <p class="use"><strong>Use it for:</strong> how we work, a service's steps, or any "three steps to …" post.</p>
-    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On grid paper, the heading "From idea to live.", a corner label "Process · 3 steps", and three white cards stepping down diagonally: 01 Brief, 02 Design, 03 Ship. Each card goes through states: ACTIVE (orange border and an orange ring in its corner) and then DONE (black border, a black tick that lands). After Brief is done, a curved connector glides to Design with a pen dot on its tip; each tick lands with a squash and an orange ripple; Design goes active, then done; a second connector draws to Ship; Ship goes active and then finishes solid orange, its number and tick re-coloured in the same beat so they stay readable. A black "● Live" pill (orange dot) eases out under it with one expanding orange ring. [Swap in your own three steps and the final word.]
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On grid paper, the heading "From idea to live." (52 px, top left), a corner label "Process · 3 steps", and three white cards (290 x 150, 22 px radius, 3 px light grey border) stepping down diagonally: 01 Brief, 02 Design, 03 Ship, each showing only its serif-italic number and a 40 px heavy title. Connectors are 3 px ink S-curves from the right edge of one card to the left edge of the next, no arrowheads. The tick is a black 40 px disc with a white check. Each card goes through states: ACTIVE (orange border and an orange ring in its corner) and then DONE (black border, a black tick that lands). After Brief is done, a curved connector glides to Design with a pen dot on its tip; each tick lands with a squash and an orange ripple; Design goes active, then done; a second connector draws to Ship; Ship goes active and then finishes solid orange, its number and tick re-coloured in the same beat so they stay readable. A black "● Live" pill (orange dot) eases out under it with one expanding orange ring. [Swap in your own three steps and the final word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>06</em> Split Flap</h2>
+    <div class="demo"><iframe src="effects/split-flap.html?preview" title="Split Flap" loading="lazy"></iframe></div>
+    <p class="use"><strong>Use it for:</strong> a status or a single word that should feel like news: LIVE, OPEN, SOLD OUT, a launch date.</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On #111, six split-flap tiles (130 x 190, 14 px radius, dark grey, a thin gap across the middle) flip through letters and land on O N L I N E, left to right. Make each flip real: the top half of the old letter folds down (rotateX 0 to -90°, 0.08 s), then the bottom half of the new letter folds into place (90° to 0). Tile 1 flips 3 times and each next tile once more. Labels above: "Status" left, "Build 214" right. When the last tile lands, an orange dot squashes in with "Deployed · on time". Pick the in-between letters with a hash, never Math.random. [Swap in your six-letter word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>07</em> Kinetic Type</h2>
+    <div class="demo"><iframe src="effects/kinetic-type.html?preview" title="Kinetic Type" loading="lazy"></iframe></div>
+    <p class="use"><strong>Use it for:</strong> a hook or the first second of a reel; any three-word line that should land hard.</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On paper, three lines set huge and left-aligned, each arriving differently: "Design" (210 px, weight 800, ink): its letters rise from below a mask, staggered 0.045 s, ease out. "that" (same size, grey): its letters drop in from above the mask. "ships." (240 px serif italic, orange): fades in from 150 % scale, then squashes as it lands. A 14 px ink bar glides out under it, left to right. Corner labels: "Kinetic type · 3 lines" and the two font names. [Swap in your three words and the accent word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>08</em> Typewriter</h2>
+    <div class="demo"><iframe src="effects/typewriter.html?preview" title="Typewriter" loading="lazy"></iframe></div>
+    <p class="use"><strong>Use it for:</strong> showing an AI prompt or a search: "this is what I asked for".</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On grid paper, a small "PROMPT" label above a white prompt box (900 x 310, 34 px radius, light border, soft shadow). The text "make the pricing page feel calmer" types itself (50 px, weight 600), one character every 0.036 s, with an orange caret that then blinks three times. Bottom left of the box: a grey pill "pricing.html". Bottom right: a round orange send button with a white up arrow; it presses (86 %, then springs back) and one orange ring ripples out. Under the box, "● Done · 3 changes, 1 file" eases in. Type by setting the text at fixed times, never with a timer. [Swap in your own prompt and file name.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>09</em> Scramble</h2>
+    <div class="demo"><iframe src="effects/scramble.html?preview" title="Scramble" loading="lazy"></iframe></div>
+    <p class="use"><strong>Use it for:</strong> a reveal: a headline, a launch name or an answer that "decodes".</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On #111, "Make it" (168 px, weight 800, white) and "obvious." (200 px serif italic, orange) start as random symbols (# % &amp;  + = / &lt; &gt; ? !) in grey and resolve into their real letters left to right, a new symbol every 0.05 s. The second line starts 0.4 s after the first. Pick each symbol with a hash of (line, letter, step), never Math.random, so every frame is repeatable. Then two outline pills with the font names ease in. Corner label "Headline · decoding". [Swap in your headline and its accent word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>10</em> Markup</h2>
+    <div class="demo"><iframe src="effects/markup.html?preview" title="Markup" loading="lazy"></iframe></div>
+    <p class="use"><strong>Use it for:</strong> a design critique, a before-the-redesign post, or "three things I'd fix".</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>On grid paper, a white card with a weak hero: "We help businesses grow online." (52 px heavy), two grey text bars, and two buttons, "Learn more" (outline) and "Get started" (black). An orange marker (7 px, round caps) draws a wavy underline under the headline, then a loose ellipse around "Get started"; an ink marker strikes through "Learn more". Each mark has a pen dot on its tip and is followed by a thin ink arrow to a note card (white, ink border, orange serif number): 01 Say it in five words. 02 One action, made obvious. 03 Cut the second button. Corner labels "Design review · Home" and "3 notes". [Swap in your own page and your three notes.]
 
 Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
 
@@ -144,7 +209,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
 
   <!-- ESPAÑOL -->
   <div data-l="es">
-  <h1>5 efectos de movimiento que hacen que un sitio se vea diseñado</h1>
+  <h1>10 efectos de movimiento que hacen que un sitio se vea diseñado</h1>
   <p class="lede">Cada uno es un solo archivo HTML que puedes obtener de una IA con un prompt. Míralo en movimiento, copia su prompt y cambia las palabras y los colores por los tuyos.</p>
   <p class="credit">El formato está inspirado en “50 Claude animations” de <strong>@zeeuiux</strong>. Estos efectos son diseños propios, hechos y probados por nosotros. Sin patrocinio.</p>
   <h2>Cómo usarlos</h2>
@@ -212,7 +277,72 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
     <h2><em>05</em> Flow Line</h2>
     <div class="demo"><iframe src="effects/flow-line.html?preview" title="Flow Line" loading="lazy"></iframe></div>
     <p class="use"><strong>Úsalo para:</strong> Cómo trabajamos, los pasos de un servicio o cualquier post de “tres pasos para…”.</p>
-    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On grid paper, the heading "From idea to live.", a corner label "Process · 3 steps", and three white cards stepping down diagonally: 01 Brief, 02 Design, 03 Ship. Each card goes through states: ACTIVE (orange border and an orange ring in its corner) and then DONE (black border, a black tick that lands). After Brief is done, a curved connector glides to Design with a pen dot on its tip; each tick lands with a squash and an orange ripple; Design goes active, then done; a second connector draws to Ship; Ship goes active and then finishes solid orange, its number and tick re-coloured in the same beat so they stay readable. A black "● Live" pill (orange dot) eases out under it with one expanding orange ring. [Swap in your own three steps and the final word.]
+    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On grid paper, the heading "From idea to live." (52 px, top left), a corner label "Process · 3 steps", and three white cards (290 x 150, 22 px radius, 3 px light grey border) stepping down diagonally: 01 Brief, 02 Design, 03 Ship, each showing only its serif-italic number and a 40 px heavy title. Connectors are 3 px ink S-curves from the right edge of one card to the left edge of the next, no arrowheads. The tick is a black 40 px disc with a white check. Each card goes through states: ACTIVE (orange border and an orange ring in its corner) and then DONE (black border, a black tick that lands). After Brief is done, a curved connector glides to Design with a pen dot on its tip; each tick lands with a squash and an orange ripple; Design goes active, then done; a second connector draws to Ship; Ship goes active and then finishes solid orange, its number and tick re-coloured in the same beat so they stay readable. A black "● Live" pill (orange dot) eases out under it with one expanding orange ring. [Swap in your own three steps and the final word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>06</em> Split Flap</h2>
+    <div class="demo"><iframe src="effects/split-flap.html?preview" title="Split Flap" loading="lazy"></iframe></div>
+    <p class="use"><strong>Úsalo para:</strong> Un estado o una sola palabra que debe sentirse como noticia: LIVE, ABIERTO, AGOTADO, una fecha de lanzamiento.</p>
+    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On #111, six split-flap tiles (130 x 190, 14 px radius, dark grey, a thin gap across the middle) flip through letters and land on O N L I N E, left to right. Make each flip real: the top half of the old letter folds down (rotateX 0 to -90°, 0.08 s), then the bottom half of the new letter folds into place (90° to 0). Tile 1 flips 3 times and each next tile once more. Labels above: "Status" left, "Build 214" right. When the last tile lands, an orange dot squashes in with "Deployed · on time". Pick the in-between letters with a hash, never Math.random. [Swap in your six-letter word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>07</em> Kinetic Type</h2>
+    <div class="demo"><iframe src="effects/kinetic-type.html?preview" title="Kinetic Type" loading="lazy"></iframe></div>
+    <p class="use"><strong>Úsalo para:</strong> Un gancho o el primer segundo de un reel; cualquier frase de tres palabras que deba pegar fuerte.</p>
+    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On paper, three lines set huge and left-aligned, each arriving differently: "Design" (210 px, weight 800, ink): its letters rise from below a mask, staggered 0.045 s, ease out. "that" (same size, grey): its letters drop in from above the mask. "ships." (240 px serif italic, orange): fades in from 150 % scale, then squashes as it lands. A 14 px ink bar glides out under it, left to right. Corner labels: "Kinetic type · 3 lines" and the two font names. [Swap in your three words and the accent word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>08</em> Typewriter</h2>
+    <div class="demo"><iframe src="effects/typewriter.html?preview" title="Typewriter" loading="lazy"></iframe></div>
+    <p class="use"><strong>Úsalo para:</strong> Mostrar un prompt de IA o una búsqueda: “esto es lo que pedí”.</p>
+    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On grid paper, a small "PROMPT" label above a white prompt box (900 x 310, 34 px radius, light border, soft shadow). The text "make the pricing page feel calmer" types itself (50 px, weight 600), one character every 0.036 s, with an orange caret that then blinks three times. Bottom left of the box: a grey pill "pricing.html". Bottom right: a round orange send button with a white up arrow; it presses (86 %, then springs back) and one orange ring ripples out. Under the box, "● Done · 3 changes, 1 file" eases in. Type by setting the text at fixed times, never with a timer. [Swap in your own prompt and file name.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>09</em> Scramble</h2>
+    <div class="demo"><iframe src="effects/scramble.html?preview" title="Scramble" loading="lazy"></iframe></div>
+    <p class="use"><strong>Úsalo para:</strong> Una revelación: un titular, el nombre de un lanzamiento o una respuesta que se “descifra”.</p>
+    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On #111, "Make it" (168 px, weight 800, white) and "obvious." (200 px serif italic, orange) start as random symbols (# % &amp;  + = / &lt; &gt; ? !) in grey and resolve into their real letters left to right, a new symbol every 0.05 s. The second line starts 0.4 s after the first. Pick each symbol with a hash of (line, letter, step), never Math.random, so every frame is repeatable. Then two outline pills with the font names ease in. Corner label "Headline · decoding". [Swap in your headline and its accent word.]
+
+Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
+
+Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
+
+Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
+  </section>
+
+  <section class="fx">
+    <h2><em>10</em> Markup</h2>
+    <div class="demo"><iframe src="effects/markup.html?preview" title="Markup" loading="lazy"></iframe></div>
+    <p class="use"><strong>Úsalo para:</strong> Una crítica de diseño, un post de antes del rediseño o “tres cosas que yo cambiaría”.</p>
+    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>On grid paper, a white card with a weak hero: "We help businesses grow online." (52 px heavy), two grey text bars, and two buttons, "Learn more" (outline) and "Get started" (black). An orange marker (7 px, round caps) draws a wavy underline under the headline, then a loose ellipse around "Get started"; an ink marker strikes through "Learn more". Each mark has a pen dot on its tip and is followed by a thin ink arrow to a note card (white, ink border, orange serif number): 01 Say it in five words. 02 One action, made obvious. 03 Cut the second button. Corner labels "Design review · Home" and "3 notes". [Swap in your own page and your three notes.]
 
 Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline about 3 s long that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
 

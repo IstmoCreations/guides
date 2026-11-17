@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Markup</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* a design review: the marker circles, strikes and underlines a weak hero, each mark tied to a note */
+.card { position:absolute; left:120px; top:150px; width:620px; height:580px; border-radius:24px; background:#fff; border:2px solid var(--line);
+        box-shadow:0 30px 60px -40px #00000059; }
+.card .dots { position:absolute; left:50px; top:40px; display:flex; gap:10px; } .card .dots i { width:12px; height:12px; border-radius:50%; background:var(--panel); }
+.card h2 { position:absolute; left:50px; top:96px; width:470px; margin:0; font:800 52px/1.08 var(--sans); letter-spacing:-0.02em; }
+.card .bar { position:absolute; left:50px; height:14px; border-radius:7px; background:var(--panel); }
+.btn { position:absolute; top:410px; height:64px; border-radius:999px; font:600 24px/64px var(--sans); text-align:center; }
+#more { left:50px; width:200px; border:2px solid var(--ink); color:var(--ink); line-height:60px; }
+#start { left:270px; width:210px; background:var(--ink); color:#fff; }
+svg { position:absolute; inset:0; }
+.mk { fill:none; stroke-linecap:round; stroke-linejoin:round; stroke-width:7; }
+.or { stroke:var(--orange); } .ink { stroke:var(--ink); }
+.ar { fill:none; stroke:var(--ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.pen { fill:none; stroke:var(--orange); stroke-width:18; stroke-linecap:round; stroke-dasharray:0 2; }
+.note { position:absolute; width:300px; padding:16px 20px; border-radius:16px; background:#fff; border:2px solid var(--ink);
+        font:600 24px/1.25 var(--sans); display:flex; gap:12px; }
+.note b { font:400 24px var(--serif); font-style:italic; color:var(--orange-text); }
+.meta { position:absolute; top:40px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="markup" data-start="0" data-width="1200" data-height="900" data-duration="3">
+  <div class="meta" style="left:48px" data-layout-ignore>Design review · Home</div>
+  <div class="meta" style="right:48px" data-layout-ignore>3 notes</div>
+  <div class="card">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <h2>We help businesses grow online.</h2>
+    <div class="bar" style="top:320px;width:420px"></div><div class="bar" style="top:346px;width:340px"></div>
+    <div class="btn" id="more">Learn more</div><div class="btn" id="start">Get started</div>
+  </div>
+  <svg viewBox="0 0 1200 900">
+    <!-- 01 wavy underline under the headline -->
+    <path class="mk or" id="m1" pathLength="1" d="M172 440 q22 -12 44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0"/>
+    <!-- 02 loose ellipse around the main button -->
+    <path class="mk or" id="m2" pathLength="1" d="M520 568 C610 560 650 580 645 597 C640 625 560 640 488 634 C420 628 372 612 378 592 C384 572 440 558 535 563"/>
+    <!-- 03 strike through the second button -->
+    <path class="mk ink" id="m3" pathLength="1" d="M182 594 C230 590 300 596 352 590"/>
+    <path class="pen" id="p1" pathLength="1" d="M172 440 q22 -12 44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0"/>
+    <path class="pen" id="p2" pathLength="1" d="M520 568 C610 560 650 580 645 597 C640 625 560 640 488 634 C420 628 372 612 378 592 C384 572 440 558 535 563"/>
+    <path class="pen" id="p3" pathLength="1" d="M182 594 C230 590 300 596 352 590"/>
+    <!-- arrows to the notes -->
+    <path class="ar" id="a1" pathLength="1" d="M580 400 C650 380 720 300 808 296"/>
+    <path class="ar" id="a2" pathLength="1" d="M660 596 C720 596 760 560 808 560"/>
+    <path class="ar" id="a3" pathLength="1" d="M268 625 C268 690 268 720 268 772"/>
+    <path class="ar hd" id="h1" d="M798 287 L808 296 L798 305"/>
+    <path class="ar hd" id="h2" d="M798 551 L808 560 L798 569"/>
+    <path class="ar hd" id="h3" d="M259 762 L268 772 L277 762"/>
+  </svg>
+  <div class="note" id="n1" style="left:820px;top:256px"><b>01</b>Say it in five words.</div>
+  <div class="note" id="n2" style="left:820px;top:520px"><b>02</b>One action, made obvious.</div>
+  <div class="note" id="n3" style="left:120px;top:780px;width:340px"><b>03</b>Cut the second button.</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// Dash tweens go through attr (a CSS strokeDashoffset tween snaps at halfway); the pen is a zero-length dash.
+gsap.set(".mk, .ar:not(.hd)", { attr: { "stroke-dasharray": 1, "stroke-dashoffset": 1 } });
+gsap.set(".pen", { attr: { "stroke-dashoffset": 0 }, opacity: 0 });
+gsap.set(".hd, .note", { opacity: 0 });
+const tl = gsap.timeline({ paused: true });
+const mark = (m, p, at, dur) => tl
+  .to(m, { attr: { "stroke-dashoffset": 0 }, duration: dur, ease: "power2.inOut" }, at)
+  .to(p, { attr: { "stroke-dashoffset": -1 }, duration: dur, ease: "power2.inOut" }, at)
+  .to(p, { opacity: 1, duration: 0.04 }, at)
+  .to(p, { opacity: 0, duration: 0.08 }, at + dur);
+const note = (a, h, n, at) => tl
+  .to(a, { attr: { "stroke-dashoffset": 0 }, duration: 0.25, ease: "power2.out" }, at)
+  .to(h, { opacity: 1, duration: 0.05 }, at + 0.22)
+  .fromTo(n, { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, at + 0.2);
+tl.from(".card", { opacity: 0, y: 20, duration: 0.3, ease: "power2.out" }, 0);
+mark("#m1", "#p1", 0.3, 0.4);  note("#a1", "#h1", "#n1", 0.65);
+mark("#m2", "#p2", 0.8, 0.45); note("#a2", "#h2", "#n2", 1.2);
+mark("#m3", "#p3", 1.3, 0.25); note("#a3", "#h3", "#n3", 1.5);
+tl.to({}, { duration: 0.01 }, 2.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["markup"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

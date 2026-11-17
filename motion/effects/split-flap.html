@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Split Flap</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+#root { background:#111111; color:#fff; }
+/* each tile = two static halves + two flaps. A flip: the top flap (old letter) folds down, then the bottom flap
+   (new letter) folds into place. Letters change only by tl.set, so any frame renders the same on any seek. */
+.board { position:absolute; left:170px; top:330px; display:flex; gap:16px; }
+.tile { position:relative; width:130px; height:190px; perspective:700px; }
+.h { position:absolute; left:0; width:130px; height:95px; overflow:hidden; background:#2a2a2a; }
+.h.t { top:0; border-radius:14px 14px 0 0; transform-origin:50% 100%; }
+.h.b { top:95px; border-radius:0 0 14px 14px; transform-origin:50% 0%; background:#262626; }
+.h span { position:absolute; left:0; width:130px; height:190px; font:800 132px/190px var(--sans); text-align:center; color:#fff; }
+.h.b span { top:-95px; } .h.t span { top:0; }
+.ft { z-index:2; } .fb { z-index:3; }
+.gap { position:absolute; left:0; right:0; top:94px; height:3px; background:#111; z-index:4; }
+.lab { position:absolute; top:282px; font:600 18px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#8a8a8a; }
+.after { position:absolute; left:170px; top:580px; display:flex; align-items:center; gap:16px; font:600 30px var(--sans); color:#fff; }
+.after i { width:18px; height:18px; border-radius:50%; background:var(--orange); }
+.after span { color:#9a9a9a; font-weight:400; }
+</style></head>
+<body><div id="root" data-composition-id="split-flap" data-start="0" data-width="1200" data-height="900" data-duration="3">
+  <div class="lab" style="left:170px" data-layout-ignore>Status</div>
+  <div class="lab" style="right:170px" data-layout-ignore>Build 214</div>
+  <div class="board" id="board"></div>
+  <div class="after" id="after"><i id="dot"></i>Deployed <span>· on time</span></div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+const WORD = "ONLINE", ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) >>> 0; h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; return (h ^ (h >>> 16)) >>> 0; };
+const board = document.getElementById("board");
+const T0 = 0.15, HALF = 0.08, FLIP = 0.17;
+const seqs = [...WORD].map((final, j) => {
+  const n = 3 + j, s = [];
+  for (let k = 0; k < n; k++) s.push(ABC[hash(j + 1, k + 1) % 26]);
+  s.push(final);
+  return s;
+});
+seqs.forEach((s, j) => {
+  board.insertAdjacentHTML("beforeend", `<div class="tile">
+    <div class="h t st" id="st${j}" data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow></span></div><div class="h b sb" id="sb${j}" data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow></span></div>
+    <div class="h t ft" id="ft${j}" data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow></span></div><div class="h b fb" id="fb${j}" data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow></span></div><i class="gap" data-layout-allow-occlusion></i></div>`);
+});
+const sp = (id) => `#${id} span`;
+gsap.set("#after", { opacity: 0, x: -12 });
+const tl = gsap.timeline({ paused: true });
+seqs.forEach((s, j) => {
+  gsap.set([sp(`st${j}`), sp(`sb${j}`), sp(`ft${j}`), sp(`fb${j}`)], { innerText: s[0] });
+  gsap.set(`#ft${j}`, { rotationX: 0 }); gsap.set(`#fb${j}`, { rotationX: 90 });
+  for (let k = 1; k < s.length; k++) {
+    const t = Number((T0 + (k - 1) * FLIP + j * 0.02).toFixed(3)), a = s[k - 1], b = s[k];
+    tl.set(sp(`st${j}`), { innerText: b }, t)
+      .set(sp(`ft${j}`), { innerText: a }, t)
+      .set(sp(`fb${j}`), { innerText: b }, t)
+      .set(sp(`sb${j}`), { innerText: a }, t)
+      .fromTo(`#ft${j}`, { rotationX: 0 }, { rotationX: -90, duration: HALF, ease: "power2.in", immediateRender: false }, t)
+      .fromTo(`#fb${j}`, { rotationX: 90 }, { rotationX: 0, duration: HALF, ease: "power2.out", immediateRender: false }, t + HALF)
+      .set(sp(`sb${j}`), { innerText: b }, t + 2 * HALF)
+      .set(sp(`ft${j}`), { innerText: b }, t + 2 * HALF)
+      .set(`#ft${j}`, { rotationX: 0 }, t + 2 * HALF)
+      .set(`#fb${j}`, { rotationX: 90 }, t + 2 * HALF);
+  }
+});
+const landed = T0 + (3 + WORD.length - 1) * FLIP + (WORD.length - 1) * 0.02;
+tl.to("#after", { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, landed + 0.1)
+  .fromTo("#dot", { scaleX: 0, scaleY: 0 }, { scaleX: 1.25, scaleY: 0.8, duration: 0.12, ease: "power2.out", immediateRender: false }, landed + 0.15)
+  .to("#dot", { scaleX: 1, scaleY: 1, duration: 0.25, ease: "back.out(3)" }, landed + 0.27)
+  .to({}, { duration: 0.01 }, 2.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["split-flap"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

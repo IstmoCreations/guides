@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Kinetic Type</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* three lines, three different arrivals: letters rise, letters drop, the accent word lands */
+.ln { position:absolute; left:110px; overflow:hidden; padding:0 30px 10px 0; }
+.ln span { display:inline-block; }
+#l1 { top:95px; font:800 210px/1 var(--sans); letter-spacing:-0.045em; }
+#l2 { top:300px; font:800 210px/1 var(--sans); letter-spacing:-0.045em; color:var(--ink-soft); }
+#l3 { top:505px; font:400 240px/1 var(--serif); font-style:italic; color:var(--orange-text); padding-bottom:30px; }
+#bar { position:absolute; left:116px; top:790px; width:560px; height:14px; border-radius:7px; background:var(--ink); transform-origin:0 50%; }
+.meta { position:absolute; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+</style></head>
+<body><div id="root" data-composition-id="kinetic-type" data-start="0" data-width="1200" data-height="900" data-duration="3">
+  <div class="meta" style="left:48px;top:40px" data-layout-ignore>Kinetic type · 3 lines</div>
+  <div class="meta" style="right:48px;top:40px" data-layout-ignore>Public Sans 800 / Source Serif 4</div>
+  <div class="ln" id="l1" data-layout-allow-overflow><span>D</span><span>e</span><span>s</span><span>i</span><span>g</span><span>n</span></div>
+  <div class="ln" id="l2" data-layout-allow-overflow><span>t</span><span>h</span><span>a</span><span>t</span></div>
+  <div class="ln" id="l3" data-layout-allow-overflow><span id="w3">ships.</span></div>
+  <div id="bar"></div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// squash = 118 % x 82 % in 0.12 s, then back.out(3)
+gsap.set("#l1 span", { yPercent: 110 });
+gsap.set("#l2 span", { yPercent: -110 });
+gsap.set("#w3", { opacity: 0 });
+gsap.set("#bar", { scaleX: 0 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#l1 span", { yPercent: 0, duration: 0.45, stagger: 0.045, ease: "power2.out" }, 0.05)
+  .to("#l2 span", { yPercent: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, 0.55)
+  .fromTo("#w3", { opacity: 0, scale: 1.5, transformOrigin: "0% 70%" }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 1.0)
+  .to("#w3", { scaleX: 1.08, scaleY: 0.9, duration: 0.1, ease: "power2.out" }, 1.35)
+  .to("#w3", { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)" }, 1.45)
+  .to("#bar", { scaleX: 1, duration: 0.45, ease: "power2.inOut" }, 1.5)
+  .to({}, { duration: 0.01 }, 2.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["kinetic-type"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

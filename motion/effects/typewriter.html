@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Typewriter</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+.lab { position:absolute; left:150px; top:236px; font:600 18px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+.box { position:absolute; left:150px; top:280px; width:900px; height:310px; border-radius:34px; background:#fff; border:2px solid var(--line);
+       box-shadow:0 30px 60px -36px #00000059; }
+.txt { position:absolute; left:48px; top:44px; right:48px; font:600 50px/1.25 var(--sans); letter-spacing:-0.01em; color:var(--ink); }
+.caret { display:inline-block; width:5px; height:54px; margin-left:4px; vertical-align:-8px; border-radius:3px; background:var(--orange); }
+.file { position:absolute; left:40px; bottom:34px; padding:12px 20px; border-radius:999px; background:var(--panel); font:600 24px var(--sans); color:var(--ink); }
+.send { position:absolute; right:34px; bottom:28px; width:78px; height:78px; border-radius:50%; background:var(--orange); }
+.send svg { position:absolute; inset:0; margin:auto; }
+.rp { position:absolute; right:34px; bottom:28px; width:78px; height:78px; border-radius:50%; border:4px solid var(--orange); opacity:0; }
+.status { position:absolute; left:150px; top:640px; display:flex; align-items:center; gap:14px; font:600 28px var(--sans); color:var(--ink); }
+.status i { width:16px; height:16px; border-radius:50%; background:var(--orange); }
+.status span { color:var(--ink-soft); font-weight:400; }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="typewriter" data-start="0" data-width="1200" data-height="900" data-duration="3">
+  <div class="lab" data-layout-ignore>Prompt</div>
+  <div class="box">
+    <div class="txt"><span id="typed"></span><span class="caret" id="caret"></span></div>
+    <div class="file">pricing.html</div>
+    <div class="send" id="send"><svg width="34" height="34" viewBox="0 0 34 34"><path d="M17 27V8M8 16l9-9 9 9" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="rp" id="rp"></div>
+  </div>
+  <div class="status" id="status"><i></i>Done <span>· 3 changes, 1 file</span></div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// Typing is one tl.set per character: deterministic, and it renders the same frame on any seek.
+const TEXT = "make the pricing page feel calmer";
+const T0 = 0.15, PER = 0.036;
+gsap.set("#typed", { innerText: "" });
+gsap.set("#status", { opacity: 0, x: -14 });
+const tl = gsap.timeline({ paused: true });
+for (let i = 1; i <= TEXT.length; i++) tl.set("#typed", { innerText: TEXT.slice(0, i) }, T0 + i * PER);
+const typedEnd = T0 + TEXT.length * PER;
+tl.to("#caret", { opacity: 0, duration: 0.2, yoyo: true, repeat: 5, ease: "power2.inOut" }, typedEnd + 0.1)
+  .to("#send", { scale: 0.86, duration: 0.09, ease: "power2.out" }, typedEnd + 0.2)
+  .to("#send", { scale: 1, duration: 0.3, ease: "back.out(3)" }, typedEnd + 0.29)
+  .fromTo("#rp", { scale: 1, opacity: 0.8 }, { scale: 2.2, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, typedEnd + 0.25)
+  .to("#status", { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, typedEnd + 0.45)
+  .to({}, { duration: 0.01 }, 2.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["typewriter"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>
