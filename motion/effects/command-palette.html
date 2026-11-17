@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Command Palette</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* A command palette over a dimmed app: it opens, the query types, non-matching rows drop out, the match runs. */
+#root { background:#111111; color:#fff; }
+.app i { position:absolute; border-radius:18px; background:#1b1b1b; }
+.dim { position:absolute; inset:0; background:#0b0b0bb3; }
+.pal { position:absolute; left:220px; top:150px; width:760px; height:500px; border-radius:26px; background:#1e1e1e; border:2px solid #333;
+       box-shadow:0 40px 80px -30px #000; overflow:hidden; }
+.q { position:absolute; left:0; right:0; top:0; height:96px; display:flex; align-items:center; gap:18px; padding:0 30px; border-bottom:1px solid #333; }
+.q svg { flex:none; }
+.q .txt { font:600 36px var(--sans); color:#fff; }
+.q .ph { font:600 36px var(--sans); color:#7a7a7a; }
+.q .caret { width:4px; height:40px; background:var(--orange); border-radius:2px; }
+.q .k { margin-left:auto; padding:6px 14px; border-radius:10px; border:2px solid #444; font:600 22px var(--sans); color:#b0b0b0; }
+.row { position:absolute; left:16px; right:16px; height:72px; display:flex; align-items:center; gap:18px; padding:0 20px; border-radius:16px; font:600 30px var(--sans); color:#e6e6e6; }
+.row i { width:34px; height:34px; border-radius:10px; background:#333; flex:none; }
+.row.t i { background:var(--orange); }
+.row span { margin-left:auto; font:600 22px var(--sans); color:#c4c4c4; }
+#hl { position:absolute; left:16px; right:16px; top:112px; height:72px; border-radius:16px; background:#ff6a0024; border:2px solid var(--orange); }
+.toast { position:absolute; left:380px; top:690px; display:flex; align-items:center; gap:16px; padding:18px 28px; border-radius:999px; background:#fff; color:var(--ink); font:800 30px var(--sans); }
+.toast em { width:40px; height:40px; border-radius:50%; background:var(--orange); position:relative; }
+.toast em::after { content:""; position:absolute; left:14px; top:7px; width:9px; height:18px; border:solid var(--ink); border-width:0 4px 4px 0; transform:rotate(45deg); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#8a8a8a; }
+</style></head>
+<body><div id="root" data-composition-id="command-palette" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="app"><i style="left:40px;top:90px;width:240px;height:760px"></i><i style="left:310px;top:90px;width:850px;height:120px"></i><i style="left:310px;top:240px;width:410px;height:300px"></i><i style="left:750px;top:240px;width:410px;height:300px"></i><i style="left:310px;top:570px;width:850px;height:280px"></i></div>
+  <div class="dim" id="dim" data-layout-allow-occlusion></div>
+  <div class="meta" data-layout-ignore>Demo app · ola negra</div>
+  <div class="pal" id="pal" data-layout-allow-occlusion>
+    <div class="q">
+      <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="14" cy="14" r="10" fill="none" stroke="#8a8a8a" stroke-width="4"/><path d="M22 22l8 8" stroke="#8a8a8a" stroke-width="4" stroke-linecap="round"/></svg>
+      <span class="ph" id="ph">Type a command…</span><span class="txt" id="txt"></span><i class="caret" id="caret"></i><span class="k">⌘ K</span>
+    </div>
+    <div id="hl" data-layout-allow-overlap></div>
+    <div class="row" id="r1" style="top:112px"><i></i>Book a session<span>B</span></div>
+    <div class="row t" id="r2" style="top:192px"><i></i>Show tide chart<span>T</span></div>
+    <div class="row" id="r3" style="top:272px"><i></i>Today's schedule<span>S</span></div>
+    <div class="row t" id="r4" style="top:352px"><i></i>Tide alerts<span>A</span></div>
+    <div class="row" id="r5" style="top:432px"><i></i>Members<span>M</span></div>
+  </div>
+  <div class="toast" id="toast"><em></em>Tide chart opened</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// Typing is one tl.set per character, so every frame renders the same on any seek.
+gsap.set("#pal", { opacity: 0, scale: 0.96, y: 10 });
+gsap.set("#dim", { opacity: 0 });
+gsap.set("#toast", { opacity: 0, y: 20 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#dim", { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.1)
+  .to("#pal", { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, 0.1);
+const Q = "tide";
+tl.set("#ph", { display: "none" }, 0.5);
+for (let i = 1; i <= Q.length; i++) tl.set("#txt", { innerText: Q.slice(0, i) }, 0.5 + (i - 1) * 0.1);
+// filter: non-matching rows fade out, the matches glide up to the top two slots
+tl.to("#r1, #r3, #r5", { opacity: 0, x: 20, duration: 0.25, ease: "power2.out" }, 0.95)
+  .to("#r2", { y: -80, duration: 0.35, ease: "power2.inOut" }, 1.05)
+  .to("#r4", { y: -160, duration: 0.35, ease: "power2.inOut" }, 1.05)
+  // Enter: the highlight flashes and the toast squashes in under the palette (the palette stays: the end frame is a still)
+  .to("#hl", { backgroundColor: "#ff6a0066", duration: 0.1, yoyo: true, repeat: 1, ease: "power2.inOut" }, 1.7)
+  .to("#toast", { opacity: 1, y: 0, scaleX: 1.08, scaleY: 0.92, duration: 0.14, ease: "power2.out" }, 2.15)
+  .to("#toast", { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)" }, 2.29)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["command-palette"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

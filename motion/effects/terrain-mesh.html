@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Terrain Mesh</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* A wireframe landscape on a plane tilted away from the viewer; the contour lines draw in, far to near, then the
+   whole surface glides toward the camera. Heights are a fixed sum of sines: no random. */
+#scene { position:absolute; left:0; top:0; width:1200px; height:900px; perspective:760px; perspective-origin:50% 28%; overflow:hidden; }
+#plane { position:absolute; left:-200px; top:-500px; width:1600px; height:1400px; transform-origin:50% 100%; transform:rotateX(64deg); }
+#plane svg { position:absolute; inset:0; overflow:visible; }
+.ct { fill:none; stroke:var(--ink); stroke-width:2.4; stroke-linejoin:round; }
+.ct.o { stroke:var(--orange); stroke-width:3.2; }
+#sun { position:absolute; left:760px; top:150px; width:150px; height:150px; border-radius:50%; background:var(--orange); }
+.ttl { position:absolute; left:90px; top:110px; font:800 76px/1 var(--sans); letter-spacing:-0.035em; z-index:2; }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.lab { position:absolute; left:94px; top:205px; font:600 22px var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); z-index:2; }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+</style></head>
+<body><div id="root" data-composition-id="terrain-mesh" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Terrain · wireframe</div>
+  <div id="sun"></div>
+  <div id="scene" data-layout-allow-overflow><div id="plane"><svg id="mesh" viewBox="0 0 1600 1400"><g id="g"></g></svg></div></div>
+  <div class="ttl" id="ttl">Coastline, <em>mapped.</em></div>
+  <div class="lab" id="lab">Wireframe · 24 contours</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+const ROWS = 24, STEP = 70, g = document.getElementById("g");
+const h = (x, r) => 70 * Math.sin(x / 210 + r * 0.55) + 38 * Math.sin(x / 95 - r * 0.9) + 26 * Math.sin((x + r * 60) / 47);
+for (let r = 0; r < ROWS; r++) {
+  const y0 = 80 + r * STEP;
+  let d = "";
+  for (let x = 0; x <= 1600; x += 20) d += `${x === 0 ? "M" : "L"}${x} ${(y0 - h(x, r) * (1 - 0.65 * r / ROWS)).toFixed(1)} `;
+  g.insertAdjacentHTML("beforeend", `<path class="ct${r % 6 === 4 ? " o" : ""}" pathLength="1" d="${d}"/>`);
+}
+gsap.set(".ct", { attr: { "stroke-dasharray": 1, "stroke-dashoffset": 1 } });
+gsap.set("#sun", { y: 60, opacity: 0 });
+gsap.set("#ttl, #lab", { opacity: 0, y: 14 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#ttl", { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.05)
+  .to("#lab", { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.2)
+  .to("#sun", { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" }, 0.1)
+  .to(".ct", { attr: { "stroke-dashoffset": 0 }, duration: 0.6, stagger: 0.035, ease: "power2.inOut" }, 0.15)
+  // the surface glides toward the viewer: two contour steps, so the lines visibly travel
+  .to("#g", { y: STEP * 2, duration: 3.2, ease: "none" }, 0.75)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["terrain-mesh"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Globe Arcs</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* A line-drawn globe: meridians drift slowly to suggest rotation, then arcs draw out from one home point with a
+   pen dot on each tip; each landing pings and adds its city to the list. DEMO brand, demo numbers. */
+#root { background:#111111; color:#fff; }
+svg { position:absolute; inset:0; }
+.sph { fill:#181818; stroke:#3a3a3a; stroke-width:2; }
+.gl { fill:none; stroke:#2e2e2e; stroke-width:1.6; }
+.arc { fill:none; stroke:var(--orange); stroke-width:3.5; stroke-linecap:round; }
+.pen { fill:none; stroke:#fff; stroke-width:14; stroke-linecap:round; stroke-dasharray:0 2; }
+.pt { fill:var(--orange); }
+.home { fill:#fff; }
+.ping { fill:none; stroke:var(--orange); stroke-width:3; opacity:0; }
+.ttl { position:absolute; left:780px; top:220px; font:800 52px/1.05 var(--sans); letter-spacing:-0.025em; width:360px; }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange); }
+.city { position:absolute; left:784px; display:flex; align-items:center; gap:14px; font:600 30px var(--sans); color:#e6e6e6; }
+.city i { width:12px; height:12px; border-radius:50%; background:var(--orange); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#8a8a8a; }
+</style></head>
+<body><div id="root" data-composition-id="globe-arcs" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Guests · demo data · ola negra</div>
+  <svg viewBox="0 0 1200 900">
+    <circle class="sph" cx="400" cy="470" r="300"/>
+    <g id="lats">
+      <ellipse class="gl" cx="400" cy="470" rx="300" ry="56"/>
+      <ellipse class="gl" cx="400" cy="370" rx="282" ry="52"/><ellipse class="gl" cx="400" cy="570" rx="282" ry="52"/>
+      <ellipse class="gl" cx="400" cy="275" rx="226" ry="42"/><ellipse class="gl" cx="400" cy="665" rx="226" ry="42"/>
+    </g>
+    <g id="mers">
+      <ellipse class="gl" id="m1" cx="400" cy="470" rx="80" ry="300"/>
+      <ellipse class="gl" id="m2" cx="400" cy="470" rx="170" ry="300"/>
+      <ellipse class="gl" id="m3" cx="400" cy="470" rx="250" ry="300"/>
+    </g>
+    <path class="arc" id="a1" pathLength="1" d="M330 520 Q 380 250 560 330"/>
+    <path class="arc" id="a2" pathLength="1" d="M330 520 Q 250 300 300 300"/>
+    <path class="arc" id="a3" pathLength="1" d="M330 520 Q 520 520 600 410"/>
+    <path class="arc" id="a4" pathLength="1" d="M330 520 Q 420 700 440 700"/>
+    <path class="pen" id="p1" pathLength="1" d="M330 520 Q 380 250 560 330"/>
+    <path class="pen" id="p2" pathLength="1" d="M330 520 Q 250 300 300 300"/>
+    <path class="pen" id="p3" pathLength="1" d="M330 520 Q 520 520 600 410"/>
+    <path class="pen" id="p4" pathLength="1" d="M330 520 Q 420 700 440 700"/>
+    <circle class="ping" id="g1" cx="560" cy="330" r="10"/><circle class="ping" id="g2" cx="300" cy="300" r="10"/>
+    <circle class="ping" id="g3" cx="600" cy="410" r="10"/><circle class="ping" id="g4" cx="440" cy="700" r="10"/>
+    <circle class="pt" id="d1" cx="560" cy="330" r="9"/><circle class="pt" id="d2" cx="300" cy="300" r="9"/>
+    <circle class="pt" id="d3" cx="600" cy="410" r="9"/><circle class="pt" id="d4" cx="440" cy="700" r="9"/>
+    <circle class="home" cx="330" cy="520" r="11"/>
+  </svg>
+  <div class="ttl" id="ttl">Guests from <em>23 countries</em></div>
+  <div class="city" id="c1" style="top:400px"><i></i>Lisbon</div>
+  <div class="city" id="c2" style="top:452px"><i></i>Toronto</div>
+  <div class="city" id="c3" style="top:504px"><i></i>Berlin</div>
+  <div class="city" id="c4" style="top:556px"><i></i>São Paulo</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// Dash tweens go through attr (a CSS strokeDashoffset tween snaps at halfway); the pen is a zero-length dash.
+gsap.set(".arc", { attr: { "stroke-dasharray": 1, "stroke-dashoffset": 1 } });
+gsap.set(".pen", { attr: { "stroke-dashoffset": 0 }, opacity: 0 });
+gsap.set(".pt", { scale: 0, transformOrigin: "50% 50%" });
+gsap.set(".city, #ttl", { opacity: 0, x: -14 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#ttl", { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 0.1)
+  // slow drift of the meridians: each widens a little, as if the globe turns
+  .to("#m1", { attr: { rx: 150 }, duration: 3.8, ease: "none" }, 0)
+  .to("#m2", { attr: { rx: 230 }, duration: 3.8, ease: "none" }, 0)
+  .to("#m3", { attr: { rx: 290 }, duration: 3.8, ease: "none" }, 0);
+[1, 2, 3, 4].forEach((k, i) => {
+  const at = 0.35 + i * 0.32, dur = 0.55;
+  tl.to(`#a${k}`, { attr: { "stroke-dashoffset": 0 }, duration: dur, ease: "power2.inOut" }, at)
+    .to(`#p${k}`, { attr: { "stroke-dashoffset": -1 }, duration: dur, ease: "power2.inOut" }, at)
+    .to(`#p${k}`, { opacity: 1, duration: 0.04 }, at)
+    .to(`#p${k}`, { opacity: 0, duration: 0.08 }, at + dur)
+    .to(`#d${k}`, { scale: 1, duration: 0.3, ease: "back.out(3)" }, at + dur)
+    .fromTo(`#g${k}`, { attr: { r: 10 }, opacity: 0.9 }, { attr: { r: 34 }, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, at + dur)
+    .to(`#c${k}`, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, at + dur);
+});
+tl.to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["globe-arcs"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>
