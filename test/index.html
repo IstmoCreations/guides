@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test an AI tool before you trust it</title>
+<meta name="description" content="How I tested Meta's Astryx design system: three AI builders, the same three jobs, judged blind by a different AI. The exact prompts and steps, to test any tool yourself. In English and Spanish.">
+<script>
+  (function () {
+    var l;
+    try { l = localStorage.getItem('lang'); } catch (e) {}
+    if (l !== 'en' && l !== 'es') l = /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+  })();
+</script>
+<style>
+  :root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --code: #f1eee8; --accent: #0f7a6c; --warn: #9a5b00; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141412; --fg: #ecebe6; --muted: #a29e95; --line: #2c2b28; --code: #1f1e1b; --accent: #4cc3b0; --warn: #f0b45c; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 20px 16px 64px; }
+  html[data-lang="en"] [data-l="es"], html[data-lang="es"] [data-l="en"] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+  .brand img { height: 44px; width: auto; display: block; }
+  .logo-dark-bg { display: none !important; }
+  @media (prefers-color-scheme: dark) { .logo-dark-bg { display: block !important; } .logo-light-bg { display: none !important; } }
+  .switch { display: flex; gap: 4px; }
+  .switch button { font: inherit; font-size: 0.85rem; padding: 4px 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  html[data-lang="en"] .switch [data-set="en"], html[data-lang="es"] .switch [data-set="es"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 36px 0 8px; }
+  p, li { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 20px; }
+  .credit { border-left: 3px solid var(--accent); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  .warn { border-left: 3px solid var(--warn); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  a { color: var(--accent); }
+  code, pre { font: 0.88rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--code); border-radius: 6px; }
+  code { padding: 1px 5px; }
+  .prompt { position: relative; margin: 0 0 18px; }
+  pre { padding: 12px 14px; padding-top: 34px; overflow-x: auto; border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; margin: 0; }
+  pre code { padding: 0; background: none; }
+  .copy { position: absolute; top: 6px; right: 6px; font: inherit; font-size: 0.8rem; padding: 2px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--accent); border-radius: 999px; cursor: pointer; }
+  ol, ul { padding-left: 22px; }
+  table { border-collapse: collapse; width: 100%; margin: 0 0 14px; font-size: 0.95rem; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <a href="https://istmocreations.com" class="brand" aria-label="Istmo Creations home">
+      <img class="logo-dark-bg" src="../logo-light.svg" alt="Istmo Creations">
+      <img class="logo-light-bg" src="../logo.svg" alt="Istmo Creations">
+    </a>
+    <div class="switch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set="en">English</button>
+      <button type="button" data-set="es">Español</button>
+    </div>
+  </header>
+
+  <!-- ENGLISH -->
+  <div data-l="en">
+  <h1>Test an AI tool before you trust it</h1>
+  <p class="lede">How I tested Meta's Astryx design system: three AI builders, the same three jobs, judged blind by a different AI. Here are the exact prompts and steps, so you can test any tool on your own work.</p>
+
+  <p class="credit"><strong>Astryx</strong> is Meta's open-source design system (<a href="https://github.com/meta/astryx">github.com/meta/astryx</a>, MIT licence, in beta). The judge was OpenAI's Codex. Not sponsored by either.</p>
+
+  <p class="warn"><strong>This is a small test, not a benchmark.</strong> One run per builder, one judge, first screens only. A different run could swap two close results. Astryx is built for big teams keeping hundreds of screens consistent, which one page can't test.</p>
+
+  <h2>What I found</h2>
+  <table>
+    <tr><th>Job</th><th>1st</th><th>2nd</th><th>3rd</th></tr>
+    <tr><td>Dashboard</td><td>My setup</td><td>Plain AI</td><td>Astryx</td></tr>
+    <tr><td>Landing page</td><td>My setup</td><td>Plain AI</td><td>Astryx</td></tr>
+    <tr><td>Phone app</td><td>Plain AI</td><td>My setup</td><td>Astryx</td></tr>
+  </table>
+  <p>Blind score out of 120: my setup 104, plain AI 102, Astryx 73. My setup took 2 to 5 times longer than plain AI. The Astryx pages shipped about 4 times the code.</p>
+
+  <h2>1. Pick three small, real jobs</h2>
+  <p>Different kinds of screens, each one a single paste. These were mine:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Replace the starter page of this Vite + React + TypeScript app with this:
+"A members dashboard for a small paddling club. Top: club name 'Bahía Paddle Club' and today's date. A row of four headline numbers: active members (48), sessions this week (12), payments due (5), boat racks free (3). Below: the next five sessions (day, time, coach, spots left), and a members table (name, plan, last session, payment status shown as a badge) with a search box. It should look polished and modern, like a real product, on a laptop screen."
+Use made-up data (8-10 members). Single page, no routing, no backend.</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Replace the starter page of this Vite + React + TypeScript app with this:
+"A landing page for 'Ola Negra', a small surf and paddle retreat on Panama's Pacific coast. Dark, bold, editorial style: big confident type, a strong hero with a headline and a 'Book your week' button, a short 'what a day looks like' section (dawn paddle, surf lesson, long lunch, sunset session), three retreat packages with prices ($890 / $1,290 / $1,990 per week) where the middle one is highlighted, two guest quotes, and a footer. It should feel premium and memorable, not like a template, on a laptop screen."
+No images available: use colour, type, shapes and CSS only. Single page, no routing, no backend.</code></pre></div>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>Replace the starter page of this Vite + React + TypeScript app with this:
+"A phone app screen for 'Coco', a friendly AI assistant that helps a small café owner. Mobile-first, designed for a 390 x 844 phone screen. Warm, playful, friendly style. A top bar with Coco's name and avatar, a chat with 6 made-up messages, a typing indicator, and a message composer pinned at the bottom with an attach button and a send button. It should look like a real, polished app."
+No images: use emoji, colour, type and CSS only. Single screen. Sending a typed message should append it to the chat.</code></pre></div>
+
+  <h2>2. Run each job with and without the tool</h2>
+  <p>Same AI, same model, a fresh copy of the same starter project each time. Add one line per builder. With the tool:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>This app has Meta's Astryx design system installed, with its CLI. Run the CLI's build command with no arguments first, read its playbook, and follow it. You may install any Astryx package and anything an Astryx template says it needs. Install nothing else. Finish when the build passes, and report anything confusing or broken.</code></pre></div>
+  <p>Without it: <code>Build it with plain React and your own CSS. Do not install any packages.</code></p>
+  <p><strong>Make "plain" really plain.</strong> Claude Code normally loads your skills, plugins and instruction files. To switch them off (Claude Code CLI), save this as <code>bare-settings.json</code>, adding the full path of your own user <code>CLAUDE.md</code>:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>{"claudeMdExcludes": ["**/CLAUDE.md"]}</code></pre></div>
+  <p>Then run each plain job from its own project folder:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>claude -p "&lt;the job prompt&gt;" --setting-sources project --settings bare-settings.json --disable-slash-commands --strict-mcp-config --no-session-persistence --output-format json</code></pre></div>
+  <p>Check it worked before you trust it: ask the same command <em>"List every skill and any CLAUDE.md instructions in your context, or say NONE"</em>. It should say NONE. Then remove the settings file and ask again: now it should list them. If both answers match, the switch did nothing.</p>
+
+  <h2>3. Screenshot, then hide the names</h2>
+  <p>Take the first screen of each result at the size it was made for (laptop or phone). Rename the three files of each job to X, Y and Z in a random order, and write the key down somewhere the judge can't see.</p>
+
+  <h2>4. Ask a different AI to judge blind</h2>
+  <p>Attach the screenshots and paste this. Using a different company's model means it has no reason to favour its own work.</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>You are an independent design judge. Everything you need is in this message and the attached screenshots. Do not browse or read files.
+Three separate AI runs built each interface from the SAME brief. For each job the results are labelled X, Y, Z in random order (the letters mean nothing and are shuffled per job).
+[Paste each job's brief here.]
+Before judging, state in two sentences your own criteria for "good".
+1. For each job, rank X, Y, Z from best to worst and score each 1 to 10 for: visual polish, fit to the brief, distinctiveness (designed, not a default template), and readability at that screen size. Name any visible defect.
+2. Is any one approach consistently stronger or weaker? Only say so if the screenshots support it.
+3. Mark each claim VERIFIED (visible) or ASSUMED, and list what the screenshots did not let you judge.
+End with one line per job: JOB 1: best=&lt;letter&gt; middle=&lt;letter&gt; worst=&lt;letter&gt;</code></pre></div>
+
+  <h2>5. Unblind, and count the cost too</h2>
+  <p>Match the letters back with your key. Then compare what each builder cost you: how long it took, and how much code it shipped (the size of the built files). A tool can look the same and still cost more.</p>
+
+  <footer>Istmo Creations: building with AI in Panamá, and sharing what works.<br>Run 13–14 Nov 2026 with Claude Code (Claude Opus 5.5) and OpenAI Codex.</footer>
+  </div>
+
+  <!-- ESPAÑOL -->
+  <div data-l="es">
+  <h1>Prueba una herramienta de IA antes de confiar en ella</h1>
+  <p class="lede">Cómo probé Astryx, el sistema de diseño de Meta: tres constructores de IA, los mismos tres trabajos, juzgados a ciegas por otra IA. Aquí están los prompts y pasos exactos, para que pruebes cualquier herramienta con tu propio trabajo.</p>
+
+  <p class="credit"><strong>Astryx</strong> es el sistema de diseño de código abierto de Meta (<a href="https://github.com/meta/astryx">github.com/meta/astryx</a>, licencia MIT, en beta). El juez fue Codex, de OpenAI. Sin patrocinio de ninguno.</p>
+
+  <p class="warn"><strong>Es una prueba pequeña, no un benchmark.</strong> Una corrida por constructor, un juez, solo la primera pantalla. Otra corrida podría invertir dos resultados cercanos. Astryx está hecho para equipos grandes que mantienen cientos de pantallas iguales, algo que una sola página no prueba.</p>
+
+  <h2>Lo que encontré</h2>
+  <table>
+    <tr><th>Trabajo</th><th>1.º</th><th>2.º</th><th>3.º</th></tr>
+    <tr><td>Panel de socios</td><td>Mi configuración</td><td>IA sola</td><td>Astryx</td></tr>
+    <tr><td>Página de inicio</td><td>Mi configuración</td><td>IA sola</td><td>Astryx</td></tr>
+    <tr><td>App de teléfono</td><td>IA sola</td><td>Mi configuración</td><td>Astryx</td></tr>
+  </table>
+  <p>Puntaje a ciegas sobre 120: mi configuración 104, IA sola 102, Astryx 73. Mi configuración tardó de 2 a 5 veces más que la IA sola. Las páginas con Astryx pesaban unas 4 veces más código.</p>
+
+  <h2>1. Elige tres trabajos pequeños y reales</h2>
+  <p>Pantallas de distinto tipo, cada una en un solo mensaje. Usé los de arriba en inglés (cambia a English para copiarlos); funcionan igual traducidos.</p>
+
+  <h2>2. Corre cada trabajo con y sin la herramienta</h2>
+  <p>La misma IA, el mismo modelo, una copia nueva del mismo proyecto inicial cada vez. Agrega una línea por constructor. Con la herramienta:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Esta app tiene instalado Astryx, el sistema de diseño de Meta, con su CLI. Primero corre el comando build del CLI sin argumentos, lee su guía y síguela. Puedes instalar cualquier paquete de Astryx y lo que una plantilla de Astryx diga que necesita. No instales nada más. Termina cuando el build pase, e informa lo que haya sido confuso o no haya funcionado.</code></pre></div>
+  <p>Sin ella: <code>Hazlo con React y tu propio CSS. No instales ningún paquete.</code></p>
+  <p><strong>Que la IA "sola" esté realmente sola.</strong> Claude Code normalmente carga tus skills, plugins y archivos de instrucciones. Para apagarlos (Claude Code en la terminal), guarda esto como <code>bare-settings.json</code>, agregando la ruta completa de tu propio <code>CLAUDE.md</code> de usuario:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>{"claudeMdExcludes": ["**/CLAUDE.md"]}</code></pre></div>
+  <p>Luego corre cada trabajo sin herramienta desde su propia carpeta:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>claude -p "&lt;el prompt del trabajo&gt;" --setting-sources project --settings bare-settings.json --disable-slash-commands --strict-mcp-config --no-session-persistence --output-format json</code></pre></div>
+  <p>Comprueba que funcionó antes de confiar: pregúntale con el mismo comando <em>"Lista cada skill y cualquier instrucción de CLAUDE.md en tu contexto, o di NONE"</em>. Debe decir NONE. Luego quita el archivo de configuración y pregunta otra vez: ahora debe listarlos. Si las dos respuestas son iguales, el interruptor no hizo nada.</p>
+
+  <h2>3. Captura la pantalla y oculta los nombres</h2>
+  <p>Toma la primera pantalla de cada resultado al tamaño para el que se hizo (laptop o teléfono). Renombra los tres archivos de cada trabajo como X, Y y Z en orden al azar, y anota la clave donde el juez no pueda verla.</p>
+
+  <h2>4. Pídele a otra IA que juzgue a ciegas</h2>
+  <p>Adjunta las capturas y pega esto. Usar un modelo de otra empresa significa que no tiene motivo para favorecer su propio trabajo.</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>Eres un juez de diseño independiente. Todo lo que necesitas está en este mensaje y en las capturas adjuntas. No navegues ni leas archivos.
+Tres corridas de IA distintas construyeron cada interfaz con el MISMO encargo. Para cada trabajo los resultados se llaman X, Y, Z en orden al azar (las letras no significan nada y se mezclan en cada trabajo).
+[Pega aquí el encargo de cada trabajo.]
+Antes de juzgar, di en dos frases tus propios criterios de "bueno".
+1. Para cada trabajo, ordena X, Y, Z de mejor a peor y califica cada uno de 1 a 10 en: acabado visual, ajuste al encargo, personalidad (diseñado, no una plantilla por defecto) y legibilidad a ese tamaño de pantalla. Nombra cualquier defecto visible.
+2. ¿Algún enfoque es siempre más fuerte o más débil? Dilo solo si las capturas lo respaldan.
+3. Marca cada afirmación como VERIFICADO (visible) o SUPUESTO, y lista lo que las capturas no te dejaron juzgar.
+Termina con una línea por trabajo: TRABAJO 1: mejor=&lt;letra&gt; medio=&lt;letra&gt; peor=&lt;letra&gt;</code></pre></div>
+
+  <h2>5. Revela los nombres, y cuenta también el costo</h2>
+  <p>Empata las letras con tu clave. Luego compara lo que te costó cada constructor: cuánto tardó y cuánto código entregó (el peso de los archivos compilados). Una herramienta puede verse igual y aun así costar más.</p>
+
+  <footer>Istmo Creations: construyendo con IA en Panamá, y compartiendo lo que funciona.<br>Corrido del 13 al 14 de noviembre de 2026 con Claude Code (Claude Opus 5.5) y Codex de OpenAI.</footer>
+  </div>
+</main>
+<script>
+  document.querySelectorAll('.switch [data-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-set');
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.setAttribute('lang', l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  });
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.parentNode.querySelector('code').innerText, label = b.textContent;
+      function done() { b.textContent = document.documentElement.getAttribute('data-lang') === 'es' ? '¡Copiado!' : 'Copied!'; setTimeout(function () { b.textContent = label; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () {});
+    });
+  });
+</script>
+</body>
+</html>
