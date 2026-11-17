@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Layer Explode</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+#root { background:#111111; color:#fff; }
+/* Each layer sits in its own slot. The slot moves on screen (y); the layer inside tilts (rotationX/Z).
+   Spreading slots instead of pushing layers along Z keeps every layer apart and lines the labels up exactly. */
+.slot { position:absolute; left:200px; top:255px; width:360px; height:450px; perspective:4000px; }
+.layer { position:absolute; inset:0; border-radius:26px; }
+#l0 { background:#2e2e2e; }
+#l1, #l2, #l3 { background:#ffffff08; outline:1px solid #ffffff2e; }
+#l1 i { position:absolute; left:26px; right:26px; border:2px dashed #8a8a8a; border-radius:14px; }
+#l2 i { position:absolute; left:34px; border-radius:10px; background:#e6e6e6; }
+#l2 .img { right:34px; top:34px; height:190px; border-radius:18px; background:var(--orange); }
+#l3 .btn { position:absolute; left:34px; right:34px; bottom:36px; height:60px; border-radius:999px; background:#fff; color:#111;
+           font:600 20px/60px var(--sans); text-align:center; }
+.tag { position:absolute; left:770px; display:flex; align-items:center; gap:16px; font:600 28px var(--sans); color:#fff; }
+.tag b { font:400 28px var(--serif); font-style:italic; color:var(--orange); }
+.tag::before { content:""; width:70px; height:2px; background:#8a8a8a; }
+/* dashed joins between matching corners: the stack reads as one card pulled apart, not four cards.
+   Corner positions were measured at t 2.9 (rounded corners, 7.6 px in) and only hold for the end pose. */
+#joins { position:absolute; inset:0; }
+#joins line { stroke:#8a8a8a; stroke-width:1.5; stroke-dasharray:6 7; }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#8a8a8a; }
+</style></head>
+<body><div id="root" data-composition-id="layer-explode" data-start="0" data-width="1200" data-height="900" data-duration="3">
+  <div class="meta" data-layout-ignore>Anatomy · Booking card</div>
+  <svg id="joins" viewBox="0 0 1200 900">
+    <line x1="232" y1="228" x2="232" y2="738"/><line x1="433" y1="27" x2="433" y2="537"/>
+    <line x1="541" y1="117" x2="541" y2="627"/><line x1="322" y1="336" x2="322" y2="846"/>
+  </svg>
+  <div class="slot" id="s0"><div class="layer" id="l0"></div></div>
+  <div class="slot" id="s1"><div class="layer" id="l1"><i style="top:26px;height:200px"></i><i style="top:244px;height:92px"></i><i style="bottom:26px;height:80px"></i></div></div>
+  <div class="slot" id="s2"><div class="layer" id="l2"><i class="img"></i><i style="top:250px;width:240px;height:24px"></i><i style="top:290px;width:280px;height:14px;background:#9a9a9a"></i><i style="top:314px;width:200px;height:14px;background:#9a9a9a"></i></div></div>
+  <div class="slot" id="s3"><div class="layer" id="l3"><div class="btn">Book a call</div></div></div>
+  <div class="tag" style="top:158px"><b>04</b>Action</div>
+  <div class="tag" style="top:328px"><b>03</b>Content</div>
+  <div class="tag" style="top:498px"><b>02</b>Layout</div>
+  <div class="tag" style="top:668px"><b>01</b>Background</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+gsap.set(".layer", { rotationX: 0, rotationZ: 0 });
+gsap.set("#joins", { clipPath: "inset(0% 0% 100% 0%)" });
+const tl = gsap.timeline({ paused: true });
+tl.from(".slot, .meta", { opacity: 0, duration: 0.3, ease: "power2.out" }, 0)
+  .to(".layer", { rotationX: 68, rotationZ: -45, scale: 0.86, duration: 0.75, ease: "power2.inOut" }, 0.4)
+  .to("#s0", { y: 205, duration: 0.75, ease: "power2.inOut" }, 0.9)
+  .to("#s1", { y: 35, duration: 0.75, ease: "power2.inOut" }, 0.9)
+  .to("#s2", { y: -135, duration: 0.75, ease: "power2.inOut" }, 0.9)
+  .to("#s3", { y: -305, duration: 0.75, ease: "power2.inOut" }, 0.9)
+  .to("#joins", { clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "power2.out" }, 1.6)
+  .from(".tag", { opacity: 0, x: -20, duration: 0.3, stagger: -0.1, ease: "power2.out" }, 1.45)
+  .to({}, { duration: 0.01 }, 2.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["layer-explode"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>
