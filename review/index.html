@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up an adversarial review for your AI builds</title>
+<meta name="description" content="Two AIs from two companies: one leads and builds, the other attacks the plan and the code, and you rule on every finding. The loop, the seat swap and the exact messages. In English and Spanish.">
+<script>
+  (function () {
+    var l;
+    try { l = localStorage.getItem('lang'); } catch (e) {}
+    if (l !== 'en' && l !== 'es') l = /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+  })();
+</script>
+<style>
+  :root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --code: #f1eee8; --accent: #c2410c; --warn: #9a5b00; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141412; --fg: #ecebe6; --muted: #a29e95; --line: #2c2b28; --code: #1f1e1b; --accent: #fb923c; --warn: #f0b45c; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 700px; margin: 0 auto; padding: 20px 16px 64px; }
+  html[data-lang="en"] [data-l="es"], html[data-lang="es"] [data-l="en"] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+  .brand img { height: 44px; width: auto; display: block; }
+  .logo-dark-bg { display: none !important; }
+  @media (prefers-color-scheme: dark) { .logo-dark-bg { display: block !important; } .logo-light-bg { display: none !important; } }
+  .switch { display: flex; gap: 4px; }
+  .switch button { font: inherit; font-size: 0.85rem; padding: 4px 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  html[data-lang="en"] .switch [data-set="en"], html[data-lang="es"] .switch [data-set="es"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 36px 0 8px; }
+  p, li { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 20px; }
+  .credit { border-left: 3px solid var(--accent); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  .warn { border-left: 3px solid var(--warn); padding: 8px 14px; background: var(--code); border-radius: 0 8px 8px 0; }
+  a { color: var(--accent); }
+  code, pre { font: 0.88rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--code); border-radius: 6px; }
+  code { padding: 1px 5px; }
+  .prompt { position: relative; margin: 0 0 18px; }
+  pre { padding: 12px 14px; padding-top: 34px; overflow-x: auto; border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; margin: 0; }
+  pre code { padding: 0; background: none; }
+  .copy { position: absolute; top: 6px; right: 6px; font: inherit; font-size: 0.8rem; padding: 2px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--accent); border-radius: 999px; cursor: pointer; }
+  ol, ul { padding-left: 22px; }
+  table { border-collapse: collapse; width: 100%; margin: 0 0 14px; font-size: 0.95rem; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <a href="https://istmocreations.com" class="brand" aria-label="Istmo Creations home">
+      <img class="logo-dark-bg" src="../logo-light.svg" alt="Istmo Creations">
+      <img class="logo-light-bg" src="../logo.svg" alt="Istmo Creations">
+    </a>
+    <div class="switch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set="en">English</button>
+      <button type="button" data-set="es">Español</button>
+    </div>
+  </header>
+
+  <!-- ENGLISH -->
+  <div data-l="en">
+  <h1>Set up an adversarial review for your AI builds</h1>
+  <p class="lede">For people who build with Claude Code or another AI agent, not just chat. One AI leads and builds. A different AI, from a different company, attacks the plan before any code exists and the code after it's built. You rule on every finding.</p>
+
+  <p class="credit">Codex runs inside Claude Code through OpenAI's <a href="https://github.com/openai/codex-plugin-cc">codex-plugin-cc</a> (Apache-2.0). The "try to break into your own app" idea comes from Kem (@kem_glitch); our <a href="../security/">security check guide</a> turns it into prompts. Not sponsored by anyone.</p>
+
+  <h2>Why bother</h2>
+  <p>The AI that wrote something is the worst judge of it: it grades its own homework. In my first two builds with this setup, every problem the review found was in the <strong>plan</strong>, not the code. A plan review is the cheapest place to catch a mistake, because nothing has been built on it yet.</p>
+
+  <h2>What you need</h2>
+  <ul>
+    <li><strong>Claude Code</strong> (the lead in most of my builds).</li>
+    <li><strong>Codex</strong>, OpenAI's coding agent. The plugin needs a ChatGPT subscription (the Free plan counts) or an OpenAI API key, and Node.js 18.18 or later. Check <a href="https://github.com/openai/codex-plugin-cc">its README</a> for the current terms; reviews count toward your Codex usage limits.</li>
+  </ul>
+  <p>Install, inside Claude Code:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>/plugin marketplace add openai/codex-plugin-cc
+/plugin install codex@openai-codex
+/reload-plugins
+/codex:setup</code></pre></div>
+  <p>That gives you <code>/codex:review</code> (a normal read-only review) and <code>/codex:adversarial-review</code> (a challenge review you can steer). No plugin? The loop still works: paste the message below into a second AI by hand.</p>
+
+  <h2>The loop</h2>
+  <table>
+    <tr><th>Step</th><th>Who</th></tr>
+    <tr><td>1. Write the plan: what will change, in which files, and how you'll know it worked</td><td>LEAD</td></tr>
+    <tr><td>2. Attack the plan</td><td>REVIEWER</td></tr>
+    <tr><td>3. Rule on every finding: fix it, or reject it with a reason</td><td>LEAD</td></tr>
+    <tr><td>4. Build it (nothing is built while a finding is still open)</td><td>LEAD</td></tr>
+    <tr><td>5. Attack the result, with the diff in hand</td><td>REVIEWER</td></tr>
+    <tr><td>6. Rule on those findings, then the final call</td><td>LEAD (and you sign off)</td></tr>
+  </table>
+  <p><strong>The seats swap.</strong> Either AI can lead. When one is running low on usage, swap: the other one leads and builds, and the first one reviews. Whoever leads makes the final call. The one rule that never changes: <strong>no AI reviews its own work.</strong></p>
+
+  <h2>The review message (steps 2 and 5)</h2>
+  <p>An open "review this" lets the reviewer read your whole project and costs a lot. This shape, everything inline, three exact questions, cut my reviews to a fraction of the cost and made them sharper.</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>You are reviewing a plan written by a different AI. Your job is to find what will break, not to be agreeable.
+
+Everything you need is in this message. Do NOT read the project. If something you need is missing, answer "NEED: &lt;exact file or detail&gt;" and stop.
+
+Before you look at the plan, write two sentences: how YOU would approach this change.
+
+THE GOAL: [one paragraph: what this change is for, and how we'll know it worked]
+
+THE PLAN: [paste the plan]
+
+THE CODE IT TOUCHES: [paste the relevant code, with file names and line numbers]
+
+Answer only these three questions:
+1. [the question that decides whether this works]
+2. [the question about what could go wrong for a real user]
+3. [the question about what the plan forgot]
+
+For every claim, write VERIFIED (you can point to the line that proves it) or ASSUMED (you are inferring). Give each question a verdict: OK / AMEND / BLOCK. End with a list called "What this message did not show me".</code></pre></div>
+  <p>For the code review (step 5), paste the <strong>diff</strong> and the tests instead of the plan, and ask whether the code does what the plan promised.</p>
+
+  <h2>Ruling on findings (steps 3 and 6)</h2>
+  <ul>
+    <li>Every finding gets one answer: <strong>fixed</strong>, or <strong>rejected, because …</strong> Write the reason down.</li>
+    <li>A reviewer that you agree with every single time isn't reviewing; you're obeying. Reject what doesn't change the outcome.</li>
+    <li>Trust VERIFIED over ASSUMED. An ASSUMED finding is a question to check, not a fact.</li>
+    <li>If the findings grow every round instead of shrinking, stop: the plan isn't ready to be reviewed yet.</li>
+  </ul>
+
+  <h2>Make it a rule</h2>
+  <p>Put this in your instructions file (CLAUDE.md for Claude Code, AGENTS.md for Codex) so the agent runs the loop without being asked:</p>
+  <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>## Adversarial review (every build beyond a one-line fix)
+1. Write the plan first, with a goal and how we'll know it worked.
+2. Send the plan to the other AI for review (Codex via /codex:adversarial-review, or by hand) using the review message: everything inline, three questions, VERIFIED vs ASSUMED.
+3. Do not build while any finding is unaddressed. Each one is fixed, or rejected with a stated reason.
+4. Build. Then send the diff and the tests back for a code review, and rule on those findings the same way.
+5. No AI reviews its own work. Whoever leads makes the final call; I sign off.</code></pre></div>
+
+  <h2>Then try to break in</h2>
+  <p>Once it works, have an AI attack the running app the way an outsider would. Kem's idea, as prompts: <a href="../security/">Security-check your AI-built app</a>.</p>
+
+  <footer>Istmo Creations: building with AI in Panamá, and sharing what works.<br>This is the loop I use on every build beyond a one-line fix, with Claude Code and Codex.</footer>
+  </div>
+
+  <!-- ESPAÑOL -->
+  <div data-l="es">
+  <h1>Monta una revisión adversarial para lo que construyes con IA</h1>
+  <p class="lede">Para quien construye con Claude Code u otro agente de IA, no solo chatea. Una IA lidera y construye. Otra IA, de otra empresa, ataca el plan antes de que exista código, y el código después. Tú decides cada hallazgo.</p>
+
+  <p class="credit">Codex funciona dentro de Claude Code con el plugin <a href="https://github.com/openai/codex-plugin-cc">codex-plugin-cc</a> de OpenAI (Apache-2.0). La idea de "intenta entrar a tu propia app" es de Kem (@kem_glitch); nuestra <a href="../security/">guía de revisión de seguridad</a> la convierte en prompts. Sin patrocinio de nadie.</p>
+
+  <h2>Por qué vale la pena</h2>
+  <p>La IA que escribió algo es la peor jueza de su trabajo: se pone su propia nota. En mis dos primeros proyectos con este método, todos los problemas que encontró la revisión estaban en el <strong>plan</strong>, no en el código. Revisar el plan es lo más barato, porque todavía no se ha construido nada encima.</p>
+
+  <h2>Qué necesitas</h2>
+  <ul>
+    <li><strong>Claude Code</strong> (el líder en la mayoría de mis proyectos).</li>
+    <li><strong>Codex</strong>, el agente de código de OpenAI. El plugin necesita una suscripción de ChatGPT (el plan gratis cuenta) o una clave de API de OpenAI, y Node.js 18.18 o más nuevo. Revisa <a href="https://github.com/openai/codex-plugin-cc">su README</a> para las condiciones actuales; las revisiones cuentan contra tus límites de uso de Codex.</li>
+  </ul>
+  <p>Instálalo dentro de Claude Code:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>/plugin marketplace add openai/codex-plugin-cc
+/plugin install codex@openai-codex
+/reload-plugins
+/codex:setup</code></pre></div>
+  <p>Eso te da <code>/codex:review</code> (una revisión normal, solo lectura) y <code>/codex:adversarial-review</code> (una revisión de desafío que puedes dirigir). ¿Sin plugin? El método funciona igual: pega el mensaje de abajo en otra IA a mano.</p>
+
+  <h2>El ciclo</h2>
+  <table>
+    <tr><th>Paso</th><th>Quién</th></tr>
+    <tr><td>1. Escribir el plan: qué cambia, en qué archivos y cómo sabremos que funcionó</td><td>LÍDER</td></tr>
+    <tr><td>2. Atacar el plan</td><td>REVISOR</td></tr>
+    <tr><td>3. Decidir cada hallazgo: arreglarlo, o rechazarlo con una razón</td><td>LÍDER</td></tr>
+    <tr><td>4. Construirlo (nada se construye mientras haya un hallazgo abierto)</td><td>LÍDER</td></tr>
+    <tr><td>5. Atacar el resultado, con los cambios en la mano</td><td>REVISOR</td></tr>
+    <tr><td>6. Decidir esos hallazgos y dar la última palabra</td><td>LÍDER (y tú apruebas)</td></tr>
+  </table>
+  <p><strong>Los puestos se intercambian.</strong> Cualquiera de las dos IA puede liderar. Cuando a una le queda poco uso, se cambian: la otra lidera y construye, y la primera revisa. Quien lidera tiene la última palabra. La única regla que nunca cambia: <strong>ninguna IA revisa su propio trabajo.</strong></p>
+
+  <h2>El mensaje de revisión (pasos 2 y 5)</h2>
+  <p>Un "revisa esto" abierto deja que el revisor lea todo tu proyecto y cuesta mucho. Esta forma, todo dentro del mensaje y tres preguntas exactas, bajó mis revisiones a una fracción del costo y las hizo más precisas. Puedes pegarlo tal cual; la IA responde en español si se lo pides.</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>You are reviewing a plan written by a different AI. Your job is to find what will break, not to be agreeable.
+
+Everything you need is in this message. Do NOT read the project. If something you need is missing, answer "NEED: &lt;exact file or detail&gt;" and stop.
+
+Before you look at the plan, write two sentences: how YOU would approach this change.
+
+THE GOAL: [one paragraph: what this change is for, and how we'll know it worked]
+
+THE PLAN: [paste the plan]
+
+THE CODE IT TOUCHES: [paste the relevant code, with file names and line numbers]
+
+Answer only these three questions:
+1. [the question that decides whether this works]
+2. [the question about what could go wrong for a real user]
+3. [the question about what the plan forgot]
+
+For every claim, write VERIFIED (you can point to the line that proves it) or ASSUMED (you are inferring). Give each question a verdict: OK / AMEND / BLOCK. End with a list called "What this message did not show me".</code></pre></div>
+  <p>Para la revisión del código (paso 5), pega los <strong>cambios</strong> (el diff) y las pruebas en lugar del plan, y pregunta si el código hace lo que el plan prometió.</p>
+
+  <h2>Cómo decidir los hallazgos (pasos 3 y 6)</h2>
+  <ul>
+    <li>Cada hallazgo recibe una respuesta: <strong>arreglado</strong>, o <strong>rechazado, porque …</strong> Escribe la razón.</li>
+    <li>Si estás de acuerdo con el revisor todas las veces, no estás revisando: estás obedeciendo. Rechaza lo que no cambia el resultado.</li>
+    <li>Confía más en VERIFIED que en ASSUMED. Un hallazgo ASSUMED es una pregunta que comprobar, no un hecho.</li>
+    <li>Si los hallazgos crecen en cada ronda en vez de bajar, para: el plan todavía no está listo para revisarse.</li>
+  </ul>
+
+  <h2>Hazlo una regla</h2>
+  <p>Ponlo en tu archivo de instrucciones (CLAUDE.md para Claude Code, AGENTS.md para Codex) para que el agente siga el ciclo sin que se lo pidas:</p>
+  <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>## Adversarial review (every build beyond a one-line fix)
+1. Write the plan first, with a goal and how we'll know it worked.
+2. Send the plan to the other AI for review (Codex via /codex:adversarial-review, or by hand) using the review message: everything inline, three questions, VERIFIED vs ASSUMED.
+3. Do not build while any finding is unaddressed. Each one is fixed, or rejected with a stated reason.
+4. Build. Then send the diff and the tests back for a code review, and rule on those findings the same way.
+5. No AI reviews its own work. Whoever leads makes the final call; I sign off.</code></pre></div>
+
+  <h2>Después, intenta entrar</h2>
+  <p>Cuando funcione, pon a una IA a atacar la app en marcha como lo haría alguien de afuera. La idea de Kem, en prompts: <a href="../security/">Revisa la seguridad de tu app hecha con IA</a>.</p>
+
+  <footer>Istmo Creations: construyendo con IA en Panamá, y compartiendo lo que funciona.<br>Es el ciclo que uso en todo lo que va más allá de un arreglo de una línea, con Claude Code y Codex.</footer>
+  </div>
+</main>
+<script>
+  document.querySelectorAll('.switch [data-set]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-set');
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.setAttribute('lang', l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  });
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.parentNode.querySelector('code').innerText, label = b.textContent;
+      function done() { b.textContent = document.documentElement.getAttribute('data-lang') === 'es' ? '¡Copiado!' : 'Copied!'; setTimeout(function () { b.textContent = label; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () {});
+    });
+  });
+</script>
+</body>
+</html>
