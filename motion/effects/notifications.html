@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Notifications</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* A lock screen for a DEMO brand: notifications drop in from the top; each new one pushes the stack down. */
+.clock { position:absolute; left:110px; top:200px; }
+.clock b { display:block; font:800 220px/0.9 var(--sans); letter-spacing:-0.05em; }
+.clock span { display:block; margin-top:18px; font:600 34px var(--sans); color:var(--ink-soft); }
+.stack { position:absolute; left:610px; top:150px; width:490px; }
+.n { position:absolute; left:0; width:490px; padding:22px 24px; border-radius:26px; background:#fff; border:2px solid var(--line);
+     box-shadow:0 24px 40px -30px #00000059; display:flex; gap:16px; }
+.n em { width:54px; height:54px; border-radius:14px; background:var(--orange); flex:none; }
+.n .tx { flex:1; }
+.n .r { display:flex; justify-content:space-between; font:600 20px var(--sans); color:var(--ink-soft); }
+.n b { display:block; margin-top:4px; font:800 28px var(--sans); }
+.n p { margin:4px 0 0; font:400 24px/1.3 var(--sans); color:#3a3a3a; }
+.sum { position:absolute; left:610px; top:690px; display:flex; align-items:center; gap:12px; padding:14px 24px; border-radius:999px; background:var(--ink); color:#fff; font:800 26px var(--sans); }
+.sum i { width:14px; height:14px; border-radius:50%; background:var(--orange); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="notifications" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Demo · ola negra</div>
+  <div class="clock"><b>9:41</b><span>Saturday, 7 March</span></div>
+  <div class="stack">
+    <div class="n" id="n1"><em></em><div class="tx"><div class="r"><span>ola negra</span><span>now</span></div><b>New booking</b><p>Saturday 8:00 · 4 people</p></div></div>
+    <div class="n" id="n2"><em></em><div class="tx"><div class="r"><span>ola negra</span><span>now</span></div><b>Payment received</b><p>Deposit for Saturday, paid in full</p></div></div>
+    <div class="n" id="n3"><em></em><div class="tx"><div class="r"><span>ola negra</span><span>now</span></div><b>New message</b><p>“See you on the water!”</p></div></div>
+  </div>
+  <div class="sum" id="sum"><i></i>3 new · just now</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// Slots (y inside the stack): newest at 0, older ones pushed down 170 px each. A card enters from above the stack.
+const SLOT = 170;
+gsap.set(".n", { opacity: 0, y: -80 });
+gsap.set("#sum", { opacity: 0, x: -14 });
+const tl = gsap.timeline({ paused: true });
+tl.from(".clock", { opacity: 0, y: 16, duration: 0.3, ease: "power2.out" }, 0);
+// arrival order n3? no: n1 first (oldest at the bottom at the end), then n2, then n3 on top
+const order = ["#n1", "#n2", "#n3"];
+order.forEach((id, k) => {
+  const at = 0.3 + k * 0.55;
+  tl.fromTo(id, { opacity: 0, y: -80 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)", immediateRender: false }, at);
+  order.slice(0, k).forEach((older, j) => tl.to(older, { y: (k - j) * SLOT, duration: 0.35, ease: "power2.inOut" }, at));
+});
+tl.to("#sum", { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 1.95)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["notifications"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

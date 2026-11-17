@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Line Draw</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+.card { position:absolute; left:90px; top:110px; width:1020px; height:680px; border-radius:28px; background:#fff; border:2px solid var(--line);
+        box-shadow:0 30px 60px -40px #00000059; }
+.hd { position:absolute; left:140px; top:150px; display:flex; align-items:baseline; gap:18px; }
+.hd b { font:800 44px var(--sans); letter-spacing:-0.02em; }
+.hd span { font:600 24px var(--sans); color:var(--ink-soft); }
+.chip { position:absolute; right:140px; top:158px; display:flex; align-items:center; gap:10px; padding:10px 18px; border-radius:999px; background:var(--panel); font:600 24px var(--sans); }
+.chip i { width:14px; height:14px; border-radius:50%; background:var(--orange); }
+svg { position:absolute; inset:0; }
+.grid { stroke:var(--line); stroke-width:1.5; }
+.ax { font:600 24px var(--sans); fill:var(--ink-soft); }
+.ln { fill:none; stroke:var(--ink); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+.pen { fill:none; stroke:var(--orange); stroke-width:22; stroke-linecap:round; stroke-dasharray:0 2; }
+.area { fill:var(--orange); opacity:0.16; }
+.tag { position:absolute; left:870px; top:236px; padding:12px 20px; border-radius:16px; background:var(--ink); color:#fff; font:800 32px var(--sans); white-space:nowrap; }
+.tag span { color:var(--orange); }
+.dot { position:absolute; left:1000px; top:316px; width:28px; height:28px; margin:-14px 0 0 -14px; border-radius:50%; background:var(--orange); box-shadow:0 0 0 6px #fff; }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="line-draw" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Demo data · your.brand</div>
+  <div class="card"></div>
+  <div class="hd"><b>Visitors</b><span>last 12 weeks</span></div>
+  <div class="chip"><i></i>your.brand</div>
+  <svg viewBox="0 0 1200 900">
+    <line class="grid" x1="200" y1="320" x2="1040" y2="320"/><line class="grid" x1="200" y1="480" x2="1040" y2="480"/><line class="grid" x1="200" y1="640" x2="1040" y2="640"/>
+    <text class="ax" x="140" y="328">4k</text><text class="ax" x="140" y="488">2k</text><text class="ax" x="152" y="648">0</text>
+    <text class="ax" x="200" y="700">W1</text><text class="ax" x="600" y="700">W6</text><text class="ax" x="985" y="700">W12</text>
+    <path class="area" id="area" d="M200 600 L276 588 L353 596 L429 560 L505 570 L582 526 L658 540 L735 470 L811 486 L887 410 L964 380 L1000 336 L1000 640 L200 640 Z"/>
+    <path class="ln" id="ln" pathLength="1" d="M200 600 L276 588 L353 596 L429 560 L505 570 L582 526 L658 540 L735 470 L811 486 L887 410 L964 380 L1000 336"/>
+    <path class="pen" id="pen" pathLength="1" d="M200 600 L276 588 L353 596 L429 560 L505 570 L582 526 L658 540 L735 470 L811 486 L887 410 L964 380 L1000 336"/>
+  </svg>
+  <div class="dot" id="dot"></div>
+  <div class="tag" id="tag">3.9k <span>▲ 62 %</span></div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// Dash tweens go through attr (a CSS strokeDashoffset tween snaps at halfway); the pen is a zero-length dash.
+gsap.set("#ln", { attr: { "stroke-dasharray": 1, "stroke-dashoffset": 1 } });
+gsap.set("#pen", { attr: { "stroke-dashoffset": 0 }, opacity: 0 });
+gsap.set("#area", { opacity: 0 });
+gsap.set("#dot", { scale: 0 });
+gsap.set("#tag", { opacity: 0, y: 14 });
+const tl = gsap.timeline({ paused: true });
+tl.from(".card, .hd, .chip", { opacity: 0, y: 16, duration: 0.3, stagger: 0.05, ease: "power2.out" }, 0)
+  .to("#ln", { attr: { "stroke-dashoffset": 0 }, duration: 1.3, ease: "power2.inOut" }, 0.3)
+  .to("#pen", { attr: { "stroke-dashoffset": -1 }, duration: 1.3, ease: "power2.inOut" }, 0.3)
+  .to("#pen", { opacity: 1, duration: 0.05 }, 0.3)
+  .to("#pen", { opacity: 0, duration: 0.1 }, 1.6)
+  .to("#area", { opacity: 0.16, duration: 0.5, ease: "power2.out" }, 1.4)
+  .fromTo("#dot", { scaleX: 0, scaleY: 0 }, { scaleX: 1.25, scaleY: 0.8, duration: 0.12, ease: "power2.out", immediateRender: false }, 1.6)
+  .to("#dot", { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)" }, 1.72)
+  .to("#tag", { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, 1.8)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["line-draw"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

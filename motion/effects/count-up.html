@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Count Up</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* An odometer: each digit is a column of 0-9 twice over, rolled to its digit. Spins differ per column, so the
+   right-hand digits blur past more numbers than the left - the way a real counter reads. Numbers are a DEMO brand's. */
+#root { background:#111111; color:#fff; }
+.brand { position:absolute; left:120px; top:150px; display:flex; align-items:center; gap:12px; font:600 26px var(--sans); color:#cfcfcf; }
+.brand i { width:16px; height:16px; border-radius:50%; background:var(--orange); }
+.lab { position:absolute; left:120px; top:215px; font:800 48px var(--sans); letter-spacing:-0.02em; }
+.num { position:absolute; left:110px; top:300px; display:flex; font:800 240px/1 var(--sans); letter-spacing:-0.04em; font-variant-numeric:tabular-nums; }
+.col { position:relative; height:240px; overflow:hidden; width:0.62em; }
+.col .strip { position:absolute; left:0; top:0; width:100%; text-align:center; }
+.col .strip span { display:block; height:240px; }
+.sep { width:0.28em; text-align:center; color:#6e6e6e; }
+.delta { position:absolute; left:124px; top:590px; display:flex; align-items:center; gap:14px; padding:14px 24px; border-radius:999px; background:var(--orange); color:var(--ink); font:800 30px var(--sans); }
+.bars { position:absolute; right:120px; top:420px; display:flex; align-items:flex-end; gap:12px; height:260px; }
+.bars i { width:30px; border-radius:8px 8px 0 0; background:#3a3a3a; transform-origin:50% 100%; }
+.bars i:last-child { background:var(--orange); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#8a8a8a; }
+</style></head>
+<body><div id="root" data-composition-id="count-up" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Demo data · ola negra</div>
+  <div class="brand"><i></i>ola negra</div>
+  <div class="lab">Bookings this month</div>
+  <div class="num" id="num"></div>
+  <div class="delta" id="delta">▲ 18 % on last month</div>
+  <div class="bars" id="bars"><i style="height:90px"></i><i style="height:120px"></i><i style="height:105px"></i><i style="height:150px"></i><i style="height:170px"></i><i style="height:210px"></i><i style="height:250px"></i></div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+const TARGET = "1,284";
+const num = document.getElementById("num");
+[...TARGET].forEach((ch, i) => {
+  if (ch === ",") { num.insertAdjacentHTML("beforeend", `<div class="sep">,</div>`); return; }
+  const digits = Array.from({ length: 20 }, (_, k) => `<span>${k % 10}</span>`).join("");
+  num.insertAdjacentHTML("beforeend", `<div class="col" data-layout-allow-overflow><div class="strip" data-d="${ch}" data-layout-allow-overlap>${digits}</div></div>`);
+});
+gsap.set("#delta", { opacity: 0, scale: 0.6 });
+gsap.set("#bars i", { scaleY: 0 });
+const tl = gsap.timeline({ paused: true });
+const strips = [...document.querySelectorAll(".strip")];
+strips.forEach((s, i) => {
+  const d = +s.dataset.d, laps = i;            // later columns spin one more lap each
+  const rows = (laps % 2) * 10 + d;           // stay inside the 20-row strip
+  tl.to(s, { y: -240 * rows, duration: 1.3 + i * 0.12, ease: "power2.inOut" }, 0.1);
+});
+tl.to("#bars i", { scaleY: 1, duration: 0.45, stagger: 0.06, ease: "power2.out" }, 0.3)
+  .to("#delta", { opacity: 1, scaleX: 1.15, scaleY: 0.85, duration: 0.12, ease: "power2.out" }, 1.75)
+  .to("#delta", { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)" }, 1.87)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["count-up"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>
