@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>30 motion effects that make a site feel designed</title>
-<meta name="description" content="30 motion effects, each one HTML file you can get from an AI with one prompt. Watch each one live, copy its prompt, make it yours. In English and Spanish.">
+<title>28 motion effects that make a site feel designed</title>
+<meta name="description" content="28 motion effects, each one HTML file you can get from an AI with one prompt. Watch each one live, copy its prompt, make it yours. In English and Spanish.">
 <script>
   (function () {
     var l;
@@ -63,7 +63,7 @@
 
   <!-- ENGLISH -->
   <div data-l="en">
-  <h1>30 motion effects that make a site feel designed</h1>
+  <h1>28 motion effects that make a site feel designed</h1>
   <p class="lede">Each one is a single HTML file you can get from an AI with one prompt. Watch it play, copy its prompt, swap in your own words and colours.</p>
   <p class="credit">The format is inspired by <strong>@zeeuiux</strong>'s “50 Claude animations”. These effects are our own designs, built and tested by us. A few (How It Works, Marquee, Char Rise, Proof Badge, CTA Wall) copy only the TIMING of animations on the public horizonx.so homepage, measured and rebuilt with our own design and words. Not sponsored.</p>
   <h2>How to use them</h2>
@@ -388,20 +388,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>25</em> ASCII Swell</h2>
-    <div class="demo"><iframe src="effects/ascii-swell.html?preview" title="ASCII Swell" loading="lazy"></iframe></div>
-    <p class="use"><strong>Use it for:</strong> anything Panamá or the water, or a team moving as one.</p>
-    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>A 4 s timeline on #06090c, every pixel drawn as text-character tiles (10 x 14 px cells): each lit cell is a faint square tile with a glyph inside, the brightest cells invert (light tile, dark glyph), glyphs are picked by brightness from a sparse-to-dense set plus a per-cell hash, a 10 px blurred copy sits underneath as a glow, a rare amber accent glyph, a faint dotted grid. The scene: a calm bay at dawn (sky glowing at the horizon, island silhouettes, a low orange sun with a narrow glitter path, slow ripples in perspective), a six-person outrigger gliding right: white hull with an orange stripe, the ama on the near side joined by two arms, six paddlers in fuchsia spread bow to stern, all in one stroke every 1.1 s (blade forward at the catch, swept back), a V wake and a dim wobbling reflection. Shapes are signed-distance capsules rasterised into the cells. [Swap in your subject.]
-
-Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline, as long as the prompt says (about 3 s if it does not say), that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
-
-Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
-
-Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
-  </section>
-
-  <section class="fx">
-    <h2><em>26</em> Char Rise</h2>
+    <h2><em>25</em> Char Rise</h2>
     <div class="demo"><iframe src="effects/char-rise.html?preview" title="Char Rise" loading="lazy"></iframe></div>
     <p class="use"><strong>Use it for:</strong> a hook or a launch title.</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>A 4 s timeline. A two-line headline where every letter sits inside its word's mask (overflow hidden) and rises into place: from 110 % down and a 4 deg tilt, 0.85 s, starting 50 ms + 20 ms per letter. The subline follows word by word from 0.45 s + 40 ms (100 %, 2 deg, 0.7 s). Then a preview card grows from 0.82 over 1.1 s at 0.75 s and a button from 0.85 over 0.8 s at 0.95 s. Every move on cubic-bezier(.16,1,.3,1), origin bottom centre. [Swap in your headline, subline and card.]
@@ -414,7 +401,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>27</em> Proof Badge</h2>
+    <h2><em>26</em> Proof Badge</h2>
     <div class="demo"><iframe src="effects/proof-badge.html?preview" title="Proof Badge" loading="lazy"></iframe></div>
     <p class="use"><strong>Use it for:</strong> what is new, an update, a release.</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>A 4 s timeline. A white speech-bubble badge (pill with a small tail) rises in from 8 px and 0.97 scale over 0.6 s; four round marks pop in 90 ms apart (from -6 px and 0.85, 0.5 s), both on cubic-bezier(.2,.8,.2,1); a green "live" dot sends out a ring that grows to 2.2x and fades; the bubble bobs 4 px (sine, a 5 s cycle); the text line ticks over twice (the old line slides up and out 110 %, the new one slides up from below, 0.52 s, 0.38 s fade). Honest content only: what is new, never invented people or counts. [Swap in your news lines.]
@@ -427,7 +414,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>28</em> CTA Wall</h2>
+    <h2><em>27</em> CTA Wall</h2>
     <div class="demo"><iframe src="effects/cta-wall.html?preview" title="CTA Wall" loading="lazy"></iframe></div>
     <p class="use"><strong>Use it for:</strong> the last beat of a reel.</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>A 4 s timeline on white. Five columns of rounded colour cards (180 px tall, 12 px gap, each column two identical copies), alternating: even columns drift up at 19 px/s, odd ones down at 22 px/s, linear. The wall fades out at the top and bottom (mask, 18 %), and a soft white radial glow sits behind the words in the middle. A two-line headline eases in, then a black pill button lands. [Swap in your cards, headline and button.]
@@ -440,23 +427,10 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>29</em> Card Tunnel</h2>
+    <h2><em>28</em> Card Tunnel</h2>
     <div class="demo"><iframe src="effects/card-tunnel.html?preview" title="Card Tunnel" loading="lazy"></iframe></div>
     <p class="use"><strong>Use it for:</strong> showing a whole library at once.</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>A 4 s timeline on white. Fourteen cards (150 x 210, 16 px radius) on a concave arc 760 px in radius, 0.215 rad apart, seen from inside with a 900 px perspective: each card sits at x = R sin(a), comes toward you by R (1 - cos a) and turns to face the centre. The arc turns slowly (0.085 rad/s) and wraps. Cards near the edges stretch a little, blur and split into a fuchsia and a blue fringe (drop-shadows offset left and right, growing with the angle), and fade at the far edges. Headline above, one line below. [Swap in your cards.]
-
-Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline, as long as the prompt says (about 3 s if it does not say), that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
-
-Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
-
-Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
-  </section>
-
-  <section class="fx">
-    <h2><em>30</em> Texture Lab</h2>
-    <div class="demo"><iframe src="effects/texture-lab.html?preview" title="Texture Lab" loading="lazy"></iframe></div>
-    <p class="use"><strong>Use it for:</strong> a style or finish choice: same idea, different look.</p>
-    <div class="prompt"><button class="copy" type="button">Copy</button><pre><code>A 4 s timeline. One picture drawn in code (here a dawn bay with an outrigger) is rendered four ways on stacked canvases at build time: the original; an ordered dither (8 x 8 Bayer matrix on 2 px blocks, two tones); a riso print (two inks, fuchsia and ink blue, as halftone dots on rotated grids, multiplied onto cream paper, slightly misregistered); and ASCII tiles. Wipes reveal each finish left to right (0.6 s, glide) at 0.7, 1.7 and 2.7 s; a dark pill names each one as it lands. [Swap in your picture.]
 
 Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline, as long as the prompt says (about 3 s if it does not say), that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
 
@@ -469,7 +443,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
 
   <!-- ESPAÑOL -->
   <div data-l="es">
-  <h1>30 efectos de movimiento que hacen que un sitio se vea diseñado</h1>
+  <h1>28 efectos de movimiento que hacen que un sitio se vea diseñado</h1>
   <p class="lede">Cada uno es un solo archivo HTML que puedes obtener de una IA con un prompt. Míralo en movimiento, copia su prompt y cambia las palabras y los colores por los tuyos.</p>
   <p class="credit">El formato está inspirado en “50 Claude animations” de <strong>@zeeuiux</strong>. Estos efectos son diseños propios, hechos y probados por nosotros. Algunos (How It Works, Marquee, Char Rise, Proof Badge, CTA Wall) copian solo el RITMO de animaciones de la página pública de horizonx.so, medido y reconstruido con nuestro diseño y nuestras palabras. Sin patrocinio.</p>
   <h2>Cómo usarlos</h2>
@@ -794,20 +768,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>25</em> ASCII Swell</h2>
-    <div class="demo"><iframe src="effects/ascii-swell.html?preview" title="ASCII Swell" loading="lazy"></iframe></div>
-    <p class="use"><strong>Úsalo para:</strong> Cualquier cosa de Panamá o del mar, o un equipo que se mueve como uno.</p>
-    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>A 4 s timeline on #06090c, every pixel drawn as text-character tiles (10 x 14 px cells): each lit cell is a faint square tile with a glyph inside, the brightest cells invert (light tile, dark glyph), glyphs are picked by brightness from a sparse-to-dense set plus a per-cell hash, a 10 px blurred copy sits underneath as a glow, a rare amber accent glyph, a faint dotted grid. The scene: a calm bay at dawn (sky glowing at the horizon, island silhouettes, a low orange sun with a narrow glitter path, slow ripples in perspective), a six-person outrigger gliding right: white hull with an orange stripe, the ama on the near side joined by two arms, six paddlers in fuchsia spread bow to stern, all in one stroke every 1.1 s (blade forward at the catch, swept back), a V wake and a dim wobbling reflection. Shapes are signed-distance capsules rasterised into the cells. [Swap in your subject.]
-
-Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline, as long as the prompt says (about 3 s if it does not say), that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
-
-Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
-
-Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
-  </section>
-
-  <section class="fx">
-    <h2><em>26</em> Char Rise</h2>
+    <h2><em>25</em> Char Rise</h2>
     <div class="demo"><iframe src="effects/char-rise.html?preview" title="Char Rise" loading="lazy"></iframe></div>
     <p class="use"><strong>Úsalo para:</strong> Un gancho o el título de un lanzamiento.</p>
     <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>A 4 s timeline. A two-line headline where every letter sits inside its word's mask (overflow hidden) and rises into place: from 110 % down and a 4 deg tilt, 0.85 s, starting 50 ms + 20 ms per letter. The subline follows word by word from 0.45 s + 40 ms (100 %, 2 deg, 0.7 s). Then a preview card grows from 0.82 over 1.1 s at 0.75 s and a button from 0.85 over 0.8 s at 0.95 s. Every move on cubic-bezier(.16,1,.3,1), origin bottom centre. [Swap in your headline, subline and card.]
@@ -820,7 +781,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>27</em> Proof Badge</h2>
+    <h2><em>26</em> Proof Badge</h2>
     <div class="demo"><iframe src="effects/proof-badge.html?preview" title="Proof Badge" loading="lazy"></iframe></div>
     <p class="use"><strong>Úsalo para:</strong> Lo que es nuevo, una actualización, un lanzamiento.</p>
     <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>A 4 s timeline. A white speech-bubble badge (pill with a small tail) rises in from 8 px and 0.97 scale over 0.6 s; four round marks pop in 90 ms apart (from -6 px and 0.85, 0.5 s), both on cubic-bezier(.2,.8,.2,1); a green "live" dot sends out a ring that grows to 2.2x and fades; the bubble bobs 4 px (sine, a 5 s cycle); the text line ticks over twice (the old line slides up and out 110 %, the new one slides up from below, 0.52 s, 0.38 s fade). Honest content only: what is new, never invented people or counts. [Swap in your news lines.]
@@ -833,7 +794,7 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>28</em> CTA Wall</h2>
+    <h2><em>27</em> CTA Wall</h2>
     <div class="demo"><iframe src="effects/cta-wall.html?preview" title="CTA Wall" loading="lazy"></iframe></div>
     <p class="use"><strong>Úsalo para:</strong> El último segundo de un reel.</p>
     <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>A 4 s timeline on white. Five columns of rounded colour cards (180 px tall, 12 px gap, each column two identical copies), alternating: even columns drift up at 19 px/s, odd ones down at 22 px/s, linear. The wall fades out at the top and bottom (mask, 18 %), and a soft white radial glow sits behind the words in the middle. A two-line headline eases in, then a black pill button lands. [Swap in your cards, headline and button.]
@@ -846,23 +807,10 @@ Check before you finish: Nothing clips at the stage edges. No text straddles an 
   </section>
 
   <section class="fx">
-    <h2><em>29</em> Card Tunnel</h2>
+    <h2><em>28</em> Card Tunnel</h2>
     <div class="demo"><iframe src="effects/card-tunnel.html?preview" title="Card Tunnel" loading="lazy"></iframe></div>
     <p class="use"><strong>Úsalo para:</strong> Mostrar toda una biblioteca de una vez.</p>
     <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>A 4 s timeline on white. Fourteen cards (150 x 210, 16 px radius) on a concave arc 760 px in radius, 0.215 rad apart, seen from inside with a 900 px perspective: each card sits at x = R sin(a), comes toward you by R (1 - cos a) and turns to face the centre. The arc turns slowly (0.085 rad/s) and wraps. Cards near the edges stretch a little, blur and split into a fuchsia and a blue fringe (drop-shadows offset left and right, growing with the angle), and fade at the far edges. Headline above, one line below. [Swap in your cards.]
-
-Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline, as long as the prompt says (about 3 s if it does not say), that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
-
-Brand (swap for yours): Colours: paper #f4f4f2, white #ffffff, panel #e6e6e6, line #d4d4d0, ink #111111, grey #6e6e6e, accent orange #ff6a00 (use #e85d00 for orange TEXT on a light ground). Fonts: Public Sans 400/600/800 for everything, Source Serif 4 Italic for the one emphasised word, both from Google Fonts. Small technical labels: Public Sans 600, 15 px, uppercase, letter-spacing 0.14em, grey.
-
-Check before you finish: Nothing clips at the stage edges. No text straddles an edge or a wipe line. Orange text on light passes 3:1, body text 4.5:1. The last frame works as a still image (it can be the cover). Lines draw smoothly, not in one jump: capture a frame halfway through a draw and look.</code></pre></div>
-  </section>
-
-  <section class="fx">
-    <h2><em>30</em> Texture Lab</h2>
-    <div class="demo"><iframe src="effects/texture-lab.html?preview" title="Texture Lab" loading="lazy"></iframe></div>
-    <p class="use"><strong>Úsalo para:</strong> Una decisión de estilo o de acabado: la misma idea, otro look.</p>
-    <div class="prompt"><button class="copy" type="button">Copiar</button><pre><code>A 4 s timeline. One picture drawn in code (here a dawn bay with an outrigger) is rendered four ways on stacked canvases at build time: the original; an ordered dither (8 x 8 Bayer matrix on 2 px blocks, two tones); a riso print (two inks, fuchsia and ink blue, as halftone dots on rotated grids, multiplied onto cream paper, slightly misregistered); and ASCII tiles. Wipes reveal each finish left to right (0.6 s, glide) at 0.7, 1.7 and 2.7 s; a dark pill names each one as it lands. [Swap in your picture.]
 
 Setup: one self-contained HTML file with a 1200 x 900 stage, scaled to fit the browser window and centred. Animate with GSAP 3 (from a CDN) in ONE timeline, as long as the prompt says (about 3 s if it does not say), that plays as soon as the fonts have loaded, holds the last frame for 1 s, and loops. Set starting states with gsap.set before the timeline. Easing words: "ease out" = power2.out, "glide" = power2.inOut, "lands" = back.out(2), "squash" = flatten to 118 % x 82 % in 0.12 s, then spring back with back.out(3). Drawn lines: give the path pathLength="1" and tween the stroke-dashoffset ATTRIBUTE (attr), not the CSS property. The pen: a copy of the path with stroke-dasharray 0 2, a round cap and a thick orange stroke, its stroke-dashoffset going 0 to -1 with the line's own timing, shown only while the line draws.
 
