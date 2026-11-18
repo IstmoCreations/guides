@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>CTA Wall</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* A closing call to action over a wall of cards: columns drift in alternate directions, the wall fades out at the
+   top and bottom and is softened under the words, and the words sit in front. Motion studied from the final call to
+   action on the public horizonx.so homepage with reanimate (2026-11-17): linear columns alternating up and down at
+   about 19 and 22 px/s, cards on a 12 px gap. Cards are our own effects; the words are ours. */
+#root { background:#ffffff; }
+.wall { position:absolute; left:-40px; right:-40px; top:0; bottom:0; display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
+  -webkit-mask-image:linear-gradient(#0000,#000 18%,#000 82%,#0000); mask-image:linear-gradient(#0000,#000 18%,#000 82%,#0000); }
+.col { position:relative; overflow:hidden; }
+.track { position:absolute; left:0; right:0; top:0; display:flex; flex-direction:column; gap:12px; }
+.c { height:180px; border-radius:14px; box-shadow:0 0 0 1px rgba(0,0,0,.06), 0 10px 30px -18px rgba(0,0,0,.35); position:relative; overflow:hidden; }
+.c b { position:absolute; left:16px; bottom:14px; font:700 17px var(--sans); }
+.veil { position:absolute; inset:0; background:radial-gradient(ellipse 40% 34% at 50% 47%, rgba(255,255,255,.97) 55%, rgba(255,255,255,0) 100%); }
+.copy { position:absolute; left:0; right:0; top:300px; text-align:center; }
+.copy h2 { margin:0; font:800 80px/1.02 var(--sans); letter-spacing:-0.04em; color:var(--ink); }
+.copy h2 em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.btn { display:inline-block; margin-top:30px; padding:18px 34px; border-radius:99px; background:var(--ink); color:#fff; font:700 24px var(--sans); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#6e6e6e; z-index:2; }
+</style></head>
+<body><div id="root" data-composition-id="cta-wall" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="wall" id="wall" data-layout-ignore></div>
+  <div class="veil" data-layout-ignore></div>
+  <div class="copy">
+    <h2 id="h2">Your next post,<br><em>already moving.</em></h2>
+    <span class="btn" id="btn">Comment MOTION</span>
+  </div>
+  <div class="meta" data-layout-ignore>Closing · card wall</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2) · wall = none (linear)
+const NAMES = ["Before After", "Flow Line", "Kinetic Type", "Split Flap", "Count Up", "Chat Thread", "Command Palette",
+  "Wave Dots", "ASCII Drift", "How It Works", "Marquee", "ASCII Swell", "Word Blur", "Globe Arcs", "Logo Land"];
+const FILL = [["#ff6a00", "#fff"], ["#111", "#fff"], ["#f4f4f2", "#111"], ["#e6007e", "#fff"], ["#ffd2b0", "#111"], ["#2a2a2a", "#fff"], ["#e6e6e6", "#111"]];
+const SPEED = [19, 22, 19, 22, 19];          // px/s, measured on the reference; even columns rise, odd columns fall
+const wall = document.getElementById("wall");
+const tracks = [];
+for (let k = 0; k < 5; k++) {
+  const col = document.createElement("div"); col.className = "col";
+  const tr = document.createElement("div"); tr.className = "track";
+  let html = "";
+  for (let n = 0; n < 8; n++) {                                   // 8 cards, then the same 8 again: seamless at -50 %
+    const i = (k * 3 + n) % NAMES.length, [bg, fg] = FILL[(k + n * 2) % FILL.length];
+    html += `<div class="c" style="background:${bg};color:${fg}"><b>${NAMES[i]}</b></div>`;
+  }
+  tr.innerHTML = html + html; col.appendChild(tr); wall.appendChild(col); tracks.push(tr);
+}
+const HALF = 8 * (180 + 12);                                      // one copy of the column
+gsap.set("#h2, #btn", { opacity: 0, y: 18 });
+tracks.forEach((tr, k) => gsap.set(tr, { y: k % 2 ? -HALF + 40 * k : -40 * k }));
+const tl = gsap.timeline({ paused: true });
+tracks.forEach((tr, k) => tl.to(tr, { y: (k % 2 ? -HALF + 40 * k : -40 * k) + (k % 2 ? 1 : -1) * SPEED[k] * 4, duration: 4, ease: "none" }, 0));
+tl.to("#h2", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2)
+  .to("#btn", { opacity: 1, y: 0, duration: 0.45, ease: "back.out(2)" }, 0.55)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["cta-wall"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

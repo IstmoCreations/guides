@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Char Rise</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<style>
+/* A hero entrance: every letter rises out of its word's mask with a small tilt, 20 ms after the last; the subline
+   follows word by word; then the preview card and the button grow in. Motion studied from the public horizonx.so
+   hero with reanimate (2026-11-17) and copied as numbers: letters 110 % rise + 4 deg, 0.85 s from 50 ms + 20 ms each;
+   subline 100 % + 2 deg, 0.7 s from 0.45 s + 40 ms each; card 0.82 -> 1 over 1.1 s at 0.75 s; button 0.85 -> 1 over
+   0.8 s at 0.95 s; all on cubic-bezier(.16,1,.3,1), origin bottom centre. Words and design are ours. */
+.hero { position:absolute; left:0; right:0; top:120px; text-align:center; }
+h1 { margin:0; font:800 96px/1.02 var(--sans); letter-spacing:-0.045em; color:var(--ink); }
+h1 em { font-family:var(--serif); font-weight:400; color:var(--orange-text); letter-spacing:-0.02em; }
+.w { display:inline-block; overflow:hidden; vertical-align:bottom; padding-bottom:.12em; }
+.ch, .sw { display:inline-block; transform-origin:50% 100%; }
+.sub { margin:18px 0 0; font:500 30px/1.3 var(--sans); color:var(--ink-soft); }
+.sub .w { margin:0 .12em; }
+.card { position:absolute; left:290px; top:540px; width:620px; height:300px; border-radius:26px; overflow:hidden;
+  background:#111; transform-origin:50% 100%; box-shadow:0 30px 80px rgba(17,17,17,.18); }
+.card i { position:absolute; border-radius:16px; }
+.cta { position:absolute; left:50%; top:440px; margin-left:-130px; width:260px; height:62px; border-radius:99px; background:var(--ink);
+  color:#fff; font:700 22px/62px var(--sans); text-align:center; transform-origin:50% 100%; }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#6e6e6e; }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="char-rise" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Hero · letters rise</div>
+  <div class="hero">
+    <h1 id="h1"><span class="w">Build</span> <span class="w">what</span> <span class="w">you</span><br><span class="w"><em>picture.</em></span></h1>
+    <p class="sub" id="sub"><span class="w"><span class="sw">AI</span></span><span class="w"><span class="sw">types.</span></span><span class="w"><span class="sw">You</span></span><span class="w"><span class="sw">make</span></span><span class="w"><span class="sw">the</span></span><span class="w"><span class="sw">calls.</span></span></p>
+  </div>
+  <div class="cta" id="cta">Comment MOTION</div>
+  <div class="card" id="card" data-layout-allow-overflow>
+    <i style="left:28px;top:28px;width:250px;height:244px;background:linear-gradient(135deg,#ff6a00,#e6007e)"></i>
+    <i style="left:298px;top:28px;width:294px;height:112px;background:#2a2a2a"></i>
+    <i style="left:298px;top:160px;width:140px;height:112px;background:#f4f4f2"></i>
+    <i style="left:452px;top:160px;width:140px;height:112px;background:#ff9a52"></i>
+  </div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// This panel uses the reference's measured curve instead: "expo out" = cubic-bezier(.16,1,.3,1).
+gsap.registerPlugin(CustomEase);
+const EXPO = CustomEase.create("expoOut", ".16,1,.3,1");
+// split the headline into letters (written once, before the timeline; text never changes after)
+document.querySelectorAll("#h1 .w").forEach((w) => {
+  const host = w.querySelector("em") || w;
+  host.innerHTML = [...host.textContent].map((c) => `<span class="ch">${c}</span>`).join("");
+});
+const chars = [...document.querySelectorAll("#h1 .ch")], subs = [...document.querySelectorAll("#sub .sw")];
+gsap.set(chars, { yPercent: 110, rotation: 4, opacity: 0 });
+gsap.set(subs, { yPercent: 100, rotation: 2, opacity: 0 });
+gsap.set("#card", { scale: 0.82, opacity: 0 });
+gsap.set("#cta", { scale: 0.85, opacity: 0 });
+const tl = gsap.timeline({ paused: true });
+chars.forEach((c, i) => tl.to(c, { yPercent: 0, rotation: 0, opacity: 1, duration: 0.85, ease: EXPO }, 0.05 + i * 0.02));
+subs.forEach((s, i) => tl.to(s, { yPercent: 0, rotation: 0, opacity: 1, duration: 0.7, ease: EXPO }, 0.45 + i * 0.04));
+tl.to("#card", { scale: 1, opacity: 1, duration: 1.1, ease: EXPO }, 0.75)
+  .to("#cta", { scale: 1, opacity: 1, duration: 0.8, ease: EXPO }, 0.95)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["char-rise"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

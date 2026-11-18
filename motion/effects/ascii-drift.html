@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>ASCII Drift</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* Three jellyfish drawn in text characters on a canvas, pulsing as they drift. When a prompt starts typing into the
+   glass box, they turn toward it and glow brighter. Our own take on the "ASCII creature" idea: orange + fuchsia on
+   near-black, Istmo ocean. The canvas is redrawn from timeline time only (no timers, no random: plankton flicker
+   comes from a hash of cell and frame). */
+#root { background:#0a0a0b; color:#fff; }
+canvas { position:absolute; inset:0; }
+.ttl { position:absolute; left:90px; top:96px; font:800 76px/1.02 var(--sans); letter-spacing:-0.035em; }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange); }
+.box { position:absolute; left:210px; top:700px; width:780px; height:104px; border-radius:30px;
+  background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 18px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12); }
+.q { position:absolute; left:40px; top:34px; font:500 30px/36px var(--sans); color:#f2f2f2; white-space:pre; }
+.q.ph { color:#7c7c7c; }
+.caret { display:inline-block; width:3px; height:32px; background:var(--orange); vertical-align:-6px; margin-left:2px; }
+.send { position:absolute; right:22px; top:22px; width:60px; height:60px; border-radius:50%; background:var(--orange); }
+.send::after { content:""; position:absolute; left:23px; top:19px; width:14px; height:14px; border:solid #111;
+  border-width:4px 4px 0 0; transform:rotate(-45deg); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#8a8a8a; }
+</style></head>
+<body><div id="root" data-composition-id="ascii-drift" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <canvas id="cv" width="1200" height="900"></canvas>
+  <div class="meta" data-layout-ignore>Prompt · it listens</div>
+  <div class="ttl" id="ttl">What should we<br><em>build</em> today?</div>
+  <div class="box" id="box" data-layout-allow-overlap>
+    <div class="q ph" id="ph">Ask for anything…</div>
+    <div class="q" id="q"></div>
+    <span class="send" id="send"></span>
+  </div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const CW = 9, CH = 14, COLS = 134, ROWS = 65, RAMP = " .:-=+*#%@";
+const grid = new Float32Array(COLS * ROWS), tone = new Float32Array(COLS * ROWS);
+const TYPE_AT = 1.3, PROMPT = "Make a tide chart for our club";
+const TARGET = { x: 600, y: 700 };                            // the glass box's top edge
+const JELLY = [                                               // start x, y, bell radius (px), phase, colour 0 orange .. 1 fuchsia
+  { x: 250, y: 520, r: 92, ph: 0.0, c: 0.0 },
+  { x: 900, y: 430, r: 120, ph: 0.45, c: 1.0 },
+  { x: 610, y: 300, r: 70, ph: 0.8, c: 0.4 },
+];
+const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
+const put = (cx, cy, v, c) => {
+  if (cx < 0 || cy < 0 || cx >= COLS || cy >= ROWS) return;
+  const i = cy * COLS + cx; if (v > grid[i]) { grid[i] = v; tone[i] = c; }
+};
+function draw(t) {
+  grid.fill(0);
+  const pull = ease((t - TYPE_AT) / 2.2);                       // 0 before typing, 1 when the prompt is done
+  const glow = 0.72 + 0.4 * pull;
+  for (const j of JELLY) {
+    const drift = t * 14;                                        // a slow rise
+    const jx = j.x + (TARGET.x - j.x) * 0.38 * pull + Math.sin(t * 0.9 + j.ph * 6) * 10;
+    const jy = j.y - drift + (TARGET.y - 170 - j.y) * 0.3 * pull;
+    const beat = 0.5 + 0.5 * Math.sin((t / 1.25 + j.ph) * Math.PI * 2);   // bell contracts and opens
+    const rx = j.r * (1.02 - 0.12 * beat), ry = j.r * (0.78 + 0.16 * beat);
+    // bell: a dome, brighter at the rim, with two inner bands
+    for (let cy = Math.floor((jy - ry) / CH); cy <= Math.ceil(jy / CH) + 1; cy++) {
+      for (let cx = Math.floor((jx - rx) / CW); cx <= Math.ceil((jx + rx) / CW); cx++) {
+        const dx = (cx * CW + CW / 2 - jx) / rx, dy = (cy * CH + CH / 2 - jy) / ry;
+        const d2 = dx * dx + dy * dy;
+        if (dy > 0.18 || d2 > 1) continue;
+        const band = 0.5 + 0.5 * Math.cos(Math.sqrt(d2) * 9 - t * 3);
+        put(cx, cy, (0.28 + 0.62 * d2 + 0.12 * band) * glow, j.c);
+      }
+    }
+    // tentacles: six strands hanging from the rim, swaying, fading toward the tips
+    for (let k = 0; k < 6; k++) {
+      const off = (k / 5 - 0.5) * rx * 1.5, len = j.r * (1.5 + 0.35 * ((k * 7) % 3));
+      for (let s = 0; s < len; s += CH * 0.45) {
+        const sx = jx + off + Math.sin(s / 38 - t * 3.2 + k * 1.3 + j.ph * 5) * (6 + s * 0.12);
+        put(Math.floor(sx / CW), Math.floor((jy + ry * 0.2 + s) / CH), (0.85 - 0.6 * (s / len)) * glow, j.c);
+      }
+    }
+  }
+  // plankton: sparse cells that flicker, a little brighter near the box once the prompt is typing
+  const fr = Math.floor(t * 12);
+  for (let i = 0; i < COLS * ROWS; i++) {
+    const cx = i % COLS, cy = (i / COLS) | 0;
+    if (hash(cx, cy) > 0.985) put(cx, cy, 0.08 + 0.18 * hash(i, fr) + 0.12 * pull * (cy / ROWS), 0.5);
+  }
+  ctx.clearRect(0, 0, 1200, 900);
+  ctx.font = "700 13px Consolas, 'JetBrains Mono', monospace";
+  ctx.textBaseline = "top";
+  for (let i = 0; i < COLS * ROWS; i++) {
+    const v = grid[i]; if (v < 0.05) continue;
+    const ch = RAMP[Math.min(RAMP.length - 1, Math.max(1, Math.round(v * (RAMP.length - 1))))];
+    const c = tone[i];                                            // orange #ff6a00 .. fuchsia #e6007e
+    const r = Math.round(255 - 25 * c), g = Math.round(106 - 106 * c), b = Math.round(0 + 126 * c);
+    const a = Math.min(1, 0.25 + v);
+    ctx.fillStyle = v > 0.55 ? `rgba(${Math.min(255, r + 40)},${Math.min(255, g + 80)},${Math.min(255, b + 60)},${a})` : `rgba(${r},${g},${b},${a})`;
+    ctx.fillText(ch, (i % COLS) * CW, ((i / COLS) | 0) * CH);
+  }
+}
+gsap.set("#ttl", { opacity: 0, y: 14 });
+gsap.set("#box", { opacity: 0, y: 24 });
+const clock = { t: 0 };
+draw(0);
+const tl = gsap.timeline({ paused: true });
+tl.to(clock, { t: 4, duration: 4, ease: "none", onUpdate: () => draw(clock.t) }, 0)
+  .to("#ttl", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.2)
+  .to("#box", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.55);
+tl.set("#ph", { opacity: 0 }, TYPE_AT);
+for (let i = 1; i <= PROMPT.length; i++) {
+  tl.set("#q", { innerHTML: PROMPT.slice(0, i) + '<i class="caret"></i>' }, Number((TYPE_AT + i * 0.05).toFixed(3)));
+}
+const sent = TYPE_AT + PROMPT.length * 0.05 + 0.25;
+tl.to("#send", { scale: 0.86, duration: 0.1, ease: "power2.out" }, sent)
+  .to("#send", { scale: 1, duration: 0.3, ease: "back.out(3)" }, sent + 0.1)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["ascii-drift"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

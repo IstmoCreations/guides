@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>How It Works</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<style>
+/* A three-step "how it works" section that plays itself: a stepper on the left whose rail fills, and a stage on the
+   right where each step is a small scene (search, unlock, download). Motion studied from the public homepage of
+   horizonx.so with reanimate (2026-11-17) and rebuilt motion-faithful: same scene length (6.5 s), cross-fade,
+   stagger, press and easing values, verified with reanimate (every measured event within 17 ms). Content, colours and type are ours. Class names mirror the reference ON PURPOSE
+   so reanimate can compare the two element by element. 1200x900, 19.5 s (three scenes). */
+#root { width:1200px; height:900px; background:#ffffff; }
+.wrap { position:absolute; left:88px; top:150px; width:1024px; height:600px; display:flex; gap:40px; }
+.left { width:440px; }
+.eyebrow { font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#c24e00; }
+.left h2 { margin:14px 0 10px; font:800 44px/1.05 var(--sans); letter-spacing:-0.03em; color:var(--ink); }
+.left h2 em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.left .sub { margin:0 0 28px; font:500 18px/1.45 var(--sans); color:var(--ink-soft); }
+.how-steps { position:relative; padding-left:24px; display:flex; flex-direction:column; gap:4px; }
+.how-steps::before { content:""; position:absolute; left:5px; top:28px; bottom:28px; width:2px; border-radius:2px; background:#ececea; }
+.how-rail-fill { position:absolute; left:5px; width:2px; border-radius:2px; background:var(--ink); transform-origin:top; }
+.how-step { position:relative; }
+.how-dot { position:absolute; left:-23px; top:23px; width:10px; height:10px; border-radius:50%; background:#e2e2df; box-shadow:0 0 0 4px #fff; z-index:1; }
+.how-card { border:1px solid transparent; border-radius:19px; padding:12px 16px; }
+.how-trigger { display:flex; align-items:center; gap:12px; font:700 19px var(--sans); color:#8c8c8c; }
+.how-icon { width:36px; height:36px; border-radius:12px; border:1px solid #ececea; background:#fff; display:grid; place-items:center; font:700 15px var(--sans); }
+.how-body { padding:8px 0 2px 48px; overflow:hidden; }
+.how-body p { margin:0; font:500 16px/1.45 var(--sans); color:var(--ink-soft); }
+.how-chips { display:flex; gap:6px; margin-top:10px; }
+.how-chips i { font:600 13px var(--sans); font-style:normal; padding:4px 10px; border-radius:99px; background:#f4f4f2; color:#555; }
+.how-stage { position:relative; width:544px; height:540px; border-radius:30px; border:1px solid #ececea; background:#f7f7f5; overflow:hidden; }
+.how-scene { position:absolute; inset:0; padding:24px; display:flex; }
+.how-window { flex:1; display:flex; flex-direction:column; border-radius:19px; border:1px solid #ececea; background:#fff; box-shadow:0 20px 70px rgba(17,17,17,.07); overflow:hidden; }
+.how-head { display:flex; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid #ececea; font:600 17px var(--sans); }
+.how-query { flex:1; display:inline-flex; align-items:center; min-height:24px; }
+.how-caret { display:inline-block; width:2px; height:20px; margin-left:1px; background:var(--orange); }
+.how-kbd { min-width:26px; height:24px; padding:0 6px; border:1px solid #ececea; border-radius:8px; background:#f7f7f5; font:600 12px var(--sans); color:#666; display:inline-grid; place-items:center; }
+.how-results { flex:1; display:grid; grid-template-rows:repeat(5,1fr); gap:4px; padding:8px; }
+.how-result { display:flex; align-items:center; gap:14px; padding:0 10px; border-radius:12px; }
+.how-result.is-hl { background:#f7f7f5; }
+.how-result .th { width:72px; height:50px; border-radius:12px; border:1px solid #ececea; flex-shrink:0; }
+.how-result b { display:block; font:700 16px var(--sans); color:var(--ink); }
+.how-result small { font:500 13px var(--sans); color:#666666; }
+.how-pill { margin-left:auto; padding:2px 9px; border-radius:99px; background:var(--orange); color:#111; font:700 12px var(--sans); }
+.how-foot { display:flex; gap:4px; padding:12px 18px; border-top:1px solid #ececea; }
+.how-cta, .how-download { padding:9px 16px; border-radius:99px; background:var(--ink); color:#fff; font:700 14px var(--sans); box-shadow:0 0 20px rgba(17,17,17,.28); flex-shrink:0; }
+.how-unlock { flex:1; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); gap:8px; padding:8px; }
+.how-tile { position:relative; border-radius:12px; overflow:hidden; }
+.how-tile-veil { position:absolute; inset:0; background:rgba(255,255,255,.64); }
+.how-badge { position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%; background:#fff; box-shadow:0 8px 32px rgba(17,17,17,.08); }
+.how-badge span { position:absolute; inset:0; display:grid; place-items:center; font:700 12px var(--sans); }
+.how-badge-lock .lk { width:7px; height:7px; border-radius:50%; background:#c4c4c4; }
+.how-badge-open { color:#c24e00; }
+.how-product { flex:1; display:flex; flex-direction:column; padding:8px; }
+.how-product-media { flex:1; border-radius:12px; background:linear-gradient(135deg,#ff6a00,#e6007e); display:grid; place-items:center;
+  font:400 64px var(--serif); font-style:italic; color:#fff; letter-spacing:-0.02em; }
+.how-product-info { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 8px 12px; }
+.how-product-info b { font:700 17px var(--sans); } .how-product-info small { display:block; font:500 13px var(--sans); color:#666666; }
+.how-file { margin:0 8px 8px; display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid #ececea; border-radius:12px; background:#f7f7f5; }
+.how-file-icon { width:28px; height:28px; border-radius:10px; border:1px solid #ececea; background:#fff; display:grid; place-items:center; font:700 11px var(--sans); color:#666; }
+.how-file-name { flex:1; font:600 14px var(--sans); }
+.how-bar { display:block; height:4px; margin-top:6px; border-radius:99px; background:#ececea; overflow:hidden; }
+.how-bar-fill { display:block; height:100%; border-radius:inherit; background:var(--orange); transform-origin:0 50%; }
+.how-file-done { width:22px; height:22px; border-radius:50%; background:var(--orange); color:#111; display:grid; place-items:center; font:800 13px var(--sans); }
+</style></head>
+<body><div id="root" data-composition-id="how-it-works" data-start="0" data-width="1200" data-height="900" data-duration="19.5">
+  <section class="wrap" id="section-how">
+    <div class="left">
+      <div class="eyebrow">How it works</div>
+      <h2>From a reel to <em>your build,</em> in minutes</h2>
+      <p class="sub">Pick an effect, get the free guide, paste the prompt into your AI.</p>
+      <ol class="how-steps" style="list-style:none;margin:0">
+        <span class="how-rail-fill" id="rail"></span>
+        <li class="how-step" id="st0"><span class="how-dot"></span><div class="how-card"><div class="how-trigger"><span class="how-icon">1</span>Pick an effect</div>
+          <div class="how-body" id="b0"><p>Twenty-two motion effects, each with its prompt.</p><div class="how-chips"><i>Text</i><i>Data</i><i>Ocean</i></div></div></div></li>
+        <li class="how-step" id="st1"><span class="how-dot"></span><div class="how-card"><div class="how-trigger"><span class="how-icon">2</span>Comment the keyword</div>
+          <div class="how-body" id="b1"><p>Comment MOTION on the reel and the guide link comes to you.</p><div class="how-chips"><i>Free</i><i>English + Español</i></div></div></div></li>
+        <li class="how-step" id="st2"><span class="how-dot"></span><div class="how-card"><div class="how-trigger"><span class="how-icon">3</span>Download &amp; build</div>
+          <div class="how-body" id="b2"><p>Open the guide, copy a prompt, build it in your project.</p><div class="how-chips"><i>.pdf</i><i>.html</i></div></div></div></li>
+      </ol>
+    </div>
+    <div class="how-stage">
+      <div class="how-scene" id="sc0"><div class="how-window">
+        <div class="how-head"><span class="how-query" id="qry"></span><span class="how-kbd">esc</span></div>
+        <div class="how-results">
+          <div class="how-result is-hl"><span class="th" style="background:linear-gradient(135deg,#ff6a00,#ffb27a)"></span><span><b>Before After</b><small>Redesign</small></span><span class="how-pill">New</span></div>
+          <div class="how-result"><span class="th" style="background:#111"></span><span><b>Blueprint Draw</b><small>Process</small></span></div>
+          <div class="how-result"><span class="th" style="background:linear-gradient(135deg,#e6007e,#ff6a00)"></span><span><b>Kinetic Type</b><small>Text</small></span></div>
+          <div class="how-result"><span class="th" style="background:#e6e6e6"></span><span><b>Split Flap</b><small>Text</small></span></div>
+          <div class="how-result"><span class="th" style="background:#1d1d1d"></span><span><b>Wave Dots</b><small>Ocean</small></span></div>
+        </div>
+        <div class="how-foot"><span class="how-kbd">↑</span><span class="how-kbd">↓</span><span class="how-kbd">↵</span></div>
+      </div></div>
+      <div class="how-scene" id="sc1"><div class="how-window">
+        <div class="how-head"><span class="how-icon" style="background:#111;color:#fff;border-color:#111">M</span><span style="flex:1">Free guide<small style="display:block;font:500 13px var(--sans);color:#666666">Comment MOTION</small></span><span class="how-cta">Get it</span></div>
+        <div class="how-unlock" id="grid"></div>
+      </div></div>
+      <div class="how-scene" id="sc2"><div class="how-window">
+        <div class="how-product"><div class="how-product-media">motion kit</div>
+          <div class="how-product-info"><span><b>Motion kit</b><small>22 effects · prompts</small></span><span class="how-download">↓ Download</span></div>
+          <div class="how-file"><span class="how-file-icon">PDF</span><span class="how-file-name">motion-guide.pdf<span class="how-bar"><span class="how-bar-fill"></span></span></span><span class="how-file-done">✓</span></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+</div>
+<script>
+// Easing values copied as NUMBERS from the reference's stylesheet (reanimate inspect, 2026-11-17):
+//   enter = cubic-bezier(.33,1,.68,1) · out = (.16,1,.3,1) · standard = (.22,1,.36,1)
+gsap.registerPlugin(CustomEase);
+const ENTER = CustomEase.create("enter", ".33,1,.68,1"), OUT = CustomEase.create("out", ".16,1,.3,1"),
+      STD = CustomEase.create("std", ".22,1,.36,1");
+const STEP = 6.5, QUERY = "motion";
+const TILE = ["#ff6a00", "#111", "#e6007e", "#f4f4f2", "#ff9a52", "#1d1d1d", "#ffd2b0", "#e6e6e6", "#b3005f"];
+const grid = document.getElementById("grid");
+TILE.forEach((c, i) => {
+  const t = document.createElement("div"); t.className = "how-tile"; t.style.background = c;
+  t.innerHTML = `<span class="how-tile-veil"></span><span class="how-badge" data-layout-allow-overlap><span class="how-badge-lock"><i class="lk"></i></span><span class="how-badge-open">✓</span></span>`;
+  grid.appendChild(t);
+});
+// rail geometry: the fill runs from the active dot down the card
+const railAt = (k) => { const st = document.getElementById(`st${k}`); return { top: st.offsetTop + 28, h: st.offsetHeight - 30 }; };
+
+gsap.set(".how-scene", { opacity: 0, y: 14, scale: 0.985 });
+gsap.set(".how-result", { opacity: 0, y: 6 });
+gsap.set(".how-body", { height: 0, opacity: 0 });
+gsap.set(".how-badge-open, .how-file-done", { opacity: 0, scale: 0.6 });
+gsap.set(".how-bar-fill", { scaleX: 0 });
+gsap.set("#rail", { scaleY: 0 });
+const tl = gsap.timeline({ paused: true });
+for (let k = 0; k < 3; k++) {
+  const T = k * STEP, sc = `#sc${k}`;
+  // scene swap: the old one fades out, the new one fades and rises in (opacity .4 s standard, transform .52 s enter)
+  if (k > 0) {
+    tl.to(`#sc${k - 1}`, { opacity: 0, duration: 0.4, ease: STD }, T)
+      .set(`#sc${k - 1} .how-result, #sc${k - 1} .how-tile-veil, #sc${k - 1} .how-badge-lock`, { clearProps: "opacity,transform" }, T)
+      .to(`#b${k - 1}`, { height: 0, opacity: 0, duration: 0.25, ease: OUT }, T)
+      .to(`#st${k - 1} .how-dot`, { backgroundColor: "#e2e2df", duration: 0.25 }, T)
+      .to(`#st${k - 1} .how-trigger`, { color: "#8c8c8c", duration: 0.15 }, T)
+      .to(`#st${k - 1} .how-card`, { backgroundColor: "rgba(255,255,255,0)", borderColor: "rgba(0,0,0,0)", boxShadow: "0 8px 32px rgba(17,17,17,0)", duration: 0.25 }, T)
+      .to(`#st${k - 1} .how-icon`, { backgroundColor: "#ffffff", color: "#111111", borderColor: "#ececea", duration: 0.25 }, T);
+  }
+  tl.to(sc, { opacity: 1, duration: 0.4, ease: STD }, T)
+    .to(sc, { y: 0, scale: 1, duration: 0.52, ease: ENTER }, T)
+    .to(`#b${k}`, { height: "auto", opacity: 1, duration: 0.52, ease: ENTER }, T)
+    .to(`#st${k} .how-dot`, { backgroundColor: "#111111", duration: 0.25, ease: OUT }, T)
+    .to(`#st${k} .how-trigger`, { color: "#111111", duration: 0.15, ease: OUT }, T)
+    .to(`#st${k} .how-card`, { backgroundColor: "#ffffff", borderColor: "#ececea", boxShadow: "0 8px 32px rgba(17,17,17,.08)", duration: 0.25, ease: OUT }, T)
+    .to(`#st${k} .how-icon`, { backgroundColor: "#111111", color: "#ffffff", borderColor: "#111111", duration: 0.25, ease: OUT }, T)
+    // rail: jumps to the active step and fills in a straight line for the whole step
+    .set("#rail", { top: () => railAt(k).top, height: () => railAt(k).h, scaleY: 0 }, T)
+    .fromTo("#rail", { scaleY: 0 },
+      { scaleY: 1, duration: STEP, ease: "none", immediateRender: false }, T);
+  if (k > 0) tl.set(`#sc${k - 1}`, { y: 14, scale: 0.985 }, T + 0.4);
+}
+// scene 1: the query types, rows rise in (0.38 s enter, 0.56 s + 70 ms each)
+for (let i = 1; i <= QUERY.length; i++) tl.set("#qry", { innerHTML: QUERY.slice(0, i) + '<i class="how-caret"></i>' }, Number((0.2 + i * 0.09).toFixed(3)));
+tl.to("#sc0 .how-result", { opacity: 1, y: 0, duration: 0.38, ease: ENTER, stagger: 0.07 }, 0.56);
+// scene 2: the button is pressed at 0.9 s, then each tile unlocks 70 ms after the last
+const T1 = STEP;
+tl.to(".how-cta", { keyframes: [{ scale: 0.94, duration: 0.18, ease: OUT }, { scale: 1, duration: 0.18, ease: OUT }] }, T1 + 0.9)
+  .to(".how-tile-veil", { opacity: 0, duration: 0.42, ease: OUT, stagger: 0.07 }, T1 + 1.25)
+  .to(".how-badge-lock", { opacity: 0, duration: 0.2, ease: OUT, stagger: 0.07 }, T1 + 1.25)
+  .to(".how-badge-open", { opacity: 1, scale: 1, duration: 0.32, ease: ENTER, stagger: 0.07 }, T1 + 1.33);
+// scene 3: Download pressed at 0.45 s, the file bar fills over 1.5 s from 0.7 s, the check pops at 2.25 s
+const T2 = 2 * STEP;
+tl.to(".how-download", { keyframes: [{ scale: 0.94, duration: 0.18, ease: OUT }, { scale: 1, duration: 0.18, ease: OUT }] }, T2 + 0.45)
+  .to(".how-bar-fill", { scaleX: 1, duration: 1.5, ease: STD }, T2 + 0.7)
+  .to(".how-file-done", { opacity: 1, scale: 1, duration: 0.32, ease: ENTER }, T2 + 2.25)
+  .to({}, { duration: 0.01 }, 19.49);
+window.__timelines = window.__timelines || {};
+window.__timelines["how-it-works"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

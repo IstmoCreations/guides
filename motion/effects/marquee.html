@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Marquee</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* Two endless rows of cards gliding in opposite directions behind a headline, faded at both edges. Row 1's motion
+   was studied from the reviews strip on the public horizonx.so homepage with reanimate (2026-11-17) and matched:
+   a linear glide at 54.55 px/s, cards 280 px wide on a 300 px pitch, two copies of the row so the loop has no seam,
+   edges masked over 8 %. Row 2 (the opposite direction) is our addition. Cards name our own kit effects and what
+   each is for; never invented reviews. Class .reviews-track mirrors the reference so reanimate can
+   compare them. The rows carry data-layout-ignore ONLY because the checker cannot see the edge fade mask: before it
+   was added, every contrast finding was a card inside the faded 8 % at either edge (verified 2026-11-17). */
+.ttl { position:absolute; left:90px; top:110px; font:800 76px/1.02 var(--sans); letter-spacing:-0.035em; color:var(--ink); }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.rows { position:absolute; left:0; right:0; top:330px; display:flex; flex-direction:column; gap:22px;
+  -webkit-mask-image:linear-gradient(90deg,#0000,#000 8% 92%,#0000); mask-image:linear-gradient(90deg,#0000,#000 8% 92%,#0000); }
+.row { position:relative; height:200px; overflow:hidden; }
+.reviews-track { position:absolute; left:0; top:0; display:flex; gap:20px; width:max-content; }
+.card { width:280px; height:200px; box-sizing:border-box; padding:22px 24px; border-radius:20px; background:#fff;
+  border:1px solid var(--line); display:flex; flex-direction:column; }
+.card .n { font:600 14px var(--sans); letter-spacing:.12em; color:#a84300; }
+.card b { margin-top:12px; font:800 26px/1.1 var(--sans); letter-spacing:-0.02em; color:var(--ink); }
+.card p { margin:auto 0 0; font:500 17px/1.35 var(--sans); color:#5c5c5c; }
+.card.dk { background:#141414; border-color:#141414; } .card.dk b { color:#fff; } .card.dk p { color:#b8b8b8; } .card.dk .n { color:#ff7a1a; }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#6e6e6e; }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="marquee" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Marquee · our kit</div>
+  <div class="ttl" id="ttl">Twenty-four effects.<br><em>One kit.</em></div>
+  <div class="rows" data-layout-allow-overflow data-layout-ignore>
+    <div class="row"><div class="reviews-track" id="r1" data-layout-allow-overflow></div></div>
+    <div class="row"><div class="reviews-track" id="r2" data-layout-allow-overflow></div></div>
+  </div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2) · marquee = none (linear)
+const SPEED = 54.55;                 // px per second, measured on the reference (its 55 s loop over a 3000 px row)
+const FX = [
+  ["01", "Before After", "a redesign post"], ["04", "Flow Line", "any three-step post"], ["06", "Kinetic Type", "a hook that lands"],
+  ["10", "Split Flap", "a status word"], ["11", "Count Up", "one number that matters"], ["14", "Chat Thread", "answering customers"],
+  ["17", "Command Palette", "a fast product"], ["18", "Wave Dots", "water and live signals"], ["21", "ASCII Drift", "a prompt that feels alive"],
+  ["23", "How It Works", "a three-step explainer"],
+];
+const card = ([n, name, use], dark) => `<div class="card${dark ? " dk" : ""}"><span class="n">${n}</span><b>${name}</b><p>For ${use}.</p></div>`;
+const fill = (el, list, darkEvery) => {
+  const one = list.map((f, i) => card(f, i % darkEvery === darkEvery - 1)).join("");
+  el.innerHTML = one + one;                                   // two copies: shifting by one copy's width is seamless
+};
+fill(document.getElementById("r1"), FX, 3);
+fill(document.getElementById("r2"), [...FX].reverse(), 4);
+const COPY = FX.length * 300;                                 // 280 px card + 20 px gap
+gsap.set("#ttl", { opacity: 0, y: 14 });
+gsap.set("#r1", { x: 0 });
+gsap.set("#r2", { x: -COPY + 120 });                          // row 2 starts mid-row and runs the other way
+const tl = gsap.timeline({ paused: true });
+tl.to("#ttl", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.1)
+  .to("#r1", { x: -SPEED * 4, duration: 4, ease: "none" }, 0)
+  .to("#r2", { x: -COPY + 120 + SPEED * 4, duration: 4, ease: "none" }, 0)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["marquee"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

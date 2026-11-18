@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Proof Badge</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<style>
+/* A floating speech-bubble badge: it rises in, a row of round marks pops in one by one, a "live" dot pings, the
+   bubble bobs, and its line ticks over to the next. Motion studied from the badge on the public horizonx.so homepage
+   (2026-11-17) and copied as numbers: badge in 0.6 s from 8 px + 0.97 scale; marks in 0.5 s from -6 px + 0.85 scale;
+   both cubic-bezier(.2,.8,.2,1); bob 4 px over 5 s, ease-in-out, from 0.9 s; ping to 2.2x and gone over 1.8 s; ticker
+   lines slide 110 % in 0.52 s with a 0.38 s fade. THE CONTENT IS HONEST: their badge shows customer avatars and
+   counts; ours shows what is NEW in our kit and guides. Never put invented people or numbers in it. */
+.ttl { position:absolute; left:90px; top:110px; font:800 76px/1.02 var(--sans); letter-spacing:-0.035em; color:var(--ink); }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.bubble { position:absolute; left:50%; top:440px; transform:translateX(-50%); }
+.float { display:flex; align-items:center; gap:22px; padding:22px 34px 22px 22px; border-radius:99px; background:#fff;
+  border:1px solid rgba(23,23,23,.08); box-shadow:0 24px 60px rgba(17,17,17,.12); white-space:nowrap; }
+.tail { position:absolute; left:50%; bottom:-11px; width:22px; height:22px; margin-left:-11px; background:#fff;
+  border-right:1px solid rgba(23,23,23,.08); border-bottom:1px solid rgba(23,23,23,.08); border-bottom-right-radius:5px; transform:rotate(45deg); }
+.marks { display:flex; }
+.mark { width:60px; height:60px; border-radius:50%; border:4px solid #fff; margin-left:-14px; display:grid; place-items:center;
+  font:800 20px var(--sans); color:#fff; }
+.mark:first-child { margin-left:0; }
+.live { position:relative; width:16px; height:16px; }
+.live span { position:absolute; inset:0; border-radius:50%; background:#16a34a; }
+.ticker { position:relative; height:40px; width:420px; overflow:hidden; font:700 30px/40px var(--sans); color:var(--ink); }
+.tl { position:absolute; left:0; top:0; white-space:nowrap; }
+.tl b { font-weight:400; font-family:var(--serif); font-style:italic; color:var(--orange-text); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#6e6e6e; }
+</style></head>
+<body><div id="root" class="grid-paper" data-composition-id="proof-badge" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Badge · what's new</div>
+  <div class="ttl" id="ttl">What's new<br><em>in the kit.</em></div>
+  <div class="bubble" id="bubble">
+    <div class="float" id="float">
+      <div class="marks">
+        <span class="mark" id="m0" style="background:#ff6a00;color:#111">21</span><span class="mark" id="m1" style="background:#111">23</span>
+        <span class="mark" id="m2" style="background:#e6007e">24</span><span class="mark" id="m3" style="background:#555">25</span>
+      </div>
+      <div class="live"><span id="ping"></span><span></span></div>
+      <div class="ticker">
+        <div class="tl" id="t0">New: <b>ASCII Swell</b></div>
+        <div class="tl" id="t1">New: <b>How It Works</b></div>
+        <div class="tl" id="t2">New guide: <b>REVIEW</b></div>
+      </div>
+    </div>
+    <span class="tail"></span>
+  </div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+// This panel uses the reference's measured curves: "soft out" = cubic-bezier(.2,.8,.2,1), ping = (0,0,.2,1).
+gsap.registerPlugin(CustomEase);
+const SOFT = CustomEase.create("softOut", ".2,.8,.2,1"), PING = CustomEase.create("ping", "0,0,.2,1");
+gsap.set("#ttl", { opacity: 0, y: 14 });
+gsap.set("#float", { opacity: 0, y: 8, scale: 0.97 });
+gsap.set(".tail", { opacity: 0 });
+gsap.set(".mark", { opacity: 0, x: -6, scale: 0.85 });
+gsap.set("#t1, #t2", { yPercent: 110, opacity: 0 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#ttl", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0)
+  .to("#float", { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: SOFT }, 0.2)
+  .to(".tail", { opacity: 1, duration: 0.3, ease: SOFT }, 0.35);
+// marks pop in one by one (the reference staggers its avatars; 90 ms here)
+[0, 1, 2, 3].forEach((k) => tl.to(`#m${k}`, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: SOFT }, 0.4 + k * 0.09));
+// the bubble bobs 4 px over a 5 s cycle from 0.9 s (ease-in-out): half a cycle fits in this panel
+tl.to("#bubble", { y: -4, duration: 2.5, ease: "sine.inOut" }, 1.1);
+// live dot: a ring grows to 2.2x and fades over 1.8 s, twice
+[0.3, 2.1].forEach((at) => tl.fromTo("#ping", { scale: 1, opacity: 0.75 }, { scale: 2.2, opacity: 0, duration: 1.8 * 0.75, ease: PING, immediateRender: false }, at));
+// ticker: the active line slides up and out, the next slides up from below (0.52 s soft out, 0.38 s fade)
+const tick = (from, to, at) => tl
+  .to(from, { yPercent: -110, duration: 0.52, ease: SOFT }, at).to(from, { opacity: 0, duration: 0.38 }, at)
+  .to(to, { yPercent: 0, duration: 0.52, ease: SOFT }, at).to(to, { opacity: 1, duration: 0.38 }, at);
+tick("#t0", "#t1", 1.6); tick("#t1", "#t2", 2.8);
+tl.to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["proof-badge"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

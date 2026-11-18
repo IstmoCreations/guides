@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Texture Lab</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* One picture, four finishes: a wipe passes over it and leaves it ordered-dithered, then printed as a two-ink
+   halftone (riso), then rebuilt in text characters, each finish named as it lands. Our own finishes, written from
+   scratch (the idea of a texture library is common; HorizonX sells one, studied 2026-11-17, nothing of theirs used).
+   The source picture is drawn in code (a dawn bay with an outrigger), so the panel needs no image file. Everything
+   is computed once at build; the timeline only moves the wipes and labels. */
+#root { background:#f4f4f2; }
+.frame { position:absolute; left:150px; top:200px; width:900px; height:560px; border-radius:24px; overflow:hidden; background:#111;
+  box-shadow:0 30px 80px rgba(17,17,17,.18); }
+.frame canvas { position:absolute; inset:0; width:900px; height:560px; }
+.lab { position:absolute; left:28px; bottom:24px; padding:10px 18px; border-radius:99px; background:rgba(17,17,17,.82); color:#fff;
+  font:700 22px var(--sans); letter-spacing:.02em; }
+.ttl { position:absolute; left:150px; top:92px; font:800 64px/1 var(--sans); letter-spacing:-0.035em; color:var(--ink); }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#6e6e6e; }
+</style></head>
+<body><div id="root" data-composition-id="texture-lab" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Textures · one picture, four finishes</div>
+  <div class="ttl" id="ttl">One picture, <em>four finishes.</em></div>
+  <div class="frame" data-layout-allow-overlap>
+    <canvas id="c0" width="900" height="560"></canvas>
+    <canvas id="c1" width="900" height="560"></canvas>
+    <canvas id="c2" width="900" height="560"></canvas>
+    <canvas id="c3" width="900" height="560"></canvas>
+    <span class="lab" id="lab0">Original</span><span class="lab" id="lab1">Dither</span>
+    <span class="lab" id="lab2">Riso print</span><span class="lab" id="lab3">ASCII</span>
+  </div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2)
+const W = 900, H = 560;
+const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+// ---------- the source picture, drawn in code ----------
+const src = document.getElementById("c0"), s = src.getContext("2d");
+const sky = s.createLinearGradient(0, 0, 0, 300); sky.addColorStop(0, "#2b2d5c"); sky.addColorStop(0.55, "#d9667a"); sky.addColorStop(1, "#ffb36b");
+s.fillStyle = sky; s.fillRect(0, 0, W, 300);
+s.fillStyle = "#fff1c9"; s.beginPath(); s.arc(250, 262, 46, 0, Math.PI * 2); s.fill();
+s.fillStyle = "#3b2a4a"; s.beginPath(); s.moveTo(560, 300); s.quadraticCurveTo(700, 210, 860, 300); s.fill();
+s.beginPath(); s.moveTo(380, 300); s.quadraticCurveTo(450, 262, 520, 300); s.fill();
+const sea = s.createLinearGradient(0, 300, 0, H); sea.addColorStop(0, "#c46a7a"); sea.addColorStop(0.3, "#4b4f86"); sea.addColorStop(1, "#141a3a");
+s.fillStyle = sea; s.fillRect(0, 300, W, H - 300);
+for (let y = 304; y < H; y += 6) { const w = 6 + (y - 300) * 0.5; s.fillStyle = `rgba(255,214,150,${(0.55 - (y - 300) / 560).toFixed(2)})`; s.fillRect(250 - w / 2 + Math.sin(y) * 8, y, w, 2); }
+// the canoe: hull, ama, arms, six paddlers
+s.fillStyle = "#f7f3ee"; s.beginPath(); s.ellipse(500, 392, 230, 11, -0.03, 0, Math.PI * 2); s.fill();
+s.fillStyle = "#ff6a00"; s.fillRect(290, 392, 420, 3);
+s.fillStyle = "#e9e4de"; s.beginPath(); s.ellipse(470, 428, 120, 6, -0.03, 0, Math.PI * 2); s.fill();
+s.strokeStyle = "#e9e4de"; s.lineWidth = 3; [[420, 386, 412, 426], [560, 384, 552, 424]].forEach(([a, b, c, d]) => { s.beginPath(); s.moveTo(a, b); s.lineTo(c, d); s.stroke(); });
+for (let k = 0; k < 6; k++) { const x = 340 + k * 62; s.fillStyle = "#e6007e"; s.fillRect(x - 7, 352, 14, 30); s.fillStyle = "#2b1a14"; s.beginPath(); s.arc(x, 345, 7, 0, Math.PI * 2); s.fill();
+  s.strokeStyle = "#2b1a14"; s.lineWidth = 3; s.beginPath(); s.moveTo(x + 6, 340); s.lineTo(x + 34, 404); s.stroke(); }
+const px = s.getImageData(0, 0, W, H).data;
+const lum = (i) => (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]) / 255;
+
+// ---------- finish 1: ordered dither (8x8 Bayer), two tones ----------
+{ const c = document.getElementById("c1").getContext("2d"), out = c.createImageData(W, H), d = out.data;
+  const B = [0,32,8,40,2,34,10,42,48,16,56,24,50,18,58,26,12,44,4,36,14,46,6,38,60,28,52,20,62,30,54,22,3,35,11,43,1,33,9,41,51,19,59,27,49,17,57,25,15,47,7,39,13,45,5,37,63,31,55,23,61,29,53,21];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4, bx = x >> 1, by = y >> 1, on = lum(i) > (B[(by & 7) * 8 + (bx & 7)] + 0.5) / 64;
+    d[i] = on ? 244 : 17; d[i + 1] = on ? 244 : 17; d[i + 2] = on ? 242 : 17; d[i + 3] = 255; }
+  c.putImageData(out, 0, 0); }
+
+// ---------- finish 2: riso print, two inks (fuchsia + ink blue) as offset halftone dots on paper ----------
+{ const c = document.getElementById("c2").getContext("2d");
+  c.fillStyle = "#f4efe6"; c.fillRect(0, 0, W, H); c.globalCompositeOperation = "multiply";
+  const ink = (rgb, angle, cell, pick, dx, dy) => {
+    c.fillStyle = rgb; const ca = Math.cos(angle), sa = Math.sin(angle);
+    for (let v = -(W + H); v < W + H; v += cell) for (let u = -(W + H); u < W + H; u += cell) {
+      const x = u * ca - v * sa, y = u * sa + v * ca; if (x < 0 || y < 0 || x >= W || y >= H) continue;
+      const i = ((y | 0) * W + (x | 0)) * 4, k = pick(i); if (k < 0.04) continue;
+      c.beginPath(); c.arc(x + dx, y + dy, (cell / 2) * Math.sqrt(k) * 1.15, 0, Math.PI * 2); c.fill(); } };
+  ink("#ff48b0", 0.26, 7, (i) => Math.max(0, (px[i] - 0.6 * px[i + 2]) / 255 * 0.9 + (1 - lum(i)) * 0.35), 0, 0);
+  ink("#2c3fae", 1.31, 7, (i) => Math.pow(1 - lum(i), 1.6) * 0.8, 2, 1);
+  c.globalCompositeOperation = "source-over"; }
+
+// ---------- finish 3: ASCII on tiles (the kit's ASCII engine look) ----------
+{ const c = document.getElementById("c3").getContext("2d"), CW = 9, CH = 13, G = " .:-~ot%sSX8#@";
+  c.fillStyle = "#06090c"; c.fillRect(0, 0, W, H);
+  c.font = "700 10px Consolas, 'JetBrains Mono', monospace"; c.textAlign = "center"; c.textBaseline = "middle";
+  for (let y = 0; y < H; y += CH) for (let x = 0; x < W; x += CW) {
+    const i = (((y + CH / 2) | 0) * W + ((x + CW / 2) | 0)) * 4, v = Math.pow(lum(i), 0.7); if (v < 0.06) continue;
+    const r = px[i], g = px[i + 1], b = px[i + 2];
+    c.fillStyle = `rgba(${r},${g},${b},${(0.06 + 0.25 * v).toFixed(3)})`; c.fillRect(x + 1, y + 1, CW - 2, CH - 2);
+    const ch = G[Math.max(1, Math.min(G.length - 1, Math.round((v + (hash(x, y) - 0.5) * 0.12) * (G.length - 1))))];
+    c.fillStyle = `rgba(${Math.min(255, r + 40)},${Math.min(255, g + 40)},${Math.min(255, b + 40)},${Math.min(1, 0.4 + v).toFixed(3)})`;
+    c.fillText(ch, x + CW / 2, y + CH / 2 + 1); } }
+
+// ---------- the wipes ----------
+gsap.set("#ttl", { opacity: 0, y: 14 });
+gsap.set("#c1, #c2, #c3", { clipPath: "inset(0 100% 0 0)" });
+gsap.set("#lab1, #lab2, #lab3", { opacity: 0, y: 10 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#ttl", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0);
+[["#c1", "#lab1", "#lab0", 0.7], ["#c2", "#lab2", "#lab1", 1.7], ["#c3", "#lab3", "#lab2", 2.7]].forEach(([cv, lab, prev, at]) => tl
+  .to(cv, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power2.inOut" }, at)
+  .to(prev, { opacity: 0, y: -10, duration: 0.2, ease: "power2.out" }, at + 0.3)
+  .to(lab, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, at + 0.45));
+tl.to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["texture-lab"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>

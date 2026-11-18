@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><title>Card Tunnel</title>
+<link rel="stylesheet" href="../kit.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+/* A curved wall of cards seen from inside: the cards flow sideways around the curve, the ones at the edges swing
+   toward the viewer, stretch, blur and split into colour fringes, as if seen through thick glass. Our own take on
+   the WebGL "tunnel" behind the horizonx.so hero (studied 2026-11-17; their shader and images are not used): here it
+   is CSS 3D plus filters, so it renders anywhere. Cards are our kit's effects. Card positions are a pure function of
+   timeline time (one onUpdate redraw), no timers. */
+#root { background:#ffffff; }
+.ttl { position:absolute; left:0; right:0; top:96px; text-align:center; font:800 72px/1.04 var(--sans); letter-spacing:-0.04em; color:var(--ink); }
+.ttl em { font-family:var(--serif); font-weight:400; color:var(--orange-text); }
+.stage { position:absolute; left:0; right:0; top:330px; height:340px; perspective:900px; perspective-origin:50% 50%; }
+.card { position:absolute; left:50%; top:50%; width:150px; height:210px; margin:-105px 0 0 -75px; border-radius:16px; overflow:hidden;
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.45); backface-visibility:hidden; }
+.card b { position:absolute; left:12px; right:12px; bottom:12px; font:700 15px/1.15 var(--sans); }
+.card i { position:absolute; left:12px; top:12px; font:600 12px var(--sans); font-style:normal; letter-spacing:.1em; opacity:.8; }
+.sub { position:absolute; left:0; right:0; top:720px; text-align:center; font:500 28px var(--sans); color:var(--ink-soft); }
+.meta { position:absolute; top:40px; left:48px; font:600 15px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:#6e6e6e; }
+</style></head>
+<body><div id="root" data-composition-id="card-tunnel" data-start="0" data-width="1200" data-height="900" data-duration="4">
+  <div class="meta" data-layout-ignore>Tunnel · our kit</div>
+  <div class="ttl" id="ttl">Every effect,<br><em>one kit.</em></div>
+  <div class="stage" id="stage" data-layout-ignore></div>
+  <div class="sub" id="sub">Pick one. Paste the prompt. Make it yours.</div>
+</div>
+<script>
+// Easing words (kit vocabulary): ease out = power2.out · glide = power2.inOut · lands = back.out(2) · flow = none (linear)
+const FX = [["01","Before After"],["04","Flow Line"],["06","Kinetic Type"],["10","Split Flap"],["11","Count Up"],["14","Chat Thread"],
+  ["17","Command Palette"],["18","Wave Dots"],["21","ASCII Drift"],["23","How It Works"],["24","Marquee"],["25","ASCII Swell"],
+  ["26","Char Rise"],["28","CTA Wall"]];
+const FILL = [["#ff6a00","#111"],["#111","#fff"],["#e6007e","#fff"],["#f4f4f2","#111"],["#2a2a2a","#fff"],["#ffd2b0","#111"],["#ff9a52","#111"]];
+const stage = document.getElementById("stage");
+const cards = FX.map(([n, name], i) => {
+  const el = document.createElement("div"); el.className = "card";
+  const [bg, fg] = FILL[i % FILL.length];
+  el.style.background = bg; el.style.color = fg;
+  el.innerHTML = `<i>${n}</i><b>${name}</b>`;
+  stage.appendChild(el); return el;
+});
+const N = cards.length, STEP = 0.215, SPAN = N * STEP, R = 760;  // cards 0.205 rad apart on an arc wider than the view
+function place(t) {
+  const spin = -t * 0.085;                                        // radians per second: one card every ~5 s
+  cards.forEach((el, i) => {
+    let a = ((i * STEP + spin) % SPAN + SPAN) % SPAN - SPAN / 2;      // wrap along the arc; 0 = straight ahead
+    const vis = Math.abs(a) < 1.25;
+    const x = R * Math.sin(a), z = R * (1 - Math.cos(a)) - 120;   // concave: the edges come toward us
+    const edge = Math.max(0, Math.abs(a) - 0.45) / 0.8;           // 0 in the middle, 1 at the far edges
+    const fr = (edge * 9).toFixed(1), bl = (edge * edge * 5).toFixed(2);
+    el.style.transform = `translate3d(${x.toFixed(1)}px,0,${z.toFixed(1)}px) rotateY(${(-a * 57.3).toFixed(2)}deg) scaleX(${(1 + edge * 0.35).toFixed(3)})`;
+    el.style.filter = edge > 0 ? `blur(${bl}px) drop-shadow(${-fr}px 0 0 rgba(230,0,126,.45)) drop-shadow(${fr}px 0 0 rgba(0,170,255,.40))` : "none";
+    el.style.opacity = vis ? Math.min(1, (1.25 - Math.abs(a)) / 0.25).toFixed(3) : 0;
+    el.style.zIndex = String(Math.round(100 - Math.abs(a) * 40));
+  });
+}
+gsap.set("#ttl, #sub", { opacity: 0, y: 14 });
+const clock = { t: 0 };
+place(0);
+const tl = gsap.timeline({ paused: true });
+tl.to(clock, { t: 4, duration: 4, ease: "none", onUpdate: () => place(clock.t) }, 0)
+  .to("#ttl", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.1)
+  .to("#sub", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.4)
+  .to({}, { duration: 0.01 }, 3.99);
+window.__timelines = window.__timelines || {};
+window.__timelines["card-tunnel"] = tl;
+</script>
+<script src="../kit-preview.js"></script>
+</body></html>
